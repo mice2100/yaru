@@ -1,30 +1,27 @@
 import * as sys from '@sys'
 import * as env from '@env'
 import * as sciter from '@sciter'
+import * as utils from './utils'
 
-export var auths = [{type:'ssh', host: 'SERVER', user: 'george', passwd: 'iamgeorge'}]
-
-const conf_auth = env.path("home", ".yaru/auth.cfg")
+export var auths = [{id: 1, type:'ssh', host: '192.168.12.11', user: 'george', passwd: 'george'}]
 
 export function loadAuths() {
-    var cfg = sys.fs.readFileSync(conf_auth)
-    sciter.decode(cfg)
-    console.log(sciter.decode(cfg))
-}
-
-export async function saveAuths() {
-    let f = await sys.fs.open(conf_auth, "w")
-    if (f) {
-        f.writeSync(JSON.stringify(auths))
-        f.closeSync()
+    let a = utils.loadJson("auth.cfg")
+    if (a) {
+        auths = a
         return true
-    } else{
+    } else {
         return false
     }
 }
 
-export function genAuthString(auth) {
+export async function saveAuths() {
+    return utils.saveJson(auths, "auth.cfg")
+}
+
+export function genAuthString(id) {
     try {
+        let auth = findAuth(id)
         switch(auth.type) {
             case 'ssh':
                 return `${auth.user}@${auth.host}:`
@@ -34,4 +31,13 @@ export function genAuthString(auth) {
         console.error(e.message)
         return null
     }
-} 
+}
+
+export function maxAuthID() {
+    auths.sort((a, b) => a.id-b.id)
+    return auths[auths.length-1].id
+}
+
+export function findAuth(id) {
+    return auths.find( v=>v.id==id)
+}

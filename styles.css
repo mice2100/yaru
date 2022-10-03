@@ -1,0 +1,24 @@
+
+table 
+{ 
+  font:system;
+  border:1px solid; 
+  flow:table-fixed;
+  width:*; 
+  height:*; // spans whole view
+  padding:0;
+  border-spacing:0;
+  border-collapse: collapse;
+  overflow-x: auto;
+}
+
+table > thead {
+  behavior:column-resizer; /* column sizing by user*/
+}
+  
+table > tbody {
+  size:*;
+  overflow-y: scroll-indicator;  
+}
+
+table th,table td { border:1px solid; padding:4px; }

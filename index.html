@@ -5,12 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yet Another RSync UI</title>
+    <link rel="stylesheet" href="styles.css">
     <script type="module" src="index.js"></script>
 </head>
 <body>
-    <button #addtask>Add Task</button>
+    <table>
+        <thead>
+          <th style="width:10px">enabled</th>
+          <th style="width:10px">id</th>
+          <th style="width:*">src</th>
+          <th style="width:*">dst</th>
+          <th style="width:100px">auth</th>
+          <th style="width:100px">params</th>
+        </thead>
+        <tbody></tbody>
+      </table>
     <button #exec>Start</button>
     <button #config>Configurations</button>
+    <button #test>test</button>
     <plaintext #log></plaintext>
 </body>
 </html>
