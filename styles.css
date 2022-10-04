@@ -22,3 +22,4 @@ table > tbody {
 }
 
 table th,table td { border:1px solid; padding:4px; }
+td input {width: *;}

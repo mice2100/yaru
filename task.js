@@ -3,6 +3,7 @@ import * as env from '@env'
 import * as sciter from '@sciter'
 import * as auth from "./auth"
 import * as utils from "./utils"
+auth.loadAuths()
 
 export var taskList = [{enabled: false, id: 10, src: "c:/Users/george/documents", dst: "backup/documents", auth: 1, params: ["-rv", "-t"]}]
 /* id, src, dst, auth, [params] */

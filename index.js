@@ -9,11 +9,11 @@ const elTask = document.$("table>tbody")
 
 const EOL = env.PLATFORM == "Windows" ? "\r\n" : "\n";
 gconfig.loadCfg()
-console.log(gconfig.configs)
+auth.loadAuths()
 var tracert;
 
 function genTaskReact(t) {
-    return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled} /></td>
+    return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled} mixed /></td>
         <td>{t.id}</td><td>{t.src}</td><td>{t.dst}</td>
         <td>{auth.genAuthString(t.auth)}</td><td>{t.params.join(" ")}</td></tr>
 }
@@ -50,14 +50,25 @@ async function pipeReader(pipe, name, out) {
 }
 
 document.on("click", "#exec", async function () {
-    var cmd = env.PLATFORM == "Windows" ? "tracert" : "traceroute";
+    var cmd = env.PLATFORM == "Windows" ? "rsync" : "rsync";
     const out = document.$("plaintext");
     try {
-        tracert = sys.spawn([cmd, "sciter.com"], { stdout: "pipe", stderr: "pipe" });
-        pipeReader(tracert.stdout, "stdout", out);
-        pipeReader(tracert.stderr, "stderr", out);
-        var r = await tracert.wait();
-        out.append(<text class="done">Done with result:{r.exit_status} and {r.term_signal}</text>);
+        for (let t of task.taskList) {
+            if (t.enabled==null) continue
+            let args = ["rsync"]
+            if (t.enabled) {
+                args.push(...t.params)
+                args.push(t.src)
+                args.push(auth.genAuthPrefix(t.auth)+t.dst)
+            }
+            out.append(<text>Starting task: {t.id}</text>)
+            console.log(args)
+            // out.append(<text class="done">Done with result:{r.exit_status} and {r.term_signal}</text>);
+        }
+        // tracert = sys.spawn([cmd, "sciter.com"], { stdout: "pipe", stderr: "pipe" });
+        // pipeReader(tracert.stdout, "stdout", out);
+        // pipeReader(tracert.stderr, "stderr", out);
+        // var r = await tracert.wait();
     } catch (e) {
         out.append(<text class="error">{e.message}</text>);
     }
