@@ -20,7 +20,6 @@ export function saveJson(data, fn) {
         sys.fs.mkdirSync(folder)
     }
     let filename = env.path("home", `.yaru/${fn}`)
-    console.log(filename)
     let f = sys.fs.sync.open(filename, "w")
     if (f) {
         f.writeSync(JSON.stringify(data))

@@ -61,9 +61,10 @@ document.on("click", "menu.context>li", function (evt, el) {
             cmd = globalconfig.sshCopyId(a)
             if (cmd) {
                 Clipboard.writeText(cmd)
-                let ret = Window.this.modal(<info>The following cmd has been copied to Clipboard. <br/> {cmd}<br/>A terminal windows be opened, please paste the command and follow the screen.</info>)
+
+                let ret = Window.this.modal(<info>A terminal windows be opened to excute this command: {cmd} <br/>, please follow the screen to finish.</info>)
                 if (ret=="ok") {
-                    env.exec("cmd")
+                    env.exec("cmd", "/K", cmd)
                 }
             }
             break;
@@ -72,9 +73,9 @@ document.on("click", "menu.context>li", function (evt, el) {
                 a = auth.findAuth(id)
                 cmd = `ssh ${a.user}@${a.host}`
                 Clipboard.writeText(cmd)
-                let ret = Window.this.modal(<info>The following cmd has been copied to Clipboard. <br/> {cmd}<br/>A terminal windows be opened, please paste the command and see if you can login automatically.</info>)
+                let ret = Window.this.modal(<info>A terminal windows be opened with:<br/>{cmd}<br/>You should login into the server if everything is good. <br/>Otherwise, please check the ssh password or re-generate the keys.</info>)
                 if (ret=="ok") {
-                    env.exec("cmd")
+                    env.exec("cmd", "/K", cmd)
                 }
                 break;
         }

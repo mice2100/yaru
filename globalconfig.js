@@ -4,7 +4,9 @@ import * as sciter from '@sciter'
 import * as utils from './utils'
 
 export var configs = {}
+var loaded = false;
 export function loadCfg() {
+    if (loaded) return //So we won't add path multiple times
     let cfg = utils.loadJson("cfg.json")
     if (cfg) configs = cfg
     if (configs && !configs.ssh) {
@@ -17,6 +19,12 @@ export function loadCfg() {
     } else {
         configs.ssh.keyexists = true
     }
+    if (env.PLATFORM=="Windows") {
+        let envpath = env.variable("path")
+        env.variable("path", `d:\\George\\Documents\\cwRsync\\bin;${envpath};`)
+        env.variable("HOME", env.path("home"))
+    }
+    loaded = true
 }
 
 export function saveCfg() {
@@ -53,16 +61,9 @@ export function sshCopyId(auth) {
         return ""
     }
 
-    // if (env.PLATFORM=="Windows") fn = fn.replace(/\//g, "\\")
     try {
-        // let plink = env.path("downloads", "putty/plink.exe")
-        let plink = "ssh"
-
-        let args = [plink, `${auth.user}@${auth.host}`, "<", fn, '"cat >>.ssh/authorized_keys"']
+        let args = ["ssh", `${auth.user}@${auth.host}`, "<", fn, '"cat >>.ssh/authorized_keys"']
         let cmd = args.join(" ")
-        // console.log(cmd)
-        // Clipboard.writeText(cmd)
-        // env.exec("cmd")
         return cmd
     } catch (e) {
         console.error(e.message)

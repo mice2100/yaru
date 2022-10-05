@@ -10,6 +10,9 @@ const elTask = document.$("table>tbody")
 const EOL = env.PLATFORM == "Windows" ? "\r\n" : "\n";
 gconfig.loadCfg()
 auth.loadAuths()
+let envpath = env.variable("path")
+env.variable("path", `d:\\George\\Documents\\cwRsync\\bin;${envpath};`)
+env.variable("HOME", env.path("home"))
 var tracert;
 
 function genTaskReact(t) {
@@ -38,7 +41,7 @@ async function pipeReader(pipe, name, out) {
                 if (eolpos < 0) { cline += text; continue reading; }
                 cline += text.substr(0, eolpos);
                 text = text.substr(eolpos + EOL.length);
-                out.append(<text class={name}>{cline}</text>);
+                out.append(<text>{cline}</text>);
                 cline = "";
             }
         }
@@ -50,7 +53,6 @@ async function pipeReader(pipe, name, out) {
 }
 
 document.on("click", "#exec", async function () {
-    var cmd = env.PLATFORM == "Windows" ? "rsync" : "rsync";
     const out = document.$("plaintext");
     try {
         for (let t of task.taskList) {
@@ -58,17 +60,27 @@ document.on("click", "#exec", async function () {
             let args = ["rsync"]
             if (t.enabled) {
                 args.push(...t.params)
-                args.push(t.src)
+                if (t.src[1]==':' &&t.src[2]=='/'){
+                    let tmp = `/cygdrive/${t.src[0]}/${t.src.substring(3)}`
+                    // console.log(tmp)
+                    args.push(tmp)
+                } else {
+                    args.push(t.src)
+                }
                 args.push(auth.genAuthPrefix(t.auth)+t.dst)
+                args.push(">>")
+                args.push("stdout")
+                // out.append(<text>Starting task: {t.id}</text>)
+                console.log(args.join(" "))
+    
+                tracert = sys.spawn(["ssh", "george@server", "ls", "/"], { stdout: "pipe", stderr: "pipe" });
+                // tracert = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
+                pipeReader(tracert.stdout, "stdout", out);
+                pipeReader(tracert.stderr, "stderr", out);
+                var r = await tracert.wait();
+                out.append(<text class="done">Done with result:{r.exit_status} and {r.term_signal}</text>);
             }
-            out.append(<text>Starting task: {t.id}</text>)
-            console.log(args)
-            // out.append(<text class="done">Done with result:{r.exit_status} and {r.term_signal}</text>);
         }
-        // tracert = sys.spawn([cmd, "sciter.com"], { stdout: "pipe", stderr: "pipe" });
-        // pipeReader(tracert.stdout, "stdout", out);
-        // pipeReader(tracert.stderr, "stderr", out);
-        // var r = await tracert.wait();
     } catch (e) {
         out.append(<text class="error">{e.message}</text>);
     }
@@ -79,8 +91,8 @@ document.on("click", "#test", async function () {
     auth.loadAuths();
     console.log(auth.findAuth(1))
 
-    let str = gconfig.sshCopyId(auth.findAuth(1))
-    console.log(str)
+    // let str = gconfig.sshCopyId(auth.findAuth(1))
+    // console.log(str)
     return;
 })
 
@@ -152,6 +164,7 @@ document.on("contextmenu", "tbody>tr", function (evt, el) {
     evt.source = Element.create(<menu.context>
         <li data="tcreate">create task</li>
         <li data="tremove" tid={id}>remove task</li>
+        <li data="tdryrun" tid={id}>Dry run</li>
       </menu>);
       return true;
 })
