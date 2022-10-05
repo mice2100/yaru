@@ -10,9 +10,6 @@ const elTask = document.$("table>tbody")
 const EOL = env.PLATFORM == "Windows" ? "\r\n" : "\n";
 gconfig.loadCfg()
 auth.loadAuths()
-let envpath = env.variable("path")
-env.variable("path", `d:\\George\\Documents\\cwRsync\\bin;${envpath};`)
-env.variable("HOME", env.path("home"))
 var tracert;
 
 function genTaskReact(t) {
@@ -68,15 +65,14 @@ document.on("click", "#exec", async function () {
                     args.push(t.src)
                 }
                 args.push(auth.genAuthPrefix(t.auth)+t.dst)
-                args.push(">>")
-                args.push("stdout")
                 // out.append(<text>Starting task: {t.id}</text>)
                 console.log(args.join(" "))
-    
-                tracert = sys.spawn(["ssh", "george@server", "ls", "/"], { stdout: "pipe", stderr: "pipe" });
-                // tracert = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
+                
+                // tracert = sys.spawn(["ssh", "george@192.168.12.9", "-tt", "ls", "/"], { stdout: "pipe", stderr: "pipe" });
+                tracert = sys.spawn(args, { stdout: "pipe", stderr: "pipe", stdin: "pipe" });
                 pipeReader(tracert.stdout, "stdout", out);
                 pipeReader(tracert.stderr, "stderr", out);
+                pipeReader(tracert.stdin, "stderr", out);
                 var r = await tracert.wait();
                 out.append(<text class="done">Done with result:{r.exit_status} and {r.term_signal}</text>);
             }

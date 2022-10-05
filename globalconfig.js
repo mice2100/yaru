@@ -21,8 +21,10 @@ export function loadCfg() {
     }
     if (env.PLATFORM=="Windows") {
         let envpath = env.variable("path")
-        env.variable("path", `d:\\George\\Documents\\cwRsync\\bin;${envpath};`)
+        env.variable("path", `${env.path("documents", "cwRsync/bin")};${envpath};`)
         env.variable("HOME", env.path("home"))
+        env.variable("CYGWIN", "disable_pcon")
+        // env.variable("disable_pcon", "0")
     }
     loaded = true
 }
