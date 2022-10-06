@@ -49,30 +49,43 @@ async function pipeReader(pipe, name, out) {
 
 }
 
+function cvtPath2Cgy(strPath) {
+    if (strPath[1]==':' &&strPath[2]=='/')
+        return `/cygdrive/${strPath[0]}/${strPath.substring(3)}`
+    else
+        return strPath
+}
+
+function makeRsycCmd(t, strOptions=null) {
+    if (t.enabled==null) return null
+    let args = ["rsync"]
+    args.push(...t.params)
+    if (strOptions)
+        args.push(strOptions)
+    if (t.excludefile)
+        args.push(`--exclude-from=${cvtPath2Cgy(t.excludefile)}`)
+    if (t.enabled) {
+        args.push(cvtPath2Cgy(t.src))
+        args.push(auth.genAuthPrefix(t.auth)+cvtPath2Cgy(t.dst))
+        // out.append(<text>Starting task: {t.id}</text>)
+    } else {
+        args.push(auth.genAuthPrefix(t.auth)+cvtPath2Cgy(t.dst))
+        args.push(cvtPath2Cgy(t.src))
+    }
+    console.log(args.join(" "))
+    return args
+}
+
 document.on("click", "#exec", async function () {
     const out = document.$("plaintext");
     try {
         for (let t of task.taskList) {
-            if (t.enabled==null) continue
-            let args = ["rsync"]
-            if (t.enabled) {
-                args.push(...t.params)
-                if (t.src[1]==':' &&t.src[2]=='/'){
-                    let tmp = `/cygdrive/${t.src[0]}/${t.src.substring(3)}`
-                    // console.log(tmp)
-                    args.push(tmp)
-                } else {
-                    args.push(t.src)
-                }
-                args.push(auth.genAuthPrefix(t.auth)+t.dst)
-                // out.append(<text>Starting task: {t.id}</text>)
-                console.log(args.join(" "))
-                
-                // tracert = sys.spawn(["ssh", "george@192.168.12.9", "-tt", "ls", "/"], { stdout: "pipe", stderr: "pipe" });
-                tracert = sys.spawn(args, { stdout: "pipe", stderr: "pipe", stdin: "pipe" });
+            let args = makeRsycCmd(t)
+            if (args) {
+                out.append(<text>Starting task {t.id} ...</text>);
+                tracert = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
                 pipeReader(tracert.stdout, "stdout", out);
                 pipeReader(tracert.stderr, "stderr", out);
-                pipeReader(tracert.stdin, "stderr", out);
                 var r = await tracert.wait();
                 out.append(<text class="done">Done with result:{r.exit_status} and {r.term_signal}</text>);
             }
@@ -119,7 +132,7 @@ document.on("change", "#sel", function (evt, el) {
     let id = Number(el.$p("tr").getAttribute("data"))
     let t = task.findTask(id)
     if (t) {
-        t.enabled = el.checked
+        t.enabled = el.value
         task.saveTaskList()
     }
 })
@@ -158,23 +171,28 @@ document.on("contextmenu", "tbody", function (evt, el) {
 document.on("contextmenu", "tbody>tr", function (evt, el) {
     let id = el.getAttribute("data")
     evt.source = Element.create(<menu.context>
-        <li data="tcreate">create task</li>
-        <li data="tremove" tid={id}>remove task</li>
-        <li data="tdryrun" tid={id}>Dry run</li>
+        <li data="tcreate">Create Task</li>
+        <li data="tremove" tid={id}>Remove Task</li>
+        <li data="tdryrun" tid={id}>Dry Run</li>
       </menu>);
       return true;
 })
 
 document.on("click", "menu.context>li", function(evt, el){
+    let id, args
     switch(el.getAttribute("data")) {
         case 'tcreate':
             addTask()
             break;
         case 'tremove':
-            let id=evt.target.getAttribute("tid")
+            id=evt.target.getAttribute("tid")
             task.removeTask(Number(id))
             document.$(`tbody>tr[data=${id}]`).remove()
             console.log(task.taskList)
             break;
+        case 'tdryrun':
+            id=evt.target.getAttribute("tid")
+            args = makeRsycCmd(task.findTask(id), "-n")
+            env.exec("cmd", "/K", ...args)
     }
 })

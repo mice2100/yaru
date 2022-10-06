@@ -5,7 +5,7 @@ import * as auth from "./auth"
 import * as utils from "./utils"
 auth.loadAuths()
 
-export var taskList = [{enabled: false, id: 10, src: "c:/Users/george/documents", dst: "backup/documents", auth: 1, params: ["-rv", "-t"]}]
+export var taskList = [{enabled: false, id: 10, src: "c:/Users/george/documents", dst: "backup/documents", auth: 1, params: ["-rv", "-t"], excludefile:""}]
 /* id, src, dst, auth, [params] */
 
 export function findTask(id) {
@@ -50,6 +50,7 @@ function init() {
                 document.$("#auth").select.options.append(<option value={a.id}>{auth.genAuthString(a.id)}</option>)
             }
             document.$("#auth").value = tsk.auth
+            document.$("#exclude").value = tsk.excludefile
         }
     }
 }
@@ -65,6 +66,15 @@ document.on("click", "#browse", function () {
         }
 })
 
+document.on("click", "#browseexclude", function () {
+    let tsk = Window.this.parameters
+    let newFolder = Window.this.selectFile({path: tsk.excludefile})
+    if(newFolder) {
+        tsk.excludefile = URL.toPath(newFolder)
+        document.$("#exclude").value = tsk.excludefile
+    }
+})
+
 document.on("click", "#ok", function () {
     let tsk = Window.this.parameters
     tsk.enabled = document.$("#enabled").value
@@ -72,6 +82,7 @@ document.on("click", "#ok", function () {
     tsk.dst = document.$("#dst").value
     tsk.params = document.$("#params").value.split(" ")
     tsk.auth = document.$("#auth").value
+    tsk.excludefile = document.$("#exclude").value
 
     Window.this.close(JSON.stringify(tsk))
 })

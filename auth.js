@@ -35,7 +35,7 @@ export function genAuthPrefix(id) {
         case 'ssh':
             return `${auth.user}@${auth.host}:`
         case 'local':
-            return 'local'
+            return ''
     }
 }
 

@@ -21,10 +21,12 @@ export function loadCfg() {
     }
     if (env.PLATFORM=="Windows") {
         let envpath = env.variable("path")
-        env.variable("path", `${env.path("documents", "cwRsync/bin")};${envpath};`)
-        env.variable("HOME", env.path("home"))
-        env.variable("CYGWIN", "disable_pcon")
-        // env.variable("disable_pcon", "0")
+        // let rsyncpath = env.path("documents", "cwRsync/bin2")
+        let rsyncpath = env.path("downloads", "cwrsync_6.2.5_x64_free/bin")
+        if (envpath.indexOf(rsyncpath) ==-1 ) {
+            env.variable("path", `${rsyncpath};${envpath};`)
+            // env.variable("home", env.path("home"))
+        }
     }
     loaded = true
 }
