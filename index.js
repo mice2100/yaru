@@ -1,24 +1,25 @@
 import * as sys from '@sys'
 import * as env from '@env'
 import * as sciter from '@sciter'
-import * as auth from './auth.js'
-import * as gconfig from "./globalconfig"
-import * as task from "./task"
+import * as auth from './uauth.js'
+import * as gconfig from "./uconfig"
+import * as task from "./utask"
+import * as utils from "./utils"
 
 const elTask = document.$("table>tbody")
-
-const EOL = env.PLATFORM == "Windows" ? "\r\n" : "\n";
 gconfig.loadCfg()
 auth.loadAuths()
-var tracert;
+var processRsync
+var stopping = false
 
 function genTaskReact(t) {
-    return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled} mixed /></td>
+    return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled} /></td>
         <td>{t.id}</td><td>{t.src}</td><td>{t.dst}</td>
         <td>{auth.genAuthString(t.auth)}</td><td>{t.params.join(" ")}</td></tr>
 }
 
 function init() {
+    elTask.clear()
     task.loadTaskList()
     for (let t of task.taskList) {
         elTask.append(genTaskReact(t))
@@ -27,92 +28,64 @@ function init() {
 
 init()
 
-async function pipeReader(pipe, name, out) {
+async function runit(dryrun = false) {
+    const out = document.$("plaintext");
+    let elStart = document.$("#exec")
+    let elStop = document.$("#stop")
+    elStart.disabled = true
+    elStop.disabled = false
+    let dry = dryrun?"-n":undefined
+    function fnNewLine(cline, cls){
+        out.append(<text class={cls}>{cline}</text>)
+        out.lastElementChild.scrollIntoView()
+    }
+
     try {
-        var cline = "";
-        reading: while (pipe) {
-            var text = await pipe.read();
-            text = sciter.decode(text);
-            while (text) {
-                var eolpos = text.indexOf(EOL);
-                if (eolpos < 0) { cline += text; continue reading; }
-                cline += text.substr(0, eolpos);
-                text = text.substr(eolpos + EOL.length);
-                out.append(<text>{cline}</text>);
-                cline = "";
+        out.clear()
+        for (let t of task.taskList) {
+            if (stopping) break
+            let args = utils.makeRsycCmd(t, dry)
+            if (args) {
+                out.append(<text>Starting task {t.id} ...</text>);
+                processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
+                utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
+                utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
+                var r = await processRsync.wait()
+                fnNewLine(`Done with result:${r.exit_status} and ${r.term_signal}`, "done")
+                fnNewLine("","msg")
             }
         }
     } catch (e) {
-        if (e.message != "socket is not connected")
-            out.append(<text class="error">{e.message}</text>);
+        out.append(<text class="error">{e.message}</text>)
     }
-
-}
-
-function cvtPath2Cgy(strPath) {
-    if (strPath[1]==':' &&strPath[2]=='/')
-        return `/cygdrive/${strPath[0]}/${strPath.substring(3)}`
-    else
-        return strPath
-}
-
-function makeRsycCmd(t, strOptions=null) {
-    if (t.enabled==null) return null
-    let args = ["rsync"]
-    args.push(...t.params)
-    if (strOptions)
-        args.push(strOptions)
-    if (t.excludefile)
-        args.push(`--exclude-from=${cvtPath2Cgy(t.excludefile)}`)
-    if (t.enabled) {
-        args.push(cvtPath2Cgy(t.src))
-        args.push(auth.genAuthPrefix(t.auth)+cvtPath2Cgy(t.dst))
-        // out.append(<text>Starting task: {t.id}</text>)
-    } else {
-        args.push(auth.genAuthPrefix(t.auth)+cvtPath2Cgy(t.dst))
-        args.push(cvtPath2Cgy(t.src))
-    }
-    console.log(args.join(" "))
-    return args
+    stopping = false
+    elStart.disabled = false
+    elStop.disabled = true
 }
 
 document.on("click", "#exec", async function () {
-    const out = document.$("plaintext");
-    try {
-        for (let t of task.taskList) {
-            let args = makeRsycCmd(t)
-            if (args) {
-                out.append(<text>Starting task {t.id} ...</text>);
-                tracert = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
-                pipeReader(tracert.stdout, "stdout", out);
-                pipeReader(tracert.stderr, "stderr", out);
-                var r = await tracert.wait();
-                out.append(<text class="done">Done with result:{r.exit_status} and {r.term_signal}</text>);
-            }
-        }
-    } catch (e) {
-        out.append(<text class="error">{e.message}</text>);
+    runit(false)
+})
+
+document.on("click", "#stop", async function () {
+    stopping = true
+    if(processRsync && processRsync.pid) {
+        processRsync.kill()
     }
 })
 
 document.on("click", "#test", async function () {
-    // await auth.saveAuths();
-    auth.loadAuths();
-    console.log(auth.findAuth(1))
-
-    // let str = gconfig.sshCopyId(auth.findAuth(1))
-    // console.log(str)
-    return;
+    runit(true)
 })
 
 function addTask() {
     let id = task.newTaskId()
-    let t = {enabled: false, id: id, src: "", dst: "", auth: 0, params: []}
+    let t = { enabled: false, id: id, src: "", dst: "", auth: 0, params: [] }
 
     document.state.disabled = true;
 
     var retval = Window.this.modal({
-        url: __DIR__ + "task.html",
+        url: __DIR__ + "wtask.html",
         alignment: -5,
         parameters: t
     })
@@ -144,7 +117,7 @@ document.on("doubleclick", "#tsk", function (evt, el) {
     document.state.disabled = true;
 
     var retval = Window.this.modal({
-        url: __DIR__ + "task.html",
+        url: __DIR__ + "wtask.html",
         alignment: -5,
         parameters: t
     })
@@ -160,12 +133,28 @@ document.on("doubleclick", "#tsk", function (evt, el) {
     document.state.disabled = false;
 })
 
+document.on("click", "#config", function (evt) {
+    document.state.disabled = true;
+
+    var retval = Window.this.modal({
+        url: __DIR__ + "wconfig.html",
+        alignment: -5
+    })
+
+    if (retval) {
+        gconfig.loadCfg()
+        auth.loadAuths()
+        init()
+    }
+
+    document.state.disabled = false;
+})
 
 document.on("contextmenu", "tbody", function (evt, el) {
     evt.source = Element.create(<menu.context>
         <li data="tcreate">create task</li>
-      </menu>);
-      return true;
+    </menu>);
+    return true;
 })
 
 document.on("contextmenu", "tbody>tr", function (evt, el) {
@@ -173,26 +162,20 @@ document.on("contextmenu", "tbody>tr", function (evt, el) {
     evt.source = Element.create(<menu.context>
         <li data="tcreate">Create Task</li>
         <li data="tremove" tid={id}>Remove Task</li>
-        <li data="tdryrun" tid={id}>Dry Run</li>
-      </menu>);
-      return true;
+    </menu>);
+    return true
 })
 
-document.on("click", "menu.context>li", function(evt, el){
+document.on("click", "menu.context>li", function (evt, el) {
     let id, args
-    switch(el.getAttribute("data")) {
+    switch (el.getAttribute("data")) {
         case 'tcreate':
             addTask()
             break;
         case 'tremove':
-            id=evt.target.getAttribute("tid")
+            id = evt.target.getAttribute("tid")
             task.removeTask(Number(id))
             document.$(`tbody>tr[data=${id}]`).remove()
-            console.log(task.taskList)
             break;
-        case 'tdryrun':
-            id=evt.target.getAttribute("tid")
-            args = makeRsycCmd(task.findTask(id), "-n")
-            env.exec("cmd", "/K", ...args)
     }
 })

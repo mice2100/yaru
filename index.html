@@ -11,7 +11,7 @@
 <body>
     <table>
         <thead>
-          <th style="width:10px">direction</th>
+          <th style="width:10px">enable</th>
           <th style="width:10px">id</th>
           <th style="width:*">src</th>
           <th style="width:*">dst</th>
@@ -21,8 +21,9 @@
         <tbody></tbody>
       </table>
     <button #exec>Start</button>
+    <button #stop disabled>Stop</button>
     <button #config>Configurations</button>
-    <button #test>test</button>
+    <button #test>Dry Run</button>
     <plaintext #log></plaintext>
 </body>
 </html>

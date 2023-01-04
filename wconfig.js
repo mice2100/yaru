@@ -1,12 +1,9 @@
-import * as globalconfig from './globalconfig'
-import * as auth from './auth'
+import * as globalconfig from './uconfig'
+import * as auth from './uauth'
 import * as env from '@env'
+import * as sys from '@sys'
 
-globalconfig.loadCfg()
-auth.loadAuths()
-
-document.$("#sshroot").innerText = globalconfig.configs.ssh.sshroot
-document.$("#btngen").style.display = globalconfig.configs.ssh.keyexists ? 'none' : 'block'
+var processSSH
 
 function appendAuth(a) {
     document.$("table>tbody").append(<tr data={a.id}><td>{a.id}</td><td>
@@ -14,11 +11,18 @@ function appendAuth(a) {
         <td><input id="ihost" value={a.host}></input></td><td><input id="iuser" value={a.user} /></td></tr>)
 }
 
-for (let a of auth.auths) {
-    appendAuth(a)
-}
+document.on("ready", function () {
+    globalconfig.loadCfg()
+    auth.loadAuths()
+    document.$("#sshroot").innerText = globalconfig.configs.ssh.sshroot
+    document.$("#btngen").style.display = globalconfig.configs.ssh.keyexists ? 'none' : 'block'
+    
+    for (let a of auth.auths) {
+        appendAuth(a)
+    }
+})
 
-document.on("click", "#btngen", async ()=>{
+document.on("click", "#btngen", async () => {
     await globalconfig.genSSHKey()
     document.$("#btngen").style.display = globalconfig.configs.ssh.keyexists ? 'none' : 'block'
 })
@@ -44,8 +48,9 @@ document.on("contextmenu", "tbody>tr", function (evt, el) {
     return true
 })
 
-document.on("click", "menu.context>li", function (evt, el) {
+document.on("click", "menu.context>li", async function (evt, el) {
     var id, a, cmd
+
     switch (el.getAttribute("id")) {
         case 'mnnew':
             appendAuth(auth.newAuth())
@@ -61,24 +66,22 @@ document.on("click", "menu.context>li", function (evt, el) {
             cmd = globalconfig.sshCopyId(a)
             if (cmd) {
                 Clipboard.writeText(cmd)
-
-                let ret = Window.this.modal(<info>A terminal windows be opened to excute this command: {cmd} <br/>, please follow the screen to finish.</info>)
-                if (ret=="ok") {
+                let ret = Window.this.modal(<info>A terminal windows be opened to excute this command: {cmd} <br />, please follow the screen to finish.</info>)
+                if (ret == "ok") {
                     env.exec("cmd", "/K", cmd)
                 }
             }
             break;
-            case 'mntst':
-                id = Number(el.getAttribute("aid"))
-                a = auth.findAuth(id)
-                cmd = `ssh ${a.user}@${a.host}`
-                Clipboard.writeText(cmd)
-                let ret = Window.this.modal(<info>A terminal windows be opened with:<br/>{cmd}<br/>You should login into the server if everything is good. <br/>Otherwise, please check the ssh password or re-generate the keys.</info>)
-                if (ret=="ok") {
-                    env.exec("cmd", "/K", cmd)
-                }
-                break;
-        }
+        case 'mntst':
+            id = Number(el.getAttribute("aid"))
+            a = auth.findAuth(id)
+            cmd = ['ssh', `${a.user}@${a.host}`, "ls /"]
+            processSSH = sys.spawn(cmd)
+            var r = await processSSH.wait()
+            let msg = r.exitCode? "Failed" : "Succeed"
+            Window.this.modal(msg)
+            break;
+    }
 })
 
 document.on("change", "tr", function (evt, el) {
@@ -90,7 +93,13 @@ document.on("change", "tr", function (evt, el) {
     return true
 })
 
-document.on("click", "#ok", ()=>{
+document.on("click", "#ok", () => {
+    console.log("ok")
     auth.saveAuths()
     globalconfig.saveCfg()
+    Window.this.close("true")
+})
+
+document.on("click", "#cancel", () => {
+    Window.this.close()
 })

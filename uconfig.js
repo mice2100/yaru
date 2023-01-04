@@ -21,7 +21,6 @@ export function loadCfg() {
     }
     if (env.PLATFORM=="Windows") {
         let envpath = env.variable("path")
-        // let rsyncpath = env.path("documents", "cwRsync/bin2")
         let rsyncpath = env.path("downloads", "cwrsync_6.2.5_x64_free/bin")
         if (envpath.indexOf(rsyncpath) ==-1 ) {
             env.variable("path", `${rsyncpath};${envpath};`)
