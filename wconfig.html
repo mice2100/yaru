@@ -1,21 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" style="width: 400dip; height: 300dip;">
+<html lang="en" style="width: 600dip; height: 400dip;">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurations</title>
     <link rel="stylesheet" href="styles.css">
-    
+
     <script type="module" src="wconfig.js">
     </script>
 </head>
+
 <body>
-    <div>SSH Key folder: <div #sshroot></div><button #btngen>generate</button></div>
-    <div>Auths:</div>
-    <table><thead><th style="width:10dip">id</th><th style="width:60dip">type</th><th style="width:*">host</th><th style="width:*">user</th></thead>
-    <tbody></tbody></table>
+    <div>Client Config
+        <div>SSH Key folder: <div #sshroot></div><button #btngen>generate</button></div>
+        <div>Auths: <button #newauth>New</button></div>
+        <table style="height: 180dip;">
+            <thead>
+                <th style="width:10dip">id</th>
+                <th style="width:60dip">type</th>
+                <th style="width:*">host</th>
+                <th style="width:*">user</th>
+                <th style="width:*">password</th>
+                <th style="width:100dip">Ops</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div>Daemon Config: <button #newmodule>New</button>
+        <ul #modules>
+        </ul>
+    </div>
     <button #ok>OK</button>
     <button #cancel>Cancel</button>
 </body>
+
 </html>

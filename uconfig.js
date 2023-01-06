@@ -1,6 +1,5 @@
 import * as sys from '@sys'
 import * as env from '@env'
-import * as sciter from '@sciter'
 import * as utils from './utils'
 
 export var configs = {}
@@ -9,7 +8,7 @@ export function loadCfg() {
     if (loaded) return //So we won't add path multiple times
     let cfg = utils.loadJson("cfg.json")
     if (cfg) configs = cfg
-    if (configs && !configs.ssh) {
+    if (!configs.ssh) {
         configs.ssh = { "sshroot": env.path("home", ".ssh") }
     }
     if (!sys.fs.statSync(configs.ssh.sshroot + "/id_rsa") ||
@@ -19,9 +18,15 @@ export function loadCfg() {
     } else {
         configs.ssh.keyexists = true
     }
+
+    if(!configs.daemon) {
+        configs.daemon = {modules: []}
+    }
     if (env.PLATFORM=="Windows") {
         let envpath = env.variable("path")
-        let rsyncpath = env.path("downloads", "cwrsync_6.2.5_x64_free/bin")
+        // let rsyncpath = env.path("downloads", "cwrsync/bin")
+        let rsyncpath = URL.toPath(__DIR__+"cwrsync/bin")
+        // console.log(rsyncpath)
         if (envpath.indexOf(rsyncpath) ==-1 ) {
             env.variable("path", `${rsyncpath};${envpath};`)
             // env.variable("home", env.path("home"))
@@ -72,4 +77,24 @@ export function sshCopyId(auth) {
         console.error(e.message)
         return ""
     }
+}
+
+export function newDaemonModule() {
+    let newModule = {module:"modulename", path:"path", readonly: false, writeonly: false}
+    configs.daemon.modules.push(newModule)
+    return configs.daemon.modules.length-1
+}
+
+export function genDaemonConf(){
+    let fn = utils.getDataPath("rsyncd.conf", true)
+    let f = sys.fs.sync.open(fn, "w")
+
+    for(let m of configs.daemon.modules){
+        f.writeSync(`[${m.module}]\n`)
+        f.writeSync(`  path = ${utils.cvtPath2Rsync(m.path)}\n`)
+        f.writeSync(`  read only = ${m.readonly}\n`)
+        f.writeSync(`  write only = ${m.writeonly}\n\n`)
+    }
+    f.closeSync()
+    return fn
 }

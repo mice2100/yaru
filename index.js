@@ -15,12 +15,15 @@ const elTask = document.$("table>tbody")
 gconfig.loadCfg()
 auth.loadAuths()
 var processRsync
+var processDaemon
 var stopping = false
 
 function genTaskReact(t) {
     return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled} /></td>
         <td>{t.id}</td><td>{t.src}</td><td>{t.dst}</td>
-        <td>{auth.genAuthString(t.auth)}</td><td>{uswitch.cvtSwitches2Str(t.params)}</td></tr>
+        <td>{auth.genAuthString(t.auth)}</td><td>{uswitch.cvtSwitches2Str(t.params)}</td>
+        <td><button #edittask tid={t.id}>e</button><button #rmtask tid={t.id}>x</button></td>
+        </tr>
 }
 
 function init() {
@@ -49,8 +52,7 @@ async function runit(dryrun = false) {
         out.clear()
         for (let t of task.taskList) {
             if (stopping) break
-            let args = utils.makeRsycCmd(t, dry)
-            console.log(args)
+            let args = await utils.makeRsycCmd(t, dry)
             if (args) {
                 out.append(<text>Starting task {t.id} ...</text>);
                 processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
@@ -116,8 +118,8 @@ document.on("change", "#sel", function (evt, el) {
     }
 })
 
-document.on("doubleclick", "#tsk", function (evt, el) {
-    let id = Number(el.getAttribute("data"))
+document.on("click", "#edittask", function (evt, el) {
+    let id = Number(el.getAttribute("tid"))
     let t = task.findTask(id)
 
     document.state.disabled = true;
@@ -130,14 +132,25 @@ document.on("doubleclick", "#tsk", function (evt, el) {
 
     if (retval) {
         let t = JSON.parse(retval)
-        el.patch(genTaskReact(t))
+        el.$p("tr").patch(genTaskReact(t))
         let t0 = task.findTask(id)
         Object.assign(t0, t)
         task.saveTaskList()
-        el = genTaskReact(t0)
+        // el = genTaskReact(t0)
     }
 
     document.state.disabled = false;
+})
+
+document.on("click", "#newtask", function (evt, el) {
+    addTask()
+})
+
+document.on("click", "#rmtask", function (evt, el) {
+    let id = el.getAttribute("tid")
+    task.removeTask(Number(id))
+    task.saveTaskList()
+    document.$(`tbody>tr[data=${id}]`).remove()
 })
 
 document.on("click", "#config", function (evt) {
@@ -157,32 +170,21 @@ document.on("click", "#config", function (evt) {
     document.state.disabled = false;
 })
 
-document.on("contextmenu", "tbody", function (evt, el) {
-    evt.source = Element.create(<menu.context>
-        <li data="tcreate">create task</li>
-    </menu>);
-    return true;
+document.on("click", "#startserv", async ()=>{
+    document.$("#startserv").disabled = true
+    document.$("#stopserv").disabled = false
+    const out = document.$("plaintext");
+
+    let cmds = utils.makeDaemonCmd()
+    processDaemon = sys.spawn(cmds)
+    await processDaemon.wait()
+
+    document.$("#startserv").disabled = false
+    document.$("#stopserv").disabled = true
 })
 
-document.on("contextmenu", "tbody>tr", function (evt, el) {
-    let id = el.getAttribute("data")
-    evt.source = Element.create(<menu.context>
-        <li data="tcreate">Create Task</li>
-        <li data="tremove" tid={id}>Remove Task</li>
-    </menu>);
-    return true
-})
-
-document.on("click", "menu.context>li", function (evt, el) {
-    let id, args
-    switch (el.getAttribute("data")) {
-        case 'tcreate':
-            addTask()
-            break;
-        case 'tremove':
-            id = evt.target.getAttribute("tid")
-            task.removeTask(Number(id))
-            document.$(`tbody>tr[data=${id}]`).remove()
-            break;
+document.on("click", "#stopserv", ()=>{
+    if(processDaemon.pid) {
+        processDaemon.kill()
     }
 })

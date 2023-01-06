@@ -26,6 +26,8 @@ export function genAuthString(id) {
             return `ssh:${auth.user}@${auth.host}`
         case 'local':
             return 'local:'
+        case 'rsync':
+            return `rsync:${auth.user}@${auth.host}`
     }
 }
 
@@ -36,7 +38,27 @@ export function genAuthPrefix(id) {
             return `${auth.user}@${auth.host}:`
         case 'local':
             return ''
+        case 'rsync':
+            return `${auth.host}::`
     }
+}
+
+export async function genAuthPassfile(id) {
+    var ret
+    let auth = findAuth(id)
+    if(auth &&auth.type=='rsync'){
+        let fn = utils.getDataPath(`passwd.${id}`)
+        if(sys.fs.statSync(fn)) {
+            await sys.fs.unlink(fn)
+        }
+        let f = await sys.fs.open(fn, "w")
+        await f.write(auth.passwd)
+        await f.close()
+        await sys.fs.chmod(fn, 600)
+        ret = "--password-file="+fn
+    }
+
+    return ret
 }
 
 

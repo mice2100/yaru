@@ -3,19 +3,20 @@ import * as env from '@env'
 import * as sciter from '@sciter'
 import * as auth from "./uauth"
 import * as uswitch from "./uswitch"
+import * as uconfig from "./uconfig"
 
 const EOL = "\n"
 
-export function getDataPath(fn="", force = false) {
+export function getDataPath(fn = "", force = false) {
     if (force) {
         let folder = env.path("home", ".yaru")
         if (!sys.fs.statSync(folder)) {
             sys.fs.mkdirSync(folder)
         }
     }
-    if(fn){
+    if (fn) {
         return env.path("home", `.yaru/${fn}`)
-    } else{
+    } else {
         return env.path("home", '.yaru')
     }
 }
@@ -45,14 +46,14 @@ export function saveJson(data, fn) {
     }
 }
 
-function cvtPath2Cgy(strPath) {
+export function cvtPath2Rsync(strPath) {
     if (env.PLATFORM === 'Windows' && strPath[1] == ':' && strPath[2] == '/')
         return `/cygdrive/${strPath[0]}/${strPath.substring(3)}`
     else
         return strPath
 }
 
-export function makeRsycCmd(t, strOptions = null) {
+export async function makeRsycCmd(t, strOptions = null) {
     if (!t.enabled) return null
     let args = ["rsync"]
     args.push(...uswitch.cvtSwitches2Str(t.params, true))
@@ -63,14 +64,27 @@ export function makeRsycCmd(t, strOptions = null) {
         args.push("-f=!")
         sys.setenv("CVSIGNORE", t.exclude)
     }
-    if (t.enabled) {
-        args.push(cvtPath2Cgy(t.src))
-        args.push(auth.genAuthPrefix(t.auth) + cvtPath2Cgy(t.dst))
-        // out.append(<text>Starting task: {t.id}</text>)
-    } else {
-        args.push(auth.genAuthPrefix(t.auth) + cvtPath2Cgy(t.dst))
-        args.push(cvtPath2Cgy(t.src))
+    let pwdf = await auth.genAuthPassfile(t.auth)
+    if(pwdf) {
+        console.log(pwdf)
+    //     // args.push(pwd)
     }
+    args.push(cvtPath2Rsync(t.src))
+    args.push(auth.genAuthPrefix(t.auth) + cvtPath2Rsync(t.dst))
+    // out.append(<text>Starting task: {t.id}</text>)
+    return args
+}
+
+export function makeDaemonCmd() {
+    let cfgfile = uconfig.genDaemonConf()
+    if(!cfgfile) return undefined
+
+    cfgfile = cfgfile.replace(/\//g, "\\")
+    let args = ["rsync"]
+    args.push("--daemon")
+    args.push(`--config=${cvtPath2Rsync(cfgfile)}`)
+    args.push("--no-detach")
+
     return args
 }
 
@@ -85,13 +99,13 @@ export async function pipeReader(pipe, name, fnNewLine) {
                 if (eolpos < 0) { cline += text; continue reading; }
                 cline += text.substr(0, eolpos);
                 text = text.substr(eolpos + EOL.length)
-                if(fnNewLine) fnNewLine(cline, "msg")
+                if (fnNewLine) fnNewLine(cline, "msg")
                 cline = "";
             }
         }
     } catch (e) {
         if (e.message != "socket is not connected")
-            if(fnNewLine) fnNewLine(e.message, "error")
-            // out.append(<text class="error">{e.message}</text>);
+            if (fnNewLine) fnNewLine(e.message, "error")
+        // out.append(<text class="error">{e.message}</text>);
     }
 }

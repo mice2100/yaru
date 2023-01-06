@@ -17,13 +17,22 @@
           <th style="width:*">dst</th>
           <th style="width:200px">auth</th>
           <th style="width:100px">params</th>
+          <th style="width:80px">Ops</th>
         </thead>
         <tbody></tbody>
       </table>
-    <button #exec>Start</button>
-    <button #stop disabled>Stop</button>
-    <button #config>Configurations</button>
-    <button #test>Dry Run</button>
+    <div>
+      <button #newtask>New Task</button>
+      <button #exec>Start</button>
+      <button #stop disabled>Stop</button>
+      <button #config>Configurations</button>
+      <button #test>Dry Run</button>
+    </div>
+    <div>
+      <button #startserv>Start Daemon</button>
+      <button #stopserv disabled>Stop Daemon</button>
+    </div>
+    <div role="spliter"></div>
     <plaintext #log></plaintext>
 </body>
 </html>
