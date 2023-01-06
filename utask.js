@@ -1,6 +1,6 @@
 import * as utils from "./utils"
 
-export var taskList = [{enabled: false, id: 10, src: "c:/Users/george/documents", dst: "backup/documents", auth: 1, params: ["-rv", "-t"], exclude:""}]
+export var taskList = [{enabled: false, id: 10, src: "c:/Users/george/documents", dst: "backup/documents", auth: 1, params: ["-av", "-t"], exclude:""}]
 /* id, src, dst, auth, [params] */
 
 export function findTask(id) {

@@ -2,6 +2,7 @@ import * as sys from '@sys'
 import * as env from '@env'
 import * as sciter from '@sciter'
 import * as auth from "./uauth"
+import * as uswitch from "./uswitch"
 
 const EOL = "\n"
 
@@ -54,7 +55,7 @@ function cvtPath2Cgy(strPath) {
 export function makeRsycCmd(t, strOptions = null) {
     if (!t.enabled) return null
     let args = ["rsync"]
-    args.push(...t.params)
+    args.push(...uswitch.cvtSwitches2Str(t.params, true))
     if (strOptions)
         args.push(strOptions)
     if (t.exclude) {

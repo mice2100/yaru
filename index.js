@@ -5,6 +5,11 @@ import * as auth from './uauth.js'
 import * as gconfig from "./uconfig"
 import * as task from "./utask"
 import * as utils from "./utils"
+import * as uswitch from "./uswitch"
+
+uswitch.initSwitches()
+
+// console.log(genSwitches(sw))
 
 const elTask = document.$("table>tbody")
 gconfig.loadCfg()
@@ -15,7 +20,7 @@ var stopping = false
 function genTaskReact(t) {
     return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled} /></td>
         <td>{t.id}</td><td>{t.src}</td><td>{t.dst}</td>
-        <td>{auth.genAuthString(t.auth)}</td><td>{t.params.join(" ")}</td></tr>
+        <td>{auth.genAuthString(t.auth)}</td><td>{uswitch.cvtSwitches2Str(t.params)}</td></tr>
 }
 
 function init() {
@@ -45,6 +50,7 @@ async function runit(dryrun = false) {
         for (let t of task.taskList) {
             if (stopping) break
             let args = utils.makeRsycCmd(t, dry)
+            console.log(args)
             if (args) {
                 out.append(<text>Starting task {t.id} ...</text>);
                 processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
@@ -98,7 +104,7 @@ function addTask() {
     }
 
     document.state.disabled = false;
-    console.log(task.taskList[0])
+    // console.log(task.taskList[0])
 }
 
 document.on("change", "#sel", function (evt, el) {
@@ -128,6 +134,7 @@ document.on("doubleclick", "#tsk", function (evt, el) {
         let t0 = task.findTask(id)
         Object.assign(t0, t)
         task.saveTaskList()
+        el = genTaskReact(t0)
     }
 
     document.state.disabled = false;
