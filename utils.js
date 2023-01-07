@@ -91,7 +91,7 @@ export function makeDaemonCmd() {
 export async function pipeReader(pipe, name, fnNewLine) {
     try {
         var cline = "";
-        reading: while (pipe) {
+        reading: while (pipe.fileno()) {
             var text = await pipe.read();
             text = sciter.decode(text);
             while (text) {
@@ -104,8 +104,8 @@ export async function pipeReader(pipe, name, fnNewLine) {
             }
         }
     } catch (e) {
-        if (e.message != "socket is not connected")
-            if (fnNewLine) fnNewLine(e.message, "error")
+        // if (e.message != "socket is not connected")
+            // if (fnNewLine) fnNewLine(e.message, "error")
         // out.append(<text class="error">{e.message}</text>);
     }
 }
