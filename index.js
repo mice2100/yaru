@@ -19,10 +19,10 @@ var processDaemon
 var stopping = false
 
 function genTaskReact(t) {
-    return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled} /></td>
+    return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled}/></td>
         <td>{t.id}</td><td>{t.src}</td><td>{t.dst}</td>
         <td>{auth.genAuthString(t.auth)}</td><td>{uswitch.cvtSwitches2Str(t.params)}</td>
-        <td><button #edittask tid={t.id}>e</button><button #rmtask tid={t.id}>x</button></td>
+        <td><button .ibtn #edittask title="edit" tid={t.id}><i .i_edit/></button> <button .ibtn #rmtask title="Delete" tid={t.id}><i .i_del/></button></td>
         </tr>
 }
 

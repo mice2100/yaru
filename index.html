@@ -7,32 +7,41 @@
     <title>Yet Another RSync UI</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="index.js"></script>
+    <style>
+      table { style-set:customtable;} 
+    </style>
 </head>
 <body>
-    <table>
-        <thead>
-          <th style="width:10px">enable</th>
-          <th style="width:10px">id</th>
-          <th style="width:*">src</th>
-          <th style="width:*">dst</th>
-          <th style="width:200px">auth</th>
-          <th style="width:100px">params</th>
-          <th style="width:80px">Ops</th>
-        </thead>
-        <tbody></tbody>
-      </table>
-    <div>
-      <button #newtask>New Task</button>
-      <button #exec>Start</button>
-      <button #stop disabled>Stop</button>
-      <button #config>Configurations</button>
-      <button #test>Dry Run</button>
-    </div>
-    <div>
-      <button #startserv>Start Daemon</button>
-      <button #stopserv disabled>Stop Daemon</button>
-    </div>
-    <div role="spliter"></div>
-    <plaintext #log></plaintext>
+  <frameset rows="*,200dip">
+      <div>
+          <table>
+            <thead>
+              <th value="1">Enable</th>
+              <th value="2">ID</th>
+              <th value="3">Src</th>
+              <th value="4">Dst</th>
+              <th value="5">Auth</th>
+              <th value="6">Params</th>
+              <th value="7">Ops</th>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div .btntoolbar>
+              <button .btn .linebtn #newtask><i .i_add/>New Task</button>
+              <span>|</span>
+              <button .btn .bluebtn #exec><i .i_start/>Start</button>
+              <button .btn .redbtn #stop disabled><i .i_stop/>Stop</button>
+              <button .btn .linebtn #config><i .i_set/>Configurations</button>
+              <span>|</span>
+              <button .btn .greenbtn #test><i .i_debug/>Dry Run</button>
+              <span>|</span>
+              <button .btn .bluebtn #startserv><i .i_start/>Start Daemon</button>
+              <button .btn .redbtn #stopserv disabled><i .i_stop/>Stop Daemon</button>
+          </div>
+      </div>
+      <splitter/>
+      <plaintext .runlogbox #log></plaintext>
+  </frameset>
 </body>
 </html>
