@@ -54,12 +54,18 @@ async function runit(dryrun = false) {
             if (stopping) break
             let args = await utils.makeRsycCmd(t, dry)
             if (args) {
-                out.append(<text>Starting task {t.id} ...</text>);
+
+                fnNewLine(`Starting task ${t.id} ...`, "info");
                 processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
-                utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
-                utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
+                let pout = utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
+                let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
+                
                 var r = await processRsync.wait()
-                fnNewLine(`Done with result:${r.exit_status} and ${r.term_signal}`, "done")
+                processRsync.stderr.close()
+                processRsync.stdout.close()
+                await pout
+                await perr
+                fnNewLine(`Task ${t.id} done with result:${r.exit_status} and ${r.term_signal}`, "info")
                 fnNewLine("","msg")
             }
         }
@@ -173,7 +179,6 @@ document.on("click", "#config", function (evt) {
 document.on("click", "#startserv", async ()=>{
     document.$("#startserv").disabled = true
     document.$("#stopserv").disabled = false
-    const out = document.$("plaintext");
 
     let cmds = utils.makeDaemonCmd()
     processDaemon = sys.spawn(cmds)
