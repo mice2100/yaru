@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="width: 600dip; height: 400dip;">
+<html lang="en" .wconfig>
 
 <head>
     <meta charset="UTF-8">
@@ -7,33 +7,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurations</title>
     <link rel="stylesheet" href="styles.css">
-
-    <script type="module" src="wconfig.js">
-    </script>
+    <script type="module" src="wconfig.js"></script>
+    <style>
+        *{margin:0;}
+    </style>
 </head>
 
 <body>
-    <div>Client Config
-        <div>SSH Key folder: <div #sshroot></div><button #btngen>generate</button></div>
-        <div>Auths: <button #newauth>New</button></div>
-        <table style="height: 180dip;">
-            <thead>
-                <th style="width:10dip">id</th>
-                <th style="width:60dip">type</th>
-                <th style="width:*">host</th>
-                <th style="width:*">user</th>
-                <th style="width:*">password</th>
-                <th style="width:100dip">Ops</th>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <div>Daemon Config: <button #newmodule>New</button>
-        <ul #modules>
-        </ul>
-    </div>
-    <button #ok>OK</button>
-    <button #cancel>Cancel</button>
-</body>
+    <div .wconfigmian>
+        <div>
+            Client Config
+            <div>SSH Key folder: <div #sshroot></div><button #btngen>generate</button></div>
+            <div>Auths: <button #newauth>New</button></div>
+            <table style="height: 180dip;">
+                <thead>
+                    <th style="width:10dip">id</th>
+                    <th style="width:60dip">type</th>
+                    <th style="width:*">host</th>
+                    <th style="width:*">user</th>
+                    <th style="width:*">password</th>
+                    <th style="width:100dip">Ops</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
+        <div>Daemon Config: <button #newmodule>New</button>
+            <ul #modules>
+            </ul>
+        </div>
+    </div>
+    <div .dlgbtm>
+        <button .btn .bluebtn #ok>OK</button>
+        <button .btn .linebtn #cancel>Cancel</button>
+    </div>
+</body>
 </html>

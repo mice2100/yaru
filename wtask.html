@@ -1,23 +1,30 @@
 <!DOCTYPE html>
-<html lang="en"  style="width: 600dip; height: 400dip;">
+<html lang="en" .wtask>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task</title>
+    <link rel="stylesheet" href="styles.css">
     <script type="module" src="wtask.js"></script>
+    <style>
+        *{margin:0;}
+    </style>
 </head>
 <body>
-    <table>
-        <tr><td>Enabled:</td><td><input #enabled type="checkbox"/></td></tr>
-        <tr><td>ID:</td><td><label #id></label></td></tr>
-        <tr><td>Src:</td><td><input #src type="text"/><button #browse>...</button></td></tr>
-        <tr><td>Dst:</td><td><input #dst type="text"/></td></tr>
-        <tr><td>Auth:</td><td><select #auth></select> </td></tr>
-        <tr><td>Exclude:</td><td><textarea #exclude type="text"/><button #import>Import</button><button #export>Save As</button></td></tr>
-        <tr><td>Params:</td><td><input #params type="text"/><button #swch>>></button></td></tr>
-    </table>
-    <button #ok>OK</button>
-    <button #cancel>Cancel</button>
+    <div.taskmian>
+        <div><span>Enabled:</span> <input #enabled type="checkbox"/></div>
+        <div><span>ID:</span> <label #id></label></div>
+        <div><span>Src:</span> <input #src type="text"/><button #browse>...</button></div>
+        <div><span>Dst:</span> <input #dst type="text"/></div>
+        <div><span>Auth:</span> <select #auth></select></div>
+        <div><span>Exclude:</span> <textarea #exclude type="text"/><button #import>Import</button><button #export>Save As</button></div>
+        <div><span>Params:</span> <input #params type="text"/><button #swch>>></button></div>
+    </div>
+    
+    <div .dlgbtm>
+        <button .btn .bluebtn #ok>OK</button>
+        <button .btn .linebtn #cancel>Cancel</button>
+    </div>
 </body>
 </html>

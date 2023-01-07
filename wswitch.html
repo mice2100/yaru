@@ -1,32 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" style="width: 800dip; height: 600dip;">
-
+<html lang="en" .wswitch>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Switch</title>
-    <style>
-        div#switches {
-            flow: horizontal-wrap;
-            display:inline-block;
-        }
-
-        div#sw {
-            flow: horizontal;
-            width:max-content;
-            margin: 2px;
-            vertical-align: middle;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <script type="module" src="wswitch.js"></script>
+    <style>
+        *{margin:0;}
+    </style>
 </head>
-
 <body>
-    <div #switches>
+    <div #switches></div>
+    <div .dlgbtm>
+        <button .btn .bluebtn #ok>OK</button>
+        <button .btn .linebtn #cancel>Cancel</button>
     </div>
-    <button #ok>OK</button>
-    <button #cancel>Cancel</button>
 </body>
 
 </html>

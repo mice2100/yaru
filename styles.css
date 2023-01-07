@@ -27,11 +27,26 @@ text.info{
   color:coral;
 }
 
+/* dlg Style */
+.dlgbtm{width:*;height:52dip;text-align:center;border-top:1dip solid #DCDCDC;vertical-align:middle;}
+.dlgbtm button{width:80dip;horizontal-align: center;}
 
+/* wswitch page */
+.wswitch{width:800dip;height:550dip;}
+div#switches {flow: horizontal-wrap;padding:10dip;width:*;height:100%%;overflow: scroll-indicator;}
+div#sw {flow: horizontal;width:380dip;margin: 2px;vertical-align: middle;}
+
+/* wtask page & wconfig page */
+.wtask{width: 600dip; height: 400dip;}
+.wconfig{width: 600dip; height: 400dip;}
+.taskmian,.wconfigmian{width:*;height:100%%;padding:10dip;}
+
+
+/* index Page */
 frameset {min-height:min-content;;}
 splitter { border:none; background:#DEDEDE;}
 splitter:hover { background:#999; }
-.runlogbox{background:#EEEEEE;border-color:#E3E3E3;}
+.runlogbox{background:#EEEEEE;border-color:#E3E3E3;overflow: scroll-indicator;}
 
 @set customtable {
   table:root { flow:table-fixed;border:1dip solid #dcdcdc; border-spacing:0; padding:0; size:*; overflow: scroll-indicator;}
