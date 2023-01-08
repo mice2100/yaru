@@ -10,33 +10,34 @@
     <script type="module" src="wconfig.js"></script>
     <style>
         *{margin:0;}
+        table { style-set:customtable1;} 
     </style>
 </head>
 
 <body>
     <div .wconfigmian>
-        <div>
-            Client Config
-            <div>SSH Key folder: <div #sshroot></div><button #btngen>generate</button></div>
-            <div>Auths: <button #newauth>New</button></div>
-            <table style="height: 180dip;">
+        <div .authslist>
+            <div.keybox><b>SSH Key folder:</b> <span #sshroot></span> <button .btn .linebtn #btngen>Generate</button> </div>
+            <span><b>Auths:</b> <button .btn .linebtn #newauth><i .i_add />New</button> </span>
+            <table style="height: 250dip;margin-top:4dip;">
                 <thead>
-                    <th style="width:10dip">id</th>
-                    <th style="width:60dip">type</th>
-                    <th style="width:*">host</th>
-                    <th style="width:*">user</th>
-                    <th style="width:*">password</th>
-                    <th style="width:100dip">Ops</th>
+                    <th value="1">ID</th>
+                    <th value="2">Type</th>
+                    <th value="3">Host</th>
+                    <th value="4">User</th>
+                    <th value="5">Password</th>
+                    <th value="6">Ops</th>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
 
-        <div>Daemon Config: <button #newmodule>New</button>
-            <ul #modules>
-            </ul>
+        <div .modulelist>
+            <span><b>Daemon Config:</b> <button .btn .linebtn #newmodule><i .i_add/>New</button> </span>
+            <ul #modules></ul>
         </div>
     </div>
+
     <div .dlgbtm>
         <button .btn .bluebtn #ok>OK</button>
         <button .btn .linebtn #cancel>Cancel</button>

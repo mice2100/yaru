@@ -12,7 +12,7 @@ function appendAuth(a) {
         <select id="itype" value={a.type}><option>ssh</option><option>local</option><option>rsync</option></select></td>
         <td><input id="ihost" value={a.host}></input></td><td><input id="iuser" value={a.user} /></td>
         {passwd}
-        <td><button #rmauth data={a.id}>x</button><button #insauth data={a.id}>i</button><button #tstauth data={a.id}>t</button></td></tr>)
+        <td><button title="Delete" .ibtn #rmauth data={a.id}><i .i_del/></button><button title="istall" .ibtn #insauth data={a.id}><i .i_istall/></button> <button title="Test" .ibtn #tstauth data={a.id}><i .i_test/></button></td></tr>)
 
     let el = document.$("table>tbody").lastElementChild
     el.$("#insauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
@@ -22,10 +22,10 @@ function appendAuth(a) {
 function appendDaemonModule(idx){
     let m = globalconfig.configs.daemon.modules[idx]
     let el = <li #daemonmodule data={idx}><input type="text" id="module" value={m.module} />
-        <input type="text" id="path" value={m.path} /><button #browmodule data={idx}>...</button>
-        <input type="checkbox" id="readonly" value={m.readonly} /><label for="readonly">read only</label>
-        <input type="checkbox" id="writeonly" value={m.writeonly} /><label for="writeonly">write only</label>
-        <button #rmmodule data={idx}>x</button>
+        <input type="text" id="path" value={m.path} /><button .btn .greybtn #browmodule data={idx}>Select...</button>
+        <span><input type="checkbox" id="readonly" value={m.readonly} /> <label for="readonly">read only</label></span>
+        <span><input type="checkbox" id="writeonly" value={m.writeonly} /> <label for="writeonly">write only</label></span>
+        <button .ibtn #rmmodule data={idx}><i .i_del/></button>
         </li>
 
     document.$("ul#modules").append(el)

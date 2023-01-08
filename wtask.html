@@ -13,13 +13,16 @@
 </head>
 <body>
     <div.taskmian>
-        <div><span>Enabled:</span> <input #enabled type="checkbox"/></div>
-        <div><span>ID:</span> <label #id></label></div>
-        <div><span>Src:</span> <input #src type="text"/><button #browse>...</button></div>
-        <div><span>Dst:</span> <input #dst type="text"/></div>
-        <div><span>Auth:</span> <select #auth></select></div>
-        <div><span>Exclude:</span> <textarea #exclude type="text"/><button #import>Import</button><button #export>Save As</button></div>
-        <div><span>Params:</span> <input #params type="text"/><button #swch>>></button></div>
+        <li><span>Enabled:</span> <input #enabled type="checkbox"/></li>
+        <li><span>ID:</span> <label #id></label></li>
+        <li><span>Src:</span> <input .ipt #src type="text"/><button .btn .greybtn #browse>Select...</button></li>
+        <li><span>Dst:</span> <input .ipt #dst type="text"/></li>
+        <li><span.a>Auth:</span> <select #auth></select></li>
+        <li>
+            <span.b>Exclude:</span> <textarea #exclude type="text"/>
+            <p><button .btn .linebtn #import><i .i_import/>Import</button> <button .btn .linebtn #export><i .i_save/>Save As</button></p>
+        </li>
+        <li><span>Params:</span> <input .ipt #params type="text"/><button .btn .greybtn #swch>Set >></button></li>
     </div>
     
     <div .dlgbtm>
