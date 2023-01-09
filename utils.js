@@ -66,8 +66,7 @@ export async function makeRsycCmd(t, strOptions = null) {
     }
     let pwdf = await auth.genAuthPassfile(t.auth)
     if(pwdf) {
-        console.log(pwdf)
-    //     // args.push(pwd)
+        args.push(pwdf)
     }
     args.push(cvtPath2Rsync(t.src))
     args.push(auth.genAuthPrefix(t.auth) + cvtPath2Rsync(t.dst))

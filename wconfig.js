@@ -12,7 +12,7 @@ function appendAuth(a) {
         <select id="itype" value={a.type}><option>ssh</option><option>local</option><option>rsync</option></select></td>
         <td><input id="ihost" value={a.host}></input></td><td><input id="iuser" value={a.user} /></td>
         {passwd}
-        <td><button title="Delete" .ibtn #rmauth data={a.id}><i .i_del/></button><button title="istall" .ibtn #insauth data={a.id}><i .i_istall/></button> <button title="Test" .ibtn #tstauth data={a.id}><i .i_test/></button></td></tr>)
+        <td><button title="Delete" .ibtn #rmauth data={a.id}><i .i_del/></button><button title="Install Key" .ibtn #insauth data={a.id}><i .i_istall/></button> <button title="Test" .ibtn #tstauth data={a.id}><i .i_test/></button></td></tr>)
 
     let el = document.$("table>tbody").lastElementChild
     el.$("#insauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'

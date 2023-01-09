@@ -45,11 +45,13 @@ async function runit(dryrun = false) {
     let dry = dryrun?"-n":undefined
     function fnNewLine(cline, cls){
         out.append(<text class={cls}>{cline}</text>)
-        out.lastElementChild.scrollIntoView()
+        // out.lastElementChild.scrollIntoView()
+        out.execCommand("navigate:end")
     }
 
     try {
-        out.clear()
+        out.execCommand("edit:selectall")
+        out.execCommand("edit:cut")
         for (let t of task.taskList) {
             if (stopping) break
             let args = await utils.makeRsycCmd(t, dry)
