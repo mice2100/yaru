@@ -22,7 +22,7 @@ function appendAuth(a) {
 function appendDaemonModule(idx){
     let m = globalconfig.configs.daemon.modules[idx]
     let el = <li #daemonmodule data={idx}><input type="text" id="module" value={m.module} />
-        <input type="text" id="path" value={m.path} /><button .btn .greybtn #browmodule data={idx}>Select...</button>
+        <input .urlipt type="text" id="path" value={m.path} /><button .btn .greybtn #browmodule data={idx}>Select...</button>
         <span><input type="checkbox" id="readonly" value={m.readonly} /> <label for="readonly">read only</label></span>
         <span><input type="checkbox" id="writeonly" value={m.writeonly} /> <label for="writeonly">write only</label></span>
         <button .ibtn #rmmodule data={idx}><i .i_del/></button>

@@ -7,14 +7,11 @@
     <title>Yet Another RSync UI</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="index.js"></script>
-    <style>
-      table { style-set:customtable;} 
-    </style>
 </head>
 <body>
   <frameset rows="*,200dip">
       <div>
-          <table>
+          <table .indextable>
             <thead>
               <th value="1">Enable</th>
               <th value="2">ID</th>
@@ -28,7 +25,7 @@
           </table>
 
           <div .btntoolbar>
-              <button .btn .linebtn #newtask><i .i_add/>New Task</button>
+              <button .btn .linebtn .onebtn #newtask><i .i_add/>New Task</button>
               <span>|</span>
               <button .btn .bluebtn #exec><i .i_start/>Start</button>
               <button .btn .redbtn #stop disabled><i .i_stop/>Stop</button>
