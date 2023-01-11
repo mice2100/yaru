@@ -15,9 +15,9 @@ export function getDataPath(fn = "", force = false) {
         }
     }
     if (fn) {
-        return env.path("home", `.yaru/${fn}`)
+        return URL.toPath(env.path("home", `.yaru/${fn}`))
     } else {
-        return env.path("home", '.yaru')
+        return URL.toPath(env.path("home", '.yaru'))
     }
 }
 
@@ -78,7 +78,8 @@ export function makeDaemonCmd() {
     let cfgfile = uconfig.genDaemonConf()
     if(!cfgfile) return undefined
 
-    cfgfile = cfgfile.replace(/\//g, "\\")
+    if(env.PLATFORM==="Windows")
+        cfgfile = cfgfile.replace(/\//g, "\\")
     let args = ["rsync"]
     args.push("--daemon")
     args.push(`--config=${cvtPath2Rsync(cfgfile)}`)
@@ -113,24 +114,41 @@ export async function getLocalIP() {
     var ret = []
     function fnNewLine(cline, cls){
         cline = cline.trim()
-        if(cline.startsWith("IPv4 Address")){
-            let pos = cline.indexOf(":")
-            if(pos>=0){
-                ret.push(cline.substring(pos+1).trim())
+        if(env.PLATFORM==="Windows"){
+            if(cline.startsWith("IPv4 Address")){
+                let pos = cline.indexOf(":")
+                if(pos>=0){
+                    ret.push(cline.substring(pos+1).trim())
+                }
+            }
+        }else{
+            if(cline.startsWith("inet ")){
+                let pos = cline.indexOf("netmask")
+                let strip = cline.substring(5, pos).trim()
+                ret.push(strip)
             }
         }
     }
 
-    let cmds = ["ipconfig"]
-    let proc = sys.spawn(cmds, {stdout: "pipe", stderr: "pipe"})
-    let po = pipeReader(proc.stdout, "stdout", fnNewLine)
-    let pe = pipeReader(proc, "stderr", fnNewLine)
+    let cmds
+    if(env.PLATFORM==="Windows")
+        cmds = ["ipconfig"]
+    else
+        cmds = ["ifconfig"]
+    
+    try{
+        let proc = sys.spawn(cmds, {stdout: "pipe", stderr: "pipe"})
+        let po = pipeReader(proc.stdout, "stdout", fnNewLine)
+        let pe = pipeReader(proc, "stderr", fnNewLine)
+    
+        var r = await proc.wait()
+        proc.stderr.close()
+        proc.stdout.close()
+        await po
+        await pe
+    } catch(ex){
 
-    var r = await proc.wait()
-    proc.stderr.close()
-    proc.stdout.close()
-    await po
-    await pe
+    }
 
     return ret
 }

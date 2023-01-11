@@ -45,7 +45,7 @@ document.on("click", "#browse", function () {
 document.on("click", "#import", function () {
     // let tsk = Window.this.parameters
     tsk.exclude = document.$("#exclude").value
-    let startPath = URL.fromPath(utils.getDataPath("*.excl"))
+    let startPath = utils.getDataPath()
     let profile = Window.this.selectFile({ mode: "open", caption: "Select profile", path: startPath, filter: "exclude file(*.excl)|*.excl" })
     if (profile) {
         let excl = uexclude.loadProfile(URL.toPath(profile))
