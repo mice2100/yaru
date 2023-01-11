@@ -108,3 +108,29 @@ export async function pipeReader(pipe, name, fnNewLine) {
         // out.append(<text class="error">{e.message}</text>);
     }
 }
+
+export async function getLocalIP() {
+    var ret = []
+    function fnNewLine(cline, cls){
+        cline = cline.trim()
+        if(cline.startsWith("IPv4 Address")){
+            let pos = cline.indexOf(":")
+            if(pos>=0){
+                ret.push(cline.substring(pos+1).trim())
+            }
+        }
+    }
+
+    let cmds = ["ipconfig"]
+    let proc = sys.spawn(cmds, {stdout: "pipe", stderr: "pipe"})
+    let po = pipeReader(proc.stdout, "stdout", fnNewLine)
+    let pe = pipeReader(proc, "stderr", fnNewLine)
+
+    var r = await proc.wait()
+    proc.stderr.close()
+    proc.stdout.close()
+    await po
+    await pe
+
+    return ret
+}

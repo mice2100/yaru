@@ -181,10 +181,22 @@ document.on("click", "#config", function (evt) {
 document.on("click", "#startserv", async ()=>{
     document.$("#startserv").disabled = true
     document.$("#stopserv").disabled = false
+    const out = document.$("plaintext");
 
     let cmds = utils.makeDaemonCmd()
-    processDaemon = sys.spawn(cmds)
-    await processDaemon.wait()
+    if(!cmds) {
+        Window.this.modal(<alert>No module in daemon. Please check section: "Daemon Config" in the configurations first.</alert>)
+    } else{
+        let ips = await utils.getLocalIP()
+        let mod = []
+        for(let m of gconfig.configs.daemon.modules){
+            mod.push(m.module)
+        }
+        out.append(<text class="info">Rsync daemon runs at: <b>{ips.join(", ")}</b></text>)
+        out.append(<text class="info">Rsync daemon module list: <b>{mod.join(", ")}</b></text>)
+        processDaemon = sys.spawn(cmds)
+        await processDaemon.wait()
+    }
 
     document.$("#startserv").disabled = false
     document.$("#stopserv").disabled = true

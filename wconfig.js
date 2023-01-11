@@ -7,7 +7,7 @@ var processSSH
 
 function appendAuth(a) {
     var passwd = <td></td>
-    if(a.type==="rsync") passwd = <td><input type="password" id="ipasswd" value={a.passwd}/></td>;
+    passwd = <td><input type="password" id="ipasswd" value={a.passwd}/></td>;
     document.$("table>tbody").append(<tr data={a.id}><td>{a.id}</td><td>
         <select id="itype" value={a.type}><option>ssh</option><option>local</option><option>rsync</option></select></td>
         <td><input id="ihost" value={a.host}></input></td><td><input id="iuser" value={a.user} /></td>
@@ -17,6 +17,9 @@ function appendAuth(a) {
     let el = document.$("table>tbody").lastElementChild
     el.$("#insauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
     el.$("#tstauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
+    el.$("#ihost").style.display = a.type==="local" ? 'none' : 'inline-block'
+    el.$("#iuser").style.display = a.type==="local" ? 'none' : 'inline-block'
+    el.$("#ipasswd").style.display = a.type==="local" ? 'none' : 'inline-block'
 }
 
 function appendDaemonModule(idx){
@@ -96,6 +99,9 @@ document.on("change", "tr", function (evt, el) {
     a.passwd = el.$("#ipasswd").value
     el.$("#insauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
     el.$("#tstauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
+    el.$("#ihost").style.display = a.type==="local" ? 'none' : 'inline-block'
+    el.$("#iuser").style.display = a.type==="local" ? 'none' : 'inline-block'
+    el.$("#ipasswd").style.display = a.type==="local" ? 'none' : 'inline-block'
     return true
 })
 
@@ -106,6 +112,7 @@ document.on("change", "li#daemonmodule", function (evt, el) {
     a.path = el.$("#path").value
     a.readonly = el.$("#readonly").value
     a.writeonly = el.$("#writeonly").value
+
     return true
 })
 

@@ -74,7 +74,7 @@ export function findAuth(id) {
 
 export function newAuth() {
     let id = maxAuthID() + 1
-    let a = { id: id, type: "ssh", host: "", user: "" }
+    let a = { id: id, type: "ssh", host: "", user: "", passwd:"" }
     auths.push(a)
     return a
 }

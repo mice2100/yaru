@@ -5,9 +5,9 @@ import * as utils from './utils'
 export var configs = {}
 var loaded = false;
 export function loadCfg() {
-    if (loaded) return //So we won't add path multiple times
+    // if (loaded) return //So we won't add path multiple times
     let cfg = utils.loadJson("cfg.json")
-    if (cfg) configs = cfg
+    if (cfg) Object.assign(configs, cfg)
     if (!configs.ssh) {
         configs.ssh = { "sshroot": env.path("home", ".ssh") }
     }
@@ -81,11 +81,16 @@ export function sshCopyId(auth) {
 
 export function newDaemonModule() {
     let newModule = {module:"modulename", path:"path", readonly: false, writeonly: false}
+    if(configs.daemon.modules.length==0){
+        newModule.module = "home"
+        newModule.path = URL.toPath(env.path("home"))
+    }
     configs.daemon.modules.push(newModule)
     return configs.daemon.modules.length-1
 }
 
 export function genDaemonConf(){
+    if(configs.daemon.modules==0) return undefined
     let fn = utils.getDataPath("rsyncd.conf", true)
     let f = sys.fs.sync.open(fn, "w")
 
