@@ -6,6 +6,7 @@ import * as gconfig from "./uconfig"
 import * as task from "./utask"
 import * as utils from "./utils"
 import * as uswitch from "./uswitch"
+import { uexclude } from './uexclude.js'
 
 uswitch.initSwitches()
 
@@ -32,6 +33,12 @@ function init() {
     for (let t of task.taskList) {
         elTask.append(genTaskReact(t))
     }
+    let rc = Window.this.screenBox("frame", "xywh")
+    let WIDTH = 1200
+    let HEIGHT = 800
+    let xd = (WIDTH-rc[2])/2
+    let yd = (HEIGHT-rc[3])/2
+    Window.this.move(rc[0]-xd, rc[1]-yd, WIDTH, HEIGHT)
 }
 
 init()
@@ -96,7 +103,8 @@ document.on("click", "#test", async function () {
 
 function addTask() {
     let id = task.newTaskId()
-    let t = { enabled: false, id: id, src: "", dst: "", auth: 0, params: [] }
+    let exclude = uexclude.defaultExcludes()
+    let t = { enabled: false, id: id, src: "", dst: "", auth: 0, params: [], exclude: exclude.join(" ")}
 
     document.state.disabled = true;
 

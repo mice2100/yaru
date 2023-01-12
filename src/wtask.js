@@ -3,6 +3,7 @@ import * as utils from "./utils"
 import { uexclude } from "./uexclude"
 import * as uswitch from "./uswitch"
 import * as task from "./utask"
+import * as env from "@env"
 
 auth.loadAuths()
 
@@ -46,6 +47,7 @@ document.on("click", "#import", function () {
     // let tsk = Window.this.parameters
     tsk.exclude = document.$("#exclude").value
     let startPath = utils.getDataPath()
+    if(env.PLATFORM==="Windows") startPath += "/*.excl"
     let profile = Window.this.selectFile({ mode: "open", caption: "Select profile", path: startPath, filter: "exclude file(*.excl)|*.excl" })
     if (profile) {
         let excl = uexclude.loadProfile(URL.toPath(profile))

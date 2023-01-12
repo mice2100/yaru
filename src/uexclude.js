@@ -21,9 +21,7 @@ class UExclude {
     }
 
     loadProfile(profile) {
-        if (!profile) {
-            profile = utils.getDataPath('myexcludes.excl')
-        }
+        profile = profile || utils.getDataPath('myexcludes.excl')
         let cnt = sctr.decode(sys.fs.readFileSync(profile))
         if (!cnt) return undefined
 
@@ -50,6 +48,11 @@ class UExclude {
         f.closeSync()
 
         return true
+    }
+
+    defaultExcludes() {
+        let excl = "tmp venv *.db node_modules *.lnk .git"
+        return excl.split(" ")
     }
 }
 

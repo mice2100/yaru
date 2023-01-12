@@ -116,8 +116,6 @@ document.on("change", "li#daemonmodule", function (evt, el) {
     a.readonly = el.$("#readonly").checked
     a.writeonly = el.$("#writeonly").checked
 
-    console.log(a)
-
     return true
 })
 
