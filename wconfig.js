@@ -1,52 +1,55 @@
 import * as globalconfig from './uconfig'
-import * as auth from './uauth'
+import * as uauth from './uauth'
 import * as env from '@env'
 import * as sys from '@sys'
 
 var processSSH
+var elAuthTpl, elModuleTpl
 
 function appendAuth(a) {
-    var passwd = <td></td>
-    passwd = <td><input type="password" id="ipasswd" value={a.passwd}/></td>;
-    document.$("table>tbody").append(<tr data={a.id}><td>{a.id}</td><td>
-        <select id="itype" value={a.type}><option>ssh</option><option>local</option><option>rsync</option></select></td>
-        <td><input id="ihost" value={a.host}></input></td><td><input id="iuser" value={a.user} /></td>
-        {passwd}
-        <td><button title="Delete" .ibtn #rmauth data={a.id}><i .i_del/></button><button title="Install Key" .ibtn #insauth data={a.id}><i .i_istall/></button> <button title="Test" .ibtn #tstauth data={a.id}><i .i_test/></button></td></tr>)
-
-    let el = document.$("table>tbody").lastElementChild
-    el.$("#insauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
-    el.$("#tstauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
-    el.$("#ihost").style.display = a.type==="local" ? 'none' : 'inline-block'
-    el.$("#iuser").style.display = a.type==="local" ? 'none' : 'inline-block'
-    el.$("#ipasswd").style.display = a.type==="local" ? 'none' : 'inline-block'
+    let el = elAuthTpl.cloneNode()
+    document.$("#authtbl").appendChild(el)
+    el.setAttribute("data", a.id)
+    el.$("#id").innerText = String(a.id)
+    el.$("#itype").value = a.type
+    el.$("#ihost").value = a.host
+    el.$("#iuser").value = a.user
+    el.$("#ipasswd").value = a.passwd
+    el.$("#insauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
+    el.$("#tstauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
+    el.$("#ihost").style.display = a.type === "local" ? 'none' : 'inline-block'
+    el.$("#iuser").style.display = a.type === "local" ? 'none' : 'inline-block'
+    el.$("#ipasswd").style.display = a.type === "local" ? 'none' : 'inline-block'
 }
 
-function appendDaemonModule(idx){
+function appendDaemonModule(idx) {
     let m = globalconfig.configs.daemon.modules[idx]
-    let el = <li #daemonmodule data={idx}><input type="text" id="module" value={m.module} />
-        <input .urlipt type="text" id="path" value={m.path} /><button .btn .greybtn #browmodule data={idx}>Select...</button>
-        <span><input type="checkbox" id="readonly" value={m.readonly} /> <label for="readonly">read only</label></span>
-        <span><input type="checkbox" id="writeonly" value={m.writeonly} /> <label for="writeonly">write only</label></span>
-        <button .ibtn #rmmodule data={idx}><i .i_del/></button>
-        </li>
+    let el = elModuleTpl.cloneNode()
+    document.$("ul#modules").appendChild(el)
 
-    document.$("ul#modules").append(el)
+    el.setAttribute("data", idx)
+    el.$("#module").value = m.module
+    el.$("#path").value = m.path
+    el.$("#readonly").checked = m.readonly || false
+    el.$("#writeonly").checked = m.writeonly || false
 }
 
-function populateDaemon(){
+function populateDaemon() {
     document.$("#modules").clear()
-    for(let idx=0; idx<globalconfig.configs.daemon.modules.length; idx++){
+    for (let idx = 0; idx < globalconfig.configs.daemon.modules.length; idx++) {
         appendDaemonModule(idx)
     }
 }
 document.on("ready", function () {
     globalconfig.loadCfg()
-    auth.loadAuths()
+    uauth.loadAuths()
+    elAuthTpl = document.$("#authtbl").lastElementChild
+    document.$("#authtbl").removeChild(elAuthTpl)
+    elModuleTpl = document.$("#modules").lastElementChild
+    document.$("#modules").removeChild(elModuleTpl)
     document.$("#sshroot").innerText = globalconfig.configs.ssh.sshroot
     document.$("#btngen").style.display = globalconfig.configs.ssh.keyexists ? 'none' : 'block'
-    
-    for (let a of auth.auths) {
+    for (let a of uauth.auths) {
         appendAuth(a)
     }
     populateDaemon()
@@ -58,18 +61,18 @@ document.on("click", "#btngen", async () => {
 })
 
 document.on("click", "#newauth", () => {
-    appendAuth(auth.newAuth())
+    appendAuth(uauth.newAuth())
 })
 
 document.on("click", "#rmauth", (evt, el) => {
-    let id = el.getAttribute("data")
-    auth.removeAuth(Number(id))
+    let id = el.$p("tr").getAttribute("data")
+    uauth.removeAuth(Number(id))
     document.$(`tbody>tr[data=${id}]`).remove()
 })
 
 document.on("click", "#insauth", (evt, el) => {
-    let id = el.getAttribute("data")
-    let a = auth.findAuth(Number(id))
+    let id = el.$p("tr").getAttribute("data")
+    let a = uauth.findAuth(Number(id))
     let cmd = globalconfig.sshCopyId(a)
     if (cmd) {
         Clipboard.writeText(cmd)
@@ -81,27 +84,27 @@ document.on("click", "#insauth", (evt, el) => {
 })
 
 document.on("click", "#tstauth", async (evt, el) => {
-    let id = el.getAttribute("data")
-    let a = auth.findAuth(Number(id))
+    let id = el.$p("tr").getAttribute("data")
+    let a = uauth.findAuth(Number(id))
     let cmd = ['ssh', `${a.user}@${a.host}`, "ls /"]
     processSSH = sys.spawn(cmd)
     var r = await processSSH.wait()
-    let msg = r.exitCode? "Failed" : "Succeed"
+    let msg = r.exitCode ? "Failed" : "Succeed"
     Window.this.modal(msg)
 })
 
 document.on("change", "tr", function (evt, el) {
     let id = Number(el.getAttribute("data"))
-    let a = auth.findAuth(id)
+    let a = uauth.findAuth(id)
     a.type = el.$("#itype").value
     a.host = el.$("#ihost").value
     a.user = el.$("#iuser").value
     a.passwd = el.$("#ipasswd").value
-    el.$("#insauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
-    el.$("#tstauth").style.display = a.type==="ssh" ? 'inline-block' : 'none'
-    el.$("#ihost").style.display = a.type==="local" ? 'none' : 'inline-block'
-    el.$("#iuser").style.display = a.type==="local" ? 'none' : 'inline-block'
-    el.$("#ipasswd").style.display = a.type==="local" ? 'none' : 'inline-block'
+    el.$("#insauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
+    el.$("#tstauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
+    el.$("#ihost").style.display = a.type === "local" ? 'none' : 'inline-block'
+    el.$("#iuser").style.display = a.type === "local" ? 'none' : 'inline-block'
+    el.$("#ipasswd").style.display = a.type === "local" ? 'none' : 'inline-block'
     return true
 })
 
@@ -110,8 +113,10 @@ document.on("change", "li#daemonmodule", function (evt, el) {
     let a = globalconfig.configs.daemon.modules[idx]
     a.module = el.$("#module").value
     a.path = el.$("#path").value
-    a.readonly = el.$("#readonly").value
-    a.writeonly = el.$("#writeonly").value
+    a.readonly = el.$("#readonly").checked
+    a.writeonly = el.$("#writeonly").checked
+
+    console.log(a)
 
     return true
 })
@@ -121,7 +126,7 @@ document.on("click", "#newmodule", () => {
 })
 
 document.on("click", "#rmmodule", async (evt, el) => {
-    let idx = Number(el.getAttribute("data"))
+    let idx = Number(el.$p("#daemonmodule").getAttribute("data"))
     globalconfig.configs.daemon.modules.splice(idx, 1)
     populateDaemon()
 })
@@ -133,11 +138,11 @@ document.on("click", "#browmodule", async (evt, el) => {
     if (newFolder) {
         elpath.value = URL.toPath(newFolder)
         globalconfig.configs.daemon.modules[idx].path = elpath.value
-    }    
+    }
 })
 
 document.on("click", "#ok", () => {
-    auth.saveAuths()
+    uauth.saveAuths()
     globalconfig.saveCfg()
     Window.this.close("true")
 })
