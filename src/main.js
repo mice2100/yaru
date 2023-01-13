@@ -6,8 +6,6 @@ import { uexclude } from './uexclude.js'
 
 uswitch.initSwitches()
 
-// console.log(genSwitches(sw))
-
 const elTask = document.$("table>tbody")
 var processRsync
 var processDaemon
@@ -117,7 +115,6 @@ function addTask() {
     }
 
     document.state.disabled = false;
-    // console.log(task.taskList[0])
 }
 
 document.on("change", "#sel", function (evt, el) {
@@ -147,7 +144,6 @@ document.on("click", "#edittask", function (evt, el) {
         let t0 = uconfig.findTask(id)
         Object.assign(t0, t)
         uconfig.saveCfg()
-        // el = genTaskReact(t0)
     }
 
     document.state.disabled = false;
