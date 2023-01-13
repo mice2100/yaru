@@ -1,9 +1,5 @@
 import * as sys from '@sys'
-import * as env from '@env'
-import * as sciter from '@sciter'
-import * as auth from './uauth.js'
-import * as gconfig from "./uconfig"
-import * as task from "./utask"
+import * as uconfig from "./uconfig"
 import * as utils from "./utils"
 import * as uswitch from "./uswitch"
 import { uexclude } from './uexclude.js'
@@ -13,8 +9,6 @@ uswitch.initSwitches()
 // console.log(genSwitches(sw))
 
 const elTask = document.$("table>tbody")
-gconfig.loadCfg()
-auth.loadAuths()
 var processRsync
 var processDaemon
 var stopping = false
@@ -22,15 +16,16 @@ var stopping = false
 function genTaskReact(t) {
     return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled}/></td>
         <td>{t.id}</td><td>{t.src}</td><td>{t.dst}</td>
-        <td>{auth.genAuthString(t.auth)}</td><td>{uswitch.cvtSwitches2Str(t.params)}</td>
+        <td>{uconfig.genAuthString(t.auth)}</td><td>{uswitch.cvtSwitches2Str(t.params)}</td>
         <td><button .ibtn #edittask title="Edit" tid={t.id}><i .i_edit/></button> <button .ibtn #rmtask title="Delete" tid={t.id}><i .i_del/></button></td>
         </tr>
 }
 
 function init() {
     elTask.clear()
-    task.loadTaskList()
-    for (let t of task.taskList) {
+    uconfig.loadCfg()
+
+    for (let t of uconfig.configs.taskList) {
         elTask.append(genTaskReact(t))
     }
     let rc = Window.this.screenBox("frame", "xywh")
@@ -59,7 +54,7 @@ async function runit(dryrun = false) {
     try {
         out.execCommand("edit:selectall")
         out.execCommand("edit:cut")
-        for (let t of task.taskList) {
+        for (let t of uconfig.configs.taskList) {
             if (stopping) break
             let args = await utils.makeRsycCmd(t, dry)
             if (args) {
@@ -102,7 +97,7 @@ document.on("click", "#test", async function () {
 })
 
 function addTask() {
-    let id = task.newTaskId()
+    let id = uconfig.newTaskId()
     let exclude = uexclude.defaultExcludes()
     let t = { enabled: false, id: id, src: "", dst: "", auth: 0, params: [], exclude: exclude.join(" ")}
 
@@ -116,9 +111,9 @@ function addTask() {
 
     if (retval) {
         let t = JSON.parse(retval)
-        task.taskList.push(t)
+        uconfig.configs.taskList.push(t)
         elTask.append(genTaskReact(t))
-        task.saveTaskList()
+        uconfig.saveCfg()
     }
 
     document.state.disabled = false;
@@ -127,16 +122,16 @@ function addTask() {
 
 document.on("change", "#sel", function (evt, el) {
     let id = Number(el.$p("tr").getAttribute("data"))
-    let t = task.findTask(id)
+    let t = uconfig.findTask(id)
     if (t) {
         t.enabled = el.value
-        task.saveTaskList()
+        uconfig.saveCfg()
     }
 })
 
 document.on("click", "#edittask", function (evt, el) {
     let id = Number(el.getAttribute("tid"))
-    let t = task.findTask(id)
+    let t = uconfig.findTask(id)
 
     document.state.disabled = true;
 
@@ -149,9 +144,9 @@ document.on("click", "#edittask", function (evt, el) {
     if (retval) {
         let t = JSON.parse(retval)
         el.$p("tr").patch(genTaskReact(t))
-        let t0 = task.findTask(id)
+        let t0 = uconfig.findTask(id)
         Object.assign(t0, t)
-        task.saveTaskList()
+        uconfig.saveCfg()
         // el = genTaskReact(t0)
     }
 
@@ -164,8 +159,8 @@ document.on("click", "#newtask", function (evt, el) {
 
 document.on("click", "#rmtask", function (evt, el) {
     let id = el.getAttribute("tid")
-    task.removeTask(Number(id))
-    task.saveTaskList()
+    uconfig.removeTask(Number(id))
+    uconfig.saveCfg()
     document.$(`tbody>tr[data=${id}]`).remove()
 })
 
@@ -178,8 +173,6 @@ document.on("click", "#config", function (evt) {
     })
 
     if (retval) {
-        gconfig.loadCfg()
-        auth.loadAuths()
         init()
     }
 
@@ -197,7 +190,7 @@ document.on("click", "#startserv", async ()=>{
     } else{
         let ips = await utils.getLocalIP()
         let mod = []
-        for(let m of gconfig.configs.daemon.modules){
+        for(let m of uconfig.configs.daemon.modules){
             mod.push(m.module)
         }
         out.append(<text class="info">Rsync daemon runs at: <b>{ips.join(", ")}</b></text>)

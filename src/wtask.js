@@ -1,11 +1,10 @@
-import * as auth from "./uauth"
 import * as utils from "./utils"
+import * as uconfig from "./uconfig"
 import { uexclude } from "./uexclude"
 import * as uswitch from "./uswitch"
-import * as task from "./utask"
 import * as env from "@env"
 
-auth.loadAuths()
+uconfig.loadCfg()
 
 // for debug only
 uswitch.initSwitches()
@@ -23,8 +22,8 @@ function init() {
             document.$("#src").value = tsk.src
             document.$("#dst").value = tsk.dst
             document.$("#params").value = uswitch.cvtSwitches2Str(tsk.params)
-            for (let a of auth.auths) {
-                document.$("#auth").select.options.append(<option value={a.id}>{auth.genAuthString(a.id)}</option>)
+            for (let a of uconfig.configs.auths) {
+                document.$("#auth").select.options.append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
             }
             document.$("#auth").value = tsk.auth
             document.$("#exclude").value = tsk.exclude

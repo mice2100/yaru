@@ -1,7 +1,6 @@
 import * as sys from '@sys'
 import * as env from '@env'
 import * as sciter from '@sciter'
-import * as auth from "./uauth"
 import * as uswitch from "./uswitch"
 import * as uconfig from "./uconfig"
 
@@ -64,12 +63,12 @@ export async function makeRsycCmd(t, strOptions = null) {
         args.push("-f=!")
         sys.setenv("CVSIGNORE", t.exclude)
     }
-    let pwdf = await auth.genAuthPassfile(t.auth)
+    let pwdf = await uconfig.genAuthPassfile(t.auth)
     if(pwdf) {
         args.push(pwdf)
     }
     args.push(cvtPath2Rsync(t.src))
-    args.push(auth.genAuthPrefix(t.auth) + cvtPath2Rsync(t.dst))
+    args.push(uconfig.genAuthPrefix(t.auth) + cvtPath2Rsync(t.dst))
     // out.append(<text>Starting task: {t.id}</text>)
     return args
 }

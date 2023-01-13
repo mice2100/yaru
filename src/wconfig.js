@@ -1,5 +1,4 @@
-import * as globalconfig from './uconfig'
-import * as uauth from './uauth'
+import * as uconfig from './uconfig'
 import * as env from '@env'
 import * as sys from '@sys'
 
@@ -23,7 +22,7 @@ function appendAuth(a) {
 }
 
 function appendDaemonModule(idx) {
-    let m = globalconfig.configs.daemon.modules[idx]
+    let m = uconfig.configs.daemon.modules[idx]
     let el = elModuleTpl.cloneNode()
     document.$("ul#modules").appendChild(el)
 
@@ -36,44 +35,43 @@ function appendDaemonModule(idx) {
 
 function populateDaemon() {
     document.$("#modules").clear()
-    for (let idx = 0; idx < globalconfig.configs.daemon.modules.length; idx++) {
+    for (let idx = 0; idx < uconfig.configs.daemon.modules.length; idx++) {
         appendDaemonModule(idx)
     }
 }
 document.on("ready", function () {
-    globalconfig.loadCfg()
-    uauth.loadAuths()
+    uconfig.loadCfg()
     elAuthTpl = document.$("#authtbl").lastElementChild
     document.$("#authtbl").removeChild(elAuthTpl)
     elModuleTpl = document.$("#modules").lastElementChild
     document.$("#modules").removeChild(elModuleTpl)
-    document.$("#sshroot").innerText = globalconfig.configs.ssh.sshroot
-    document.$("#btngen").style.display = globalconfig.configs.ssh.keyexists ? 'none' : 'block'
-    for (let a of uauth.auths) {
+    document.$("#sshroot").innerText = uconfig.configs.ssh.sshroot
+    document.$("#btngen").style.display = uconfig.configs.ssh.keyexists ? 'none' : 'block'
+    for (let a of uconfig.configs.auths) {
         appendAuth(a)
     }
     populateDaemon()
 })
 
 document.on("click", "#btngen", async () => {
-    await globalconfig.genSSHKey()
-    document.$("#btngen").style.display = globalconfig.configs.ssh.keyexists ? 'none' : 'block'
+    await uconfig.genSSHKey()
+    document.$("#btngen").style.display = uconfig.configs.ssh.keyexists ? 'none' : 'block'
 })
 
 document.on("click", "#newauth", () => {
-    appendAuth(uauth.newAuth())
+    appendAuth(uconfig.newAuth())
 })
 
 document.on("click", "#rmauth", (evt, el) => {
     let id = el.$p("tr").getAttribute("data")
-    uauth.removeAuth(Number(id))
+    uconfig.removeAuth(Number(id))
     document.$(`tbody>tr[data=${id}]`).remove()
 })
 
 document.on("click", "#insauth", (evt, el) => {
     let id = el.$p("tr").getAttribute("data")
-    let a = uauth.findAuth(Number(id))
-    let cmd = globalconfig.sshCopyId(a)
+    let a = uconfig.findAuth(Number(id))
+    let cmd = uconfig.sshCopyId(a)
     if (cmd) {
         Clipboard.writeText(cmd)
         let ret = Window.this.modal(<info>A terminal windows be opened to excute this command: {cmd} <br />, please follow the screen to finish.</info>)
@@ -85,7 +83,7 @@ document.on("click", "#insauth", (evt, el) => {
 
 document.on("click", "#tstauth", async (evt, el) => {
     let id = el.$p("tr").getAttribute("data")
-    let a = uauth.findAuth(Number(id))
+    let a = uconfig.findAuth(Number(id))
     let cmd = ['ssh', `${a.user}@${a.host}`, "ls /"]
     processSSH = sys.spawn(cmd)
     var r = await processSSH.wait()
@@ -95,7 +93,7 @@ document.on("click", "#tstauth", async (evt, el) => {
 
 document.on("change", "tr", function (evt, el) {
     let id = Number(el.getAttribute("data"))
-    let a = uauth.findAuth(id)
+    let a = uconfig.findAuth(id)
     a.type = el.$("#itype").value
     a.host = el.$("#ihost").value
     a.user = el.$("#iuser").value
@@ -110,7 +108,7 @@ document.on("change", "tr", function (evt, el) {
 
 document.on("change", "li#daemonmodule", function (evt, el) {
     let idx = Number(el.getAttribute("data"))
-    let a = globalconfig.configs.daemon.modules[idx]
+    let a = uconfig.configs.daemon.modules[idx]
     a.module = el.$("#module").value
     a.path = el.$("#path").value
     a.readonly = el.$("#readonly").checked
@@ -120,12 +118,12 @@ document.on("change", "li#daemonmodule", function (evt, el) {
 })
 
 document.on("click", "#newmodule", () => {
-    appendDaemonModule(globalconfig.newDaemonModule())
+    appendDaemonModule(uconfig.newDaemonModule())
 })
 
 document.on("click", "#rmmodule", async (evt, el) => {
     let idx = Number(el.$p("#daemonmodule").getAttribute("data"))
-    globalconfig.configs.daemon.modules.splice(idx, 1)
+    uconfig.configs.daemon.modules.splice(idx, 1)
     populateDaemon()
 })
 
@@ -135,13 +133,12 @@ document.on("click", "#browmodule", async (evt, el) => {
     let newFolder = Window.this.selectFolder({ path: elpath.value })
     if (newFolder) {
         elpath.value = URL.toPath(newFolder)
-        globalconfig.configs.daemon.modules[idx].path = elpath.value
+        uconfig.configs.daemon.modules[idx].path = elpath.value
     }
 })
 
 document.on("click", "#ok", () => {
-    uauth.saveAuths()
-    globalconfig.saveCfg()
+    uconfig.saveCfg()
     Window.this.close("true")
 })
 
