@@ -34,24 +34,27 @@ function init() {
     Window.this.move(rc[0]-xd, rc[1]-yd, WIDTH, HEIGHT)
 }
 
-init()
+document.on("ready", ()=>{
+    init()
+})
 
 async function runit(dryrun = false) {
-    const out = document.$("plaintext");
+    const out = document.$("#log");
     let elStart = document.$("#exec")
     let elStop = document.$("#stop")
     elStart.disabled = true
     elStop.disabled = false
     let dry = dryrun?"-n":undefined
     function fnNewLine(cline, cls){
-        out.append(<text class={cls}>{cline}</text>)
+        out.appendItem(cline, cls)
+        // out.append(<text class={cls}>{cline}</text>)
         // out.lastElementChild.scrollIntoView()
-        out.execCommand("navigate:end")
+        // out.execCommand("navigate:end")
     }
 
     try {
-        out.execCommand("edit:selectall")
-        out.execCommand("edit:cut")
+        // out.execCommand("edit:selectall")
+        // out.execCommand("edit:cut")
         for (let t of uconfig.configs.taskList) {
             if (stopping) break
             let args = await utils.makeRsycCmd(t, dry)
@@ -60,19 +63,20 @@ async function runit(dryrun = false) {
                 fnNewLine(`Starting task ${t.id} ...`, "info");
                 processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
                 let pout = utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
-                let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
+                // let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
                 
                 var r = await processRsync.wait()
-                processRsync.stderr.close()
+                // processRsync.stderr.close()
                 processRsync.stdout.close()
                 await pout
-                await perr
+                // await perr
                 fnNewLine(`Task ${t.id} done with result:${r.exit_status} and ${r.term_signal}`, "info")
                 fnNewLine("","msg")
             }
         }
     } catch (e) {
-        out.append(<text class="error">{e.message}</text>)
+        console.log(e.message, e.stack)
+        // out.appendItem(e.message, "info")
     }
     stopping = false
     elStart.disabled = false

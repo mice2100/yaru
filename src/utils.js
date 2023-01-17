@@ -143,11 +143,15 @@ export async function getLocalIP() {
         var r = await proc.wait()
         proc.stderr.close()
         proc.stdout.close()
-        await po
-        await pe
+        // await po
+        // await pe
     } catch(ex){
 
     }
 
     return ret
+}
+
+export function lang(str) {
+    
 }

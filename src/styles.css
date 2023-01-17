@@ -5,7 +5,7 @@
 frameset {min-height:min-content;;}
 splitter { border:none; background:#DEDEDE;}
 splitter:hover { background:#999; }
-.runlogbox{background:#EEEEEE;border-color:#E3E3E3;overflow: scroll-indicator;}
+logger{behavior: virtual-list;  prototype: Logger; background:#EEEEEE;border-color:#E3E3E3;overflow: scroll-indicator;}
 text.info{color:coral;}
 
 /* dlg Style */
