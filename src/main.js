@@ -3,6 +3,7 @@ import * as uconfig from "./uconfig"
 import * as utils from "./utils"
 import * as uswitch from "./uswitch"
 import { uexclude } from './uexclude.js'
+import * as env from '@env'
 
 uswitch.initSwitches()
 
@@ -63,13 +64,13 @@ async function runit(dryrun = false) {
                 fnNewLine(`Starting task ${t.id} ...`, "info");
                 processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
                 let pout = utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
-                // let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
+                let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
                 
                 var r = await processRsync.wait()
-                // processRsync.stderr.close()
+                processRsync.stderr.close()
                 processRsync.stdout.close()
                 await pout
-                // await perr
+                await perr
                 fnNewLine(`Task ${t.id} done with result:${r.exit_status} and ${r.term_signal}`, "info")
                 fnNewLine("","msg")
             }
@@ -102,6 +103,9 @@ function addTask() {
     let id = uconfig.newTaskId()
     let exclude = uexclude.defaultExcludes()
     let t = { enabled: false, id: id, src: "", dst: "", auth: 0, params: [], exclude: exclude.join(" ")}
+    if(id===1){
+        t.src = URL.toPath(env.path("documents"))
+    }
 
     document.state.disabled = true;
 

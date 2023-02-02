@@ -51,7 +51,7 @@ class UExclude {
     }
 
     defaultExcludes() {
-        let excl = "tmp venv *.db node_modules *.lnk .git"
+        let excl = "tmp venv *.db node_modules *.lnk .git .svn bin build*"
         return excl.split(" ")
     }
 }

@@ -72,12 +72,12 @@ td input {width: *;}
   td:first-child {text-align:left; }
   td:nth-child(1),th:nth-child(1){width:30dip;text-align:center;}
   td:nth-child(2),th:nth-child(2){width:80dip;text-align:center;}
-  th:nth-child(3) { width:100%%;}
-  th:nth-child(4) { width:100%%;}
+  th:nth-child(3) { width:*;}
+  th:nth-child(4) { width:*;}
   th:nth-child(5) { width:120dip; }
-  th:nth-child(6) { width:200dip; }
-  td:last-child{ width:max-content; text-align:left;border-right:1px solid transparent; }
-  th:last-child{ width:max-content; text-align:center;border-right:1px solid transparent; }
+  th:nth-child(6) { width:90dip; }
+  td:last-child{ text-align:left;border-right:1px solid transparent; }
+  th:last-child{ text-align:center;border-right:1px solid transparent; }
 }
 
 .indextable{style-set:customtable_index;}

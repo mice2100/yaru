@@ -2,12 +2,19 @@ import * as env from "@env";
 
 let gfx = "gpu"; // use best GPU backend...
 
-if (env.PLATFORM === "OSX")
-    gfx = "opengl"; // force using OpenGL instead of Metal
+switch (env.PLATFORM) {
+    case "OSX":
+        if (env.OS.localeCompare("OSX-11") < 0)
+            gfx = "opengl"
+        break
+    case "Windows":
+        gfx = "direct2d"
+        break;
+}
 application.start(gfx); // configure graphics backend
 
 const mainWindow = new Window({
-    url: __DIR__+"main.htm",
+    url: __DIR__ + "main.htm",
     parameter: {}  // parameters to pass
 })
 

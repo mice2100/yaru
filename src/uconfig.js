@@ -23,6 +23,13 @@ export function loadCfg() {
     configs.daemon = configs.daemon || {modules: []}
     configs.auths = configs.auths || []
     configs.taskList = configs.taskList || []
+    if(configs.auths.length==0) {
+        let a = newAuth()
+        a.type = "local"
+
+        a = newAuth()
+        a.type = "ssh"
+    }
 
     if (env.PLATFORM=="Windows") {
         let envpath = env.variable("path")
