@@ -74,10 +74,13 @@ document.on("click", "#insauth", (evt, el) => {
     let cmd = uconfig.sshCopyId(a)
     if (cmd) {
         Clipboard.writeText(cmd)
-        let ret = Window.this.modal(<info>A terminal windows be opened to excute this command: {cmd} <br />, please follow the screen to finish.</info>)
-        if (ret == "ok") {
-            env.exec("cmd", "/K", cmd)
-        }
+        if (env.PLATFORM==="WINDOWS") {
+                let ret = Window.this.modal(<info>A terminal windows be opened to run this command: <br />{cmd} <br />, please follow the screen to finish.</info>)
+                env.exec("cmd", "/K", cmd)
+            }
+            else{
+                Window.this.modal(<info>Please open a terminal window and press Cmd+V to paste the following command: <br />{cmd} <br />, then follow the screen to finish.</info>)
+            }
     }
 })
 
