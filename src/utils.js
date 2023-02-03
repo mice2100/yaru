@@ -60,7 +60,7 @@ export async function makeRsycCmd(t, strOptions = null) {
         args.push(strOptions)
     if (t.exclude) {
         args.push("-C")
-        args.push("-f=!")
+        // args.push("-f=!")
         sys.setenv("CVSIGNORE", t.exclude)
     }
     let pwdf = await uconfig.genAuthPassfile(t.auth)

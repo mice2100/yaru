@@ -4,7 +4,7 @@ let gfx = "gpu"; // use best GPU backend...
 
 switch (env.PLATFORM) {
     case "OSX":
-        if (env.OS.localeCompare("OSX-11") < 0)
+        if (env.OS.localeCompare("MacOS 11") < 0)
             gfx = "opengl"
         break
     case "Windows":
