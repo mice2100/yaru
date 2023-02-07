@@ -22,7 +22,9 @@ function genTaskReact(t) {
 
 function init() {
     elTask.clear()
-    uconfig.loadCfg()
+    if(!uconfig.loadCfg()){
+        document.$("#log").appendItem("Can't find cwrsync/bin in the same path, please check!", "info")
+    }
 
     for (let t of uconfig.configs.taskList) {
         elTask.append(genTaskReact(t))
@@ -48,14 +50,9 @@ async function runit(dryrun = false) {
     let dry = dryrun?"-n":undefined
     function fnNewLine(cline, cls){
         out.appendItem(cline, cls)
-        // out.append(<text class={cls}>{cline}</text>)
-        // out.lastElementChild.scrollIntoView()
-        // out.execCommand("navigate:end")
     }
 
     try {
-        // out.execCommand("edit:selectall")
-        // out.execCommand("edit:cut")
         for (let t of uconfig.configs.taskList) {
             if (stopping) break
             let args = await utils.makeRsycCmd(t, dry)

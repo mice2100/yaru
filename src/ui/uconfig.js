@@ -7,6 +7,7 @@ export var configs = {}
 var loaded = false;
 export function loadCfg() {
     // if (loaded) return //So we won't add path multiple times
+    let ret = true
     let cfg = utils.loadJson("cfg.json")
     if (cfg) Object.assign(configs, cfg)
     if (!configs.ssh) {
@@ -35,11 +36,15 @@ export function loadCfg() {
         let envpath = env.variable("path")
         // let rsyncpath = URL.toPath(__DIR__+"cwrsync/bin")
         let rsyncpath = URL.toPath(env.home("cwrsync/bin"))
-        if (envpath.indexOf(rsyncpath) ==-1 ) {
+        if (!sys.fs.statSync(rsyncpath)) {
+            ret = false
+        }
+        else if (envpath.indexOf(rsyncpath) ==-1 ) {
             env.variable("path", `${rsyncpath};${envpath};`)
         }
     }
     loaded = true
+    return ret
 }
 
 export function saveCfg() {
