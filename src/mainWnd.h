@@ -19,7 +19,7 @@ public:
     std::string stringSum(const std::string a, const std::string b) { return a + "+" + b; }
 
     // virtual property
-    int get_windowHandle()
+    virtual int get_windowHandle()
     {
         return (int)(intptr_t)get_hwnd();
     }
@@ -39,14 +39,6 @@ public:
     // "mapped" implementation of
     //   virtual bool sciter::event_handler::on_script_call(HELEMENT he, LPCSTR name, UINT argc, const sciter::value* argv, sciter::value& retval)
 
-    BEGIN_FUNCTION_MAP
-    FUNCTION_1("xcallTest", xcallTest);
-    END_FUNCTION_MAP
-
-    sciter::value xcallTest(sciter::value data)
-    {
-        return data.get<int>() * 2;
-    }
 };
 
 #endif
