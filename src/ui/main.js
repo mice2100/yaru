@@ -14,7 +14,7 @@ var stopping = false
 
 function genTaskReact(t) {
     return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled}/></td>
-        <td>{t.id}</td><td>{uconfig.genAuthString(t.authsrc)} {t.src}</td><td>{uconfig.genAuthString(t.authdst)} {t.dst}</td>
+        <td>{t.id}</td><td>{uconfig.genAuthString(t.authsrc)}|{t.src}</td><td>{uconfig.genAuthString(t.authdst)}|{t.dst}</td>
         <td>{uswitch.cvtSwitches2Str(t.params)}</td>
         <td><button .ibtn #edittask title="Edit" tid={t.id}><i .i_edit/></button> <button .ibtn #rmtask title="Delete" tid={t.id}><i .i_del/></button></td>
         </tr>
