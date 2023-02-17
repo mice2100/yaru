@@ -13,9 +13,8 @@
     <div.taskmian>
         <li><span>Enabled:</span> <input #enabled type="checkbox"/></li>
         <li><span>ID:</span> <label #id></label></li>
-        <li><span>Src:</span> <input .ipt #src type="text"/><button .btn .greybtn #browse>Select...</button></li>
-        <li><span>Dest:</span> <input .ipt #dst type="text"/></li>
-        <li><span.a>Auth:</span> <select #auth></select></li>
+        <li><span>Src:</span> <select #authsrc></select><input .ipt #src type="text"/><button .btn .greybtn #browsesrc>Select...</button></li>
+        <li><span>Dest:</span> <select #authdst></select><input .ipt #dst type="text"/><button .btn .greybtn #browsedst>Select...</button></li>
         <li>
             <div.h-flow><span.b>Exclude:</span> <textarea #exclude type="text"/></div>
             <p><button .btn .linebtn #import><i .i_import/>Import</button> <button .btn .linebtn #export><i .i_save/>Save As</button></p>
@@ -24,6 +23,7 @@
     </div>
     
     <div .dlgbtm>
+        <button .btn .linebtn #swap>Src<->Dest</button>
         <button .btn .bluebtn #ok>OK</button>
         <button .btn .linebtn #cancel>Cancel</button>
     </div>

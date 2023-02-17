@@ -14,8 +14,8 @@ var stopping = false
 
 function genTaskReact(t) {
     return <tr #tsk data={t.id}><td><input #sel type="checkbox" value={t.enabled}/></td>
-        <td>{t.id}</td><td>{t.src}</td><td>{t.dst}</td>
-        <td>{uconfig.genAuthString(t.auth)}</td><td>{uswitch.cvtSwitches2Str(t.params)}</td>
+        <td>{t.id}</td><td>{uconfig.genAuthString(t.authsrc)} {t.src}</td><td>{uconfig.genAuthString(t.authdst)} {t.dst}</td>
+        <td>{uswitch.cvtSwitches2Str(t.params)}</td>
         <td><button .ibtn #edittask title="Edit" tid={t.id}><i .i_edit/></button> <button .ibtn #rmtask title="Delete" tid={t.id}><i .i_del/></button></td>
         </tr>
 }
@@ -99,7 +99,7 @@ document.on("click", "#test", async function () {
 function addTask() {
     let id = uconfig.newTaskId()
     let exclude = uexclude.defaultExcludes()
-    let t = { enabled: false, id: id, src: "", dst: "", auth: 0, params: [], exclude: exclude.join(" ")}
+    let t = { enabled: false, id: id, src: "", dst: "", authsrc: 1, authdst: 1, params: [], exclude: exclude.join(" ")}
     if(id===1){
         t.src = URL.toPath(env.path("documents"))
     }

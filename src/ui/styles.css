@@ -18,7 +18,7 @@ div#switches {flow: horizontal-wrap;padding:10dip;width:*;height:100%%;overflow:
 div#sw {flow: horizontal;width:380dip;margin: 2px;vertical-align: middle;}
 
 /* wtask page & wconfig page */
-.wtask{width: 500dip; height: 460dip;}
+.wtask{width: 680dip; height: 460dip;}
 .wconfig{width: 800dip; height: 600dip;}
 .taskmian,.wconfigmian{width:*;height:100%%;padding:10dip;overflow: scroll-indicator;}
 
@@ -28,7 +28,7 @@ div#sw {flow: horizontal;width:380dip;margin: 2px;vertical-align: middle;}
 .taskmian li span.a{height:22dip;}
 .taskmian li span.b{width:80dip;height:140dip;}
 .taskmian li textarea{display: inline-block;word-wrap:break-word;width:100%%;height:120dip;border:1dip solid #DCDCDC;border-radius:4dip;padding:4dip 6dip;margin-left:4dip;overflow: scroll-indicator;box-sizing:content-box;}
-.taskmian li select{width:100%%;height:32dip;background:#fff;border:1dip solid #DCDCDC;border-radius:4dip;padding:0 4dip;box-sizing: border-box;}
+.taskmian li select{width:50%%;height:24dip;background:#fff;border:1dip solid #DCDCDC;border-radius:4dip;padding:3dip;}
 .taskmian li button{margin:0 0 0 4dip;}
 .taskmian li p{padding-left:84dip;}
 .taskmian li p button{margin:0 8dip 0 0;}
@@ -59,11 +59,10 @@ td input {width: *;}
   td:first-child {text-align:left; }
   td:nth-child(1),th:nth-child(1){width:50dip;text-align:center;}
   td:nth-child(2),th:nth-child(2) {width:30dip;text-align:center;}
-  th:nth-child(3) { width:250dip;}
-  td:nth-child(4),
-  th:nth-child(4) { width:60dip;text-align:center;}
-  th:nth-child(5) { width:200dip; }
-  th:nth-child(6) { width:100%%; }
+  th:nth-child(3) { width:100%%;}
+  th:nth-child(4) { width:100%%r;}
+  th:nth-child(5) { width:150dip; }
+  th:nth-child(6) { width:100dip; }
   td:last-child,
   th:last-child{ width:max-content; text-align:center;border-right:1px solid transparent; }
 }

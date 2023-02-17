@@ -117,6 +117,7 @@ export function genDaemonConf(){
 }
 
 export function genAuthString(id) {
+    id = id||1
     let auth = findAuth(id)
     switch (auth.type) {
         case 'ssh':

@@ -23,9 +23,11 @@ function init() {
             document.$("#dst").value = tsk.dst
             document.$("#params").value = uswitch.cvtSwitches2Str(tsk.params)
             for (let a of uconfig.configs.auths) {
-                document.$("#auth").select.options.append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
+                document.$("#authsrc").select.options.append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
+                document.$("#authdst").select.options.append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
             }
-            document.$("#auth").value = tsk.auth
+            document.$("#authsrc").value = tsk.authsrc
+            document.$("#authdst").value = tsk.authdst
             document.$("#exclude").value = tsk.exclude
         }
     // }
@@ -33,12 +35,20 @@ function init() {
 
 init()
 
-document.on("click", "#browse", function () {
+document.on("click", "#browsesrc", function () {
     // let tsk = Window.this.parameters
     let newFolder = Window.this.selectFolder({ path: tsk.src })
     if (newFolder) {
         tsk.src = URL.toPath(newFolder)
         document.$("#src").value = tsk.src
+    }
+})
+document.on("click", "#browsedst", function () {
+    // let tsk = Window.this.parameters
+    let newFolder = Window.this.selectFolder({ path: tsk.dst })
+    if (newFolder) {
+        tsk.dst = URL.toPath(newFolder)
+        document.$("#dst").value = tsk.dst
     }
 })
 
@@ -81,12 +91,23 @@ document.on("click", "#ok", function () {
         let sws = uswitch.cvtStr2Switches(v)
         tsk.params.push(...sws)
     })
-    tsk.auth = document.$("#auth").value
+    tsk.authsrc = document.$("#authsrc").value
+    tsk.authdst = document.$("#authdst").value
     tsk.exclude = document.$("#exclude").value
 
     // console.log(JSON.stringify(tsk))
 
     Window.this.close(JSON.stringify(tsk))
+})
+
+document.on("click", "#swap", function () {
+    let tmp = document.$("#src").value
+    let tmpauth = document.$("#authsrc").value
+
+    document.$("#src").value = document.$("#dst").value
+    document.$("#authsrc").value = document.$("#authdst").value
+    document.$("#dst").value = tmp
+    document.$("#authdst").value = tmpauth
 })
 
 document.on("click", "#cancel", function () {
