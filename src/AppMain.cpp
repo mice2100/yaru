@@ -56,7 +56,7 @@ int uimain(std::function<int()> run)
 	appBaseUrl = Path2Url(strRoot.c_str());
 #else
 	sciter::archive::instance().open(aux::elements_of(resources));
-	appBaseUrl = sciter::string(L"this://app/main.htm");
+	appBaseUrl = WSTR("this://app/main.htm");
 #endif
 	sciter::om::hasset<mainWnd> pMainWnd = new mainWnd();
 	SciterSetGlobalAsset(pMainWnd);

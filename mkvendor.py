@@ -20,7 +20,7 @@ if platform=='win32':
     os.makedirs(tmp, exist_ok=True)
     shutil.copy(sct+'/bin/windows/x64/sciter.dll', tmp)
 elif platform=='darwin':
-    sct="/Users/zhijunlou/Downloads/sciter-js-sdk-5.0.1.8"
+    sct="/Users/zhijunlou/Downloads/sciter-js-sdk-5.0.2.3"
     shutil.copytree(f'{sct}/include', dst+'/include', dirs_exist_ok=True)
     tmp=dst+'/osx'
     os.makedirs(tmp, exist_ok=True)
