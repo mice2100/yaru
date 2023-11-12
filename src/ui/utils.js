@@ -52,7 +52,7 @@ export function cvtPath2Rsync(strPath) {
         return strPath
 }
 
-export async function makeRsycCmd(t, strOptions = null) {
+export function makeRsycCmd(t, strOptions = null) {
     if (!t.enabled) return null
     let args = ["rsync"]
     args.push(...uswitch.cvtSwitches2Str(t.params, true))
@@ -69,7 +69,9 @@ export async function makeRsycCmd(t, strOptions = null) {
     // }
     // args.push(cvtPath2Rsync(t.src))
     args.push(uconfig.genAuthPrefix(t.authsrc) + cvtPath2Rsync(t.src))
+    args.push(...uconfig.genAuthSurfixes(t.authsrc))
     args.push(uconfig.genAuthPrefix(t.authdst) + cvtPath2Rsync(t.dst))
+    args.push(...uconfig.genAuthSurfixes(t.authdst))
     // out.append(<text>Starting task: {t.id}</text>)
     return args
 }

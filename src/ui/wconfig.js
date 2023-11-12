@@ -13,12 +13,12 @@ function appendAuth(a) {
     el.$("#itype").value = a.type
     el.$("#ihost").value = a.host
     el.$("#iuser").value = a.user
-    el.$("#ipasswd").value = a.passwd
+    el.$("#port").value = a.port
     el.$("#insauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
     el.$("#tstauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
     el.$("#ihost").style.display = a.type === "local" ? 'none' : 'inline-block'
     el.$("#iuser").style.display = a.type === "local" ? 'none' : 'inline-block'
-    el.$("#ipasswd").style.display = a.type === "local" ? 'none' : 'inline-block'
+    el.$("#port").style.display = a.type === "local" ? 'none' : 'inline-block'
 }
 
 function appendDaemonModule(idx) {
@@ -87,7 +87,8 @@ document.on("click", "#insauth", (evt, el) => {
 document.on("click", "#tstauth", async (evt, el) => {
     let id = el.$p("tr").getAttribute("data")
     let a = uconfig.findAuth(Number(id))
-    let cmd = ['ssh', `${a.user}@${a.host}`, "ls /"]
+    let port = a.port || 22
+    let cmd = ['ssh', `${a.user}@${a.host}`, "-p", `${port}`, "ls", "/"]
     processSSH = sys.spawn(cmd)
     var r = await processSSH.wait()
     let msg = r.exitCode ? "Failed" : "Succeed"
@@ -100,12 +101,12 @@ document.on("change", "tr", function (evt, el) {
     a.type = el.$("#itype").value
     a.host = el.$("#ihost").value
     a.user = el.$("#iuser").value
-    a.passwd = el.$("#ipasswd").value
+    a.port = el.$("#port").value
     el.$("#insauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
     el.$("#tstauth").style.display = a.type === "ssh" ? 'inline-block' : 'none'
     el.$("#ihost").style.display = a.type === "local" ? 'none' : 'inline-block'
     el.$("#iuser").style.display = a.type === "local" ? 'none' : 'inline-block'
-    el.$("#ipasswd").style.display = a.type === "local" ? 'none' : 'inline-block'
+    el.$("#port").style.display = a.type === "local" ? 'none' : 'inline-block'
     return true
 })
 

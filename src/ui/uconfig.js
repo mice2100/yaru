@@ -82,7 +82,8 @@ export function sshCopyId(auth) {
     }
 
     try {
-        let args = ["ssh", `${auth.user}@${auth.host}`, "<", fn, '"cat >>.ssh/authorized_keys"']
+        let port = auth.port || 22
+        let args = ["ssh", `${auth.user}@${auth.host}`, "-p", `${port}`, "<", fn, '"cat >>.ssh/authorized_keys"']
         let cmd = args.join(" ")
         return cmd
     } catch (e) {
@@ -138,6 +139,19 @@ export function genAuthPrefix(id) {
             return ''
         case 'rsync':
             return `${auth.host}::`
+    }
+}
+
+export function genAuthSurfixes(id) {
+    let auth = findAuth(id)
+    switch (auth.type) {
+        case 'ssh':
+            let port = auth.port || 22
+            return ['-e', `ssh -p ${port}`];
+        case 'local':
+            return []
+        case 'rsync':
+            return []
     }
 }
 

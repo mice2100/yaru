@@ -1,4 +1,4 @@
-//| Sciter.d.ts v0.24.0
+//| Sciter.d.ts v0.24.2
 //| https://github.com/MustafaHi/sciter-vscode
 
 interface Behaviors
@@ -447,6 +447,9 @@ interface Element extends Node, Behaviors {
     paintOutline: function(Graphics);
     /** Schedules re-paint of the element. This will trigger `Element.paintXXXX` calls. */
     requestPaint(): void;
+    /** Force repaint immediately */
+    flushPaint(): void;
+
     /** Shows the popup element or VNode (JSX) in out-of-canvas popup window on desktop. */
     popup(popup: Element | VNode, params?: popupParams): void;
     /** Show this element as out-of-canvas popup window on desktop. 
@@ -585,7 +588,7 @@ interface Element extends Node, Behaviors {
     click(): void;
     focus(): void;
     /** Call handler each time the event is fired */
-    addEventListener(name: string, handler: Function, flags?: object): void;
+    addEventListener(name: string, handler: eventFunction, flags?: object): void;
     removeEventListener(name: string, handler: Function): void;
     /** Fire event synchronously, `Event.target` will be set to this element,  
      * use `postEvent` for async method
@@ -1619,6 +1622,14 @@ declare module '@storage' {
     close(): void;
     /** Commits (writes) all persistent objects reachable from its root into storage. */
     commit(): void;
+
+    /** 
+     * Registers class (a.k.a. constructor function in terms of ES5) of persistable objects.
+      When an object is stored into DB, name of its class is also stored. 
+      When the object is fetched from the DB, it gets the class assigned automatically if that class was registered before.
+      @version 5.0.2.4+
+    */
+    registerClass(cls);
   }
   /** Index object in persistent storage. provide effective access and ordering of potentially large data sets. */
   interface index {
@@ -1701,6 +1712,7 @@ declare module "@sys" {
          * @deprecated >5.0.0.5 use `fs.sync.open()`
          */
         function $open(path:string, flags: keyof typeof OpenFlagOptions, mode ?: number): File;
+        function openSync(path:string, flags: keyof typeof OpenFlagOptions, mode ?: number): File;
         /** Return information about the file at path. */
         function stat(path:string): Promise<StatStruct>;
         /** Return information about the file at path. (sync) 
@@ -1727,6 +1739,7 @@ declare module "@sys" {
         function splitpath(path: string): [directory: string, file: string];
         /** Remove file */
         function unlink(path:string): Promise;
+        function unlinkSync(path:string);
         function rename(oldpath:string, newpath: string) : Promise;
         /** Creates unique temporary directory. The last six characters of template must be "XXXXXX". */
         function mkdtemp(template:string) : Promise<string>;
@@ -1767,6 +1780,7 @@ declare module "@sys" {
          * @param flag a combination of `fs.UV_FS_COPYFILE_***`
          */
         function copyfile(source: string, destination: string, flag?: number): Promise;
+        function copyfileSync(source: string, destination: string, flag?: number);
         /** Read directory contents asynchronously. The promise resolves to file list. */
         function readdir(path: string): Promise<FileList[]>;
         /** Read directory contents synchronously. return file list. 
@@ -1779,6 +1793,7 @@ declare module "@sys" {
         function readdirSync(path: string): Promise<FileList[]>;
         /** Return file content, check `readfileSync` for sync method. */
         function readFile(path: string): Promise<ArrayBuffer>;
+        function readfile(path: string): Promise<ArrayBuffer>;
         /** Synchronously return file content.
          * @deprecated >5.0.0.5 use `fs.sync.readfile()` or `fs.readfileSync()`
          */
@@ -1787,6 +1802,7 @@ declare module "@sys" {
          * @version 5.0.0.6+
          */
         function readFileSync(path: string): ArrayBuffer;
+        function readfileSync(path: string): ArrayBuffer;
         
         const UV_DIRENT_UNKNOWN: 0;
         const UV_DIRENT_FILE: 1;
@@ -1832,6 +1848,9 @@ declare module "@sys" {
             function readdir(path: string): FileList[];
             /** Return file content. */
             function readfile(path: string): ArrayBuffer;
+            function unlink(path:string);
+            function rename(oldpath:string, newpath: string);
+            function copyfile(source: string, destination: string, flag?: number);
         }
     }
 
@@ -2130,7 +2149,9 @@ declare var Range: {
 }
 
 interface Window {
-    state: number| keyof typeof windowState;
+    /** Window state: hidden, shown, fullscreen...  
+     *  use `Window.WINDOW_****` */
+    state: number;
 
     /** Window has input focus. */
     readonly isActive: boolean;
@@ -2300,21 +2321,22 @@ declare var Window: {
     scapp: {argv: string[]};
 
 
-    readonly POPUP_WINDOW : 0;
-    readonly TOOL_WINDOW  : 1;
-    readonly CHILD_WINDOW : 2;
-    readonly FRAME_WINDOW : 3;
-    readonly DIALOG_WINDOW: 4;
+    readonly POPUP_WINDOW  : 2,
+    readonly TOOL_WINDOW   : 3,
+    readonly CHILD_WINDOW  : 4, // undefined
+    readonly FRAME_WINDOW  : 5,
+    readonly DIALOG_WINDOW : 6,
 
-    readonly WINDOW_SHOWN      : 0;
-    readonly WINDOW_MINIMIZED  : 1;
-    readonly WINDOW_MAXIMIZED  : 2;
-    readonly WINDOW_HIDDEN     : 3;
-    readonly WINDOW_FULL_SCREEN: 4;
+    readonly WINDOW_SHOWN      : 1;
+    readonly WINDOW_MINIMIZED  : 2;
+    readonly WINDOW_MAXIMIZED  : 3;
+    readonly WINDOW_HIDDEN     : 4;
+    readonly WINDOW_FULL_SCREEN: 5;
 }
 
 interface windowParam {
-    type?: number| keyof typeof windowType;
+    /** Windows type use `Window.****_WINDOW` */
+    type?: number;
     /** When owner closed or minimized this window will be closed/minimized too. */
     parent?: Window;
     /** window caption (or title) */
@@ -2333,7 +2355,9 @@ interface windowParam {
     alignment?: number;
     /** index of monitor to spawn on. */
     screen?: number;
-    state?: number| keyof typeof windowState;
+    /** Window state: hidden, shown, fullscreen...  
+     *  use `Window.WINDOW_****` */
+    state?: number;
     /** window html source file */
     url?: string;
     /** extra parameters to pass to the new window. */
@@ -2341,20 +2365,6 @@ interface windowParam {
 }
 
 type windowEvent = "statechange" | "resolutionchange" | "mediachange" | "activate" | "replacementstart" | "replacementend" | "move" | "size" | "trayiconclick" | "spacechange";
-enum windowType {
-    POPUP_WINDOW  = 0,
-    TOOL_WINDOW   = 1,
-    CHILD_WINDOW  = 2,
-    FRAME_WINDOW  = 3,
-    DIALOG_WINDOW = 4,
-}
-enum windowState {
-    WINDOW_SHOWN     = 0,
-    WINDOW_MINIMIZED = 1,
-    WINDOW_MAXIMIZED = 2,
-    WINDOW_HIDDEN    = 3,
-    WINDOW_FULL_SCREEN = 4,
-}
 
 enum frameType { "standard", "solid", "solid-with-shadow", "extended", "transparent" }
 

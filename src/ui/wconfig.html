@@ -27,7 +27,7 @@
                 <th value="2">Type</th>
                 <th value="3">Host</th>
                 <th value="4">User</th>
-                <th value="5">Password</th>
+                <th value="5">Port</th>
                 <th value="6">Actions</th>
             </thead>
             <tbody #authtbl>
@@ -42,7 +42,7 @@
                     </td>
                     <td><input type="text" id="ihost" value="a.host"></input></td>
                     <td><input id="iuser" value="a.user" /></td>
-                    <td><input type="password" id="ipasswd" value="a.passwd" /></td>
+                    <td><input type="text" id="port" value="a.port" /></td>
                     <td><button title="Delete" .ibtn #rmauth><i .i_del /></button><button
                             title="Install Key" .ibtn #insauth><i .i_istall /></button> <button title="Test"
                             .ibtn #tstauth><i .i_test /></button></td>

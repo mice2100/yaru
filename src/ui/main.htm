@@ -6,84 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yet Another RSync UI</title>
     <script type="module" src="main.js"></script>
-    <script>
-      class Logger extends Element {
-    m_items = []
-    m_MAX = 100
 
-    // scroll down
-    appendElements(index, n) {
-        if (index === undefined) index = 0;
-        const elements = [];
-        for (let i = 0; i < n; ++i, ++index) {
-            if (index >= this.m_items.length) break;
-            elements.push(this.renderItem(index));
-        }
-
-        this.append(elements);
-        return {moreafter: (this.m_items.length - index)}; // return estimated number of items below this chunk
-    }
-
-    // scroll up
-    prependElements(index, n) {
-        if (index === undefined) index = this.m_items.length - 1;
-        const elements = [];
-        for (let i = 0; i < n; ++i, --index) {
-            if (index < 0) break;
-            elements.push(this.renderItem(index));
-        }
-
-        elements.reverse();
-        this.prepend(elements);
-        return {morebefore: (index < 0 ? 0 : index + 1)}; // return estimated number of items above this chunk
-    }
-
-    // scroll to
-    replaceElements(index, n) {
-        const elements = [];
-        const start = index;
-        for (let i = 0; i < n; ++i, ++index) {
-            if (index >= this.m_items.length) break;
-            elements.push(this.renderItem(index));
-        }
-
-        this.patch(elements);
-        return {
-            morebefore: (start <= 0 ? 0 : start),
-            moreafter: (this.m_items.length - index),
-        }; // return estimated number of items before and above this chunk
-    }
-
-    appendItem(txt, cls) {
-        if(this.m_items.length>this.m_MAX) {
-          this.m_items.shift()
-        }
-        this.m_items.push({txt: txt, cls:cls})
-        this.vlist.navigateTo("end")
-    }
-
-    renderItem(index) {
-        return <text class={this.m_items[index].cls}>{this.m_items[index].txt}</text>;
-    }
-
-    oncontentrequired(evt) {
-        const {length, start, where} = evt.data;
-        console.log(length, start, where)
-
-        if (where > 0)
-        // scrolling down, need to append more elements
-            evt.data = this.appendElements(start, length);
-        else if (where < 0)
-        // scrolling up, need to prepend more elements
-            evt.data = this.prependElements(start, length);
-        else
-        // scrolling to index
-            evt.data = this.replaceElements(start, length);
-
-        return true;
-    }
-}
-    </script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -115,7 +38,7 @@
           </div>
       </div>
       <splitter/>
-      <logger #log></logger>
+      <terminal #log rows="200"></terminal>
   </frameset>
 </body>
 </html>
