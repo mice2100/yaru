@@ -1,0 +1,28 @@
+{
+  "window": {
+    "left": 1127.1529541015625,
+    "top": 302.6823425292969,
+    "width": 1610.5411376953125,
+    "height": 1163.2940673828125
+  },
+  "projects": [
+    {
+      "id": "13QWOJ1L2QPTC1OUDP5P1QWU1NQ",
+      "name": "yaru",
+      "exe": "yaru",
+      "logo": "/Users/mpp/Documents/code/yaru/src/ui/rsync.svg",
+      "resources": "/Users/mpp/Documents/code/yaru/src/ui",
+      "productName": "yaru",
+      "productVersion": "1.1",
+      "productDescription": "Yet Another Rsync UI",
+      "productCopyright": "",
+      "productCompany": "",
+      "targets": [
+        "mac"
+      ],
+      "out": "/Users/mpp/Documents/code/yaru/bin",
+      "entry": "main.htm found",
+      "entryFileExists": true
+    }
+  ]
+}
