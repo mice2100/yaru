@@ -1,5 +1,6 @@
 import * as sys from '@sys'
 import * as env from '@env'
+import * as sctr from '@sciter'
 import * as utils from './utils'
 
 export var configs = {}
@@ -90,6 +91,17 @@ export function sshCopyId(auth) {
         console.error(e.message)
         return ""
     }
+}
+
+export function sshPublicId() {
+    let fn = configs.ssh.sshroot + "/id_rsa.pub"
+    if (!sys.fs.statSync(fn)) {
+        return ""
+    }
+
+    let cnt = sctr.decode(sys.fs.sync.readfile(fn))
+
+    return cnt;
 }
 
 export function newDaemonModule() {

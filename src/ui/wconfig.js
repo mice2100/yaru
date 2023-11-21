@@ -1,6 +1,7 @@
 import * as uconfig from './uconfig'
 import * as env from '@env'
 import * as sys from '@sys'
+import * as utils from './utils'
 
 var processSSH
 var elAuthTpl, elModuleTpl
@@ -71,16 +72,10 @@ document.on("click", "#rmauth", (evt, el) => {
 document.on("click", "#insauth", (evt, el) => {
     let id = el.$p("tr").getAttribute("data")
     let a = uconfig.findAuth(Number(id))
-    let cmd = uconfig.sshCopyId(a)
-    if (cmd) {
-        Clipboard.writeText(cmd)
-        if (env.PLATFORM==="WINDOWS") {
-                let ret = Window.this.modal(<info>A terminal windows be opened to run this command: <br />{cmd} <br />, please follow the screen to finish.</info>)
-                env.exec("cmd", "/K", cmd)
-            }
-            else{
-                Window.this.modal(<info>Please open a terminal window and press Cmd+V to paste the following command: <br />{cmd} <br />, then follow the screen to finish.</info>)
-            }
+    let publicID = uconfig.sshPublicId()
+    if (publicID) {
+        Clipboard.writeText(publicID)
+        Window.this.modal(<info>The public ID has been copied to clipboard. Please ask an administrator to add it to the authorized_keys on the server.</info>)
     }
 })
 
@@ -88,9 +83,20 @@ document.on("click", "#tstauth", async (evt, el) => {
     let id = el.$p("tr").getAttribute("data")
     let a = uconfig.findAuth(Number(id))
     let port = a.port || 22
-    let cmd = ['ssh', `${a.user}@${a.host}`, "-p", `${port}`, "ls", "/"]
-    processSSH = sys.spawn(cmd)
-    var r = await processSSH.wait()
+    let cmd = ['rsync', '-vn', './', `${a.user}@${a.host}:.`, '-e', `ssh -p ${port}`]
+    let processRsync = sys.spawn(cmd, {stderr: "pipe", stdout: "pipe"})
+    function fnNewLine(data) {
+        // console.log(data)
+    }
+    let pout = utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
+    let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
+    
+    var r = await processRsync.wait()
+    processRsync.stderr.close()
+    processRsync.stdout.close()
+    await pout
+    await perr
+
     let msg = r.exitCode ? "Failed" : "Succeed"
     Window.this.modal(msg)
 })
