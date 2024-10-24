@@ -47,12 +47,6 @@ function init() {
     for (let t of uconfig.configs.taskList) {
         elTask.append(genTaskReact(t))
     }
-    let rc = Window.this.screenBox("frame", "xywh")
-    let WIDTH = 1200
-    let HEIGHT = 800
-    let xd = (WIDTH-rc[2])/2
-    let yd = (HEIGHT-rc[3])/2
-    Window.this.move(rc[0]-xd, rc[1]-yd, WIDTH, HEIGHT)
 }
 
 document.on("ready", ()=>{

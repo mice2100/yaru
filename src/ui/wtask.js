@@ -23,8 +23,8 @@ function init() {
             document.$("#dst").value = tsk.dst
             document.$("#params").value = uswitch.cvtSwitches2Str(tsk.params)
             for (let a of uconfig.configs.auths) {
-                document.$("#authsrc").select.options.append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
-                document.$("#authdst").select.options.append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
+                document.$("#authsrc").append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
+                document.$("#authdst").append(<option value={a.id}>{uconfig.genAuthString(a.id)}</option>)
             }
             document.$("#authsrc").value = tsk.authsrc
             document.$("#authdst").value = tsk.authdst
