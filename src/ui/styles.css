@@ -18,8 +18,8 @@ div#switches {flow: horizontal-wrap;padding:10dip;width:*;height:100%%;overflow:
 div#sw {flow: horizontal;width:380dip;margin: 2px;vertical-align: middle;}
 
 /* wtask page & wconfig page */
-.wtask{width: 680dip; height: 460dip;}
-.wconfig{width: 800dip; height: 600dip;}
+.wtask{window-width: 680dip; window-height: 460dip;}
+.wconfig{window-width: 800; window-height: 600;}
 .taskmian,.wconfigmian{width:*;height:100%%;padding:10dip;overflow: scroll-indicator;}
 
 .taskmian li{width:90%;min-height:max-content;margin:6dip 0;}
