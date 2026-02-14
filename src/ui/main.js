@@ -4,7 +4,8 @@ import * as utils from "./utils"
 import * as uswitch from "./uswitch"
 import { uexclude } from './uexclude.js'
 import * as env from '@env'
-import {xt} from "./xterm.js";
+import {xt} from "./xterm.js"
+import { ConfigDialog } from "./ConfigDialog.js"
 
 uswitch.initSwitches()
 
@@ -70,7 +71,7 @@ async function runit(dryrun = false) {
                 processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
                 let pout = utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
                 let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
-                
+
                 var r = await processRsync.wait()
                 processRsync.stderr.close()
                 processRsync.stdout.close()
@@ -176,10 +177,13 @@ document.on("click", "#rmtask", function (evt, el) {
 document.on("click", "#config", function (evt) {
     document.state.disabled = true;
 
-    var retval = Window.this.modal({
-        url: __DIR__ + "wconfig.html",
-        alignment: -5
-    })
+    var retval = document.popup(
+        <ConfigDialog />,
+        {
+            anchorAt: 7,
+            animationType: "blend"
+        }
+    );
 
     if (retval) {
         init()

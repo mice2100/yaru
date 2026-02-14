@@ -1,44 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" window-icon="rsync.svg" window-width="1000" window-height="600">
+<html lang="en" window-icon="rsync.svg" window-width="1100" window-height="700">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yet Another RSync UI</title>
+    <title>YARU — Yet Another RSync UI</title>
     <script type="module" src="main.js"></script>
-
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <frameset rows="*,200dip">
-      <div>
-          <table .indextable>
-            <thead>
-              <th value="1">Enable</th>
-              <th value="2">ID</th>
-              <th value="3">Src</th>
-              <th value="4">Dest</th>
-              <th value="6">Params</th>
-              <th value="7">Actions</th>
-            </thead>
-            <tbody></tbody>
-          </table>
+    <frameset rows="*,220dip">
+        <div>
+            <table class="indextable">
+                <thead>
+                    <th value="1">Enable</th>
+                    <th value="2">ID</th>
+                    <th value="3">Src</th>
+                    <th value="4">Dest</th>
+                    <th value="6">Params</th>
+                    <th value="7">Actions</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
 
-          <div .btntoolbar>
-              <button .btn .linebtn .onebtn #newtask><i .i_add/>New Task</button>
-              <span>|</span>
-              <button .btn .bluebtn #exec><i .i_start/>Start</button>
-              <button .btn .redbtn #stop disabled><i .i_stop/>Stop</button>
-              <button .btn .linebtn #config><i .i_set/>Configurations</button>
-              <span>|</span>
-              <button .btn .greenbtn #test><i .i_debug/>Dry Run</button>
-              <span>|</span>
-              <button .btn .bluebtn #startserv><i .i_start/>Start Daemon</button>
-              <button .btn .redbtn #stopserv disabled><i .i_stop/>Stop Daemon</button>
-          </div>
-      </div>
-      <splitter/>
-      <terminal #log rows="200"></terminal>
-  </frameset>
+            <div class="btntoolbar">
+                <button class="btn linebtn onebtn" id="newtask"><i class="i_add"></i>New Task</button>
+                <span>|</span>
+                <button class="btn bluebtn" id="exec"><i class="i_start"></i>Start</button>
+                <button class="btn redbtn" id="stop" disabled><i class="i_stop"></i>Stop</button>
+                <button class="btn linebtn" id="config"><i class="i_set"></i>Configurations</button>
+                <span>|</span>
+                <button class="btn greenbtn" id="test"><i class="i_debug"></i>Dry Run</button>
+                <span>|</span>
+                <button class="btn bluebtn" id="startserv"><i class="i_start"></i>Start Daemon</button>
+                <button class="btn redbtn" id="stopserv" disabled><i class="i_stop"></i>Stop Daemon</button>
+            </div>
+        </div>
+        <splitter></splitter>
+        <terminal id="log" rows="200"></terminal>
+    </frameset>
 </body>
 </html>

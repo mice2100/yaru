@@ -110,8 +110,8 @@ export function newDaemonModule() {
         newModule.module = "home"
         newModule.path = URL.toPath(env.path("home"))
     }
-    configs.daemon.modules.push(newModule)
-    return configs.daemon.modules.length-1
+    // configs.daemon.modules.push(newModule)
+  return newModule;
 }
 
 export function genDaemonConf(){

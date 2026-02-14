@@ -1,116 +1,724 @@
-*{font-size:14dip;font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;}
+/* ═══════════════════════════════════════════════════════════════
+   YARU - Yet Another RSync UI
+   Professional Gray Theme for Sciter.js
+   ═══════════════════════════════════════════════════════════════ */
 
-/* index Page */
-.h-flow{flow:horizontal;}
-frameset {min-height:min-content;;}
-splitter { border:none; background:#DEDEDE;}
-splitter:hover { background:#999; }
-logger{behavior: virtual-list;  prototype: Logger; background:#EEEEEE;border-color:#E3E3E3;overflow: scroll-indicator;}
-text.info{color:coral;}
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════════ */
 
-/* dlg Style */
-.dlgbtm{width:*;height:52dip;text-align:center;border-top:1dip solid #DCDCDC;vertical-align:middle;}
-.dlgbtm button{width:80dip;horizontal-align: center;}
+:root {
+    /* Colors - Gray theme */
+    --bg-primary: #e8e8e8;
+    --bg-secondary: #f0f0f0;
+    --bg-tertiary: #d8d8d8;
+    --bg-elevated: #c8c8c8;
+    --bg-hover: #b8b8b8;
 
-/* wswitch page */
-.wswitch{width:800dip;height:550dip;}
-div#switches {flow: horizontal-wrap;padding:10dip;width:*;height:100%%;overflow: scroll-indicator;}
-div#sw {flow: horizontal;width:380dip;margin: 2px;vertical-align: middle;}
+    /* Surface colors */
+    --surface-border: #a8a8a8;
+    --surface-divider: #c0c0c0;
 
-/* wtask page & wconfig page */
-.wtask{window-width: 680dip; window-height: 460dip;}
-.wconfig{window-width: 800; window-height: 600;}
-.taskmian,.wconfigmian{width:*;height:100%%;padding:10dip;overflow: scroll-indicator;}
+    /* Text colors */
+    --text-primary: #2a2a2a;
+    --text-secondary: #5a5a5a;
+    --text-muted: #7a7a7a;
 
-.taskmian li{width:90%;min-height:max-content;margin:6dip 0;}
-.taskmian li input.ipt{width:100%%;height:30dip;border:1dip solid #DCDCDC;border-radius:4dip;padding:0 6dip;}
-.taskmian li span{display:inline-block;width:80dip;height:max-content;text-align:right;}
-.taskmian li span.a{height:22dip;}
-.taskmian li span.b{width:80dip;height:140dip;}
-.taskmian li textarea{display: inline-block;word-wrap:break-word;width:100%%;height:120dip;border:1dip solid #DCDCDC;border-radius:4dip;padding:4dip 6dip;margin-left:4dip;overflow: scroll-indicator;box-sizing:content-box;}
-.taskmian li select{width:50%%;height:24dip;background:#fff;border:1dip solid #DCDCDC;border-radius:4dip;padding:3dip;}
-.taskmian li button{margin:0 0 0 4dip;}
-.taskmian li p{padding-left:84dip;}
-.taskmian li p button{margin:0 8dip 0 0;}
+    /* Accent colors */
+    --accent-primary: #06b6d4;
+    --accent-hover: #0891b2;
+    --accent-subtle: rgba(6, 182, 212, 0.15);
 
-.keybox{flow:horizontal;height:30dip;vertical-align: middle;}
-.keybox span{margin:0 0 0 8dip;}
-.modulelist{width:*;}
-.modulelist > span,.authslist > span{display:block;width:*;padding:2dip 0;margin-top:8dip;}
-.modulelist ul{margin:0;padding:0;list-style: none;}
-.modulelist ul li{position:relative;vertical-align:middle;height:42;border-bottom:1dip solid #eee;}
-.modulelist ul li span{display:inline-block;margin:0 16dip 0 0;}
-.modulelist ul li button.btn{margin:0 12dip 0 0;height:30dip;}
-.modulelist ul li button.ibtn{position:absolute;right:0;top:10dip;}
-.modulelist ul li input[type="text"]{height:30dip;border:1dip solid #DCDCDC;border-radius:4dip;padding:0 6dip;margin-right:4dip;}
-.modulelist ul li input.urlipt{width:85%%;}
-.modulelist ul li input[type="checkbox"]{padding:0 4dip 0 0;}
+    --accent-destructive: #e64a19;
+    --accent-destructive-hover: #c5370d;
+    --accent-destructive-subtle: rgba(230, 74, 25, 0.15);
 
-/* Table Style */
-table {border:1px solid #dcdcdc; flow:table-fixed;size:*;padding:0;border-spacing:0;border-collapse: collapse;overflow-x: scroll-indicator;}
-table > thead {behavior:column-resizer;font-weight:bold;background:#eee;}
-table > tbody {size:*;overflow: scroll-indicator;}
-table > tbody > tr:hover {background: #E1F1FF;}
-table th,table td { border:1px solid #dcdcdc; padding:4px; white-space: nowrap; overflow-x:hidden; text-overflow:ellipsis;}
-td input {width: *;}
+    --accent-success: #0d9488;
+    --accent-warning: #d97706;
 
+    /* Spacing */
+    --space-xs: 4dip;
+    --space-sm: 8dip;
+    --space-md: 16dip;
+    --space-lg: 24dip;
+    --space-xl: 32dip;
+
+    /* Border radius */
+    --radius-sm: 3dip;
+    --radius-md: 5dip;
+    --radius-lg: 7dip;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 13dip;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════════════════════ */
+
+frameset {
+    min-height: min-content;
+    background: var(--bg-primary);
+}
+
+splitter {
+    border: none;
+    background: var(--surface-divider);
+}
+
+splitter:hover {
+    background: var(--accent-primary);
+}
+
+.h-flow {
+    flow: horizontal;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABLES
+   ═══════════════════════════════════════════════════════════════ */
+
+table {
+    border: 1dip solid var(--surface-border);
+    flow: table-fixed;
+    size: *;
+    padding: 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+    overflow-x: scroll-indicator;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+table > uad {
+    behavior: column-resizer;
+    font-weight: 600;
+    font-size: 11dip;
+    text-transform: uppercase;
+    letter-spacing: 0.5dip;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+table > uad th {
+    border-bottom: 1dip solid var(--surface-border);
+    padding: var(--space-sm) var(--space-md);
+    white-space: nowrap;
+}
+
+table > tbody {
+    size: *;
+}
+
+table > tbody > tr {
+    border-bottom: 1dip solid var(--surface-divider);
+}
+
+table > tbody > tr:last-child {
+    border-bottom: none;
+}
+
+table > tbody > tr:hover {
+    background: var(--bg-elevated);
+}
+
+table > tbody > tr:current {
+    background: var(--accent-subtle);
+}
+
+table td {
+    border: none;
+    padding: var(--space-sm) var(--space-md);
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+}
+
+td input[type="text"],
+td select {
+    background: var(--bg-primary);
+    border: 1dip solid var(--surface-border);
+    color: var(--text-primary);
+    height: 26dip;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-sm);
+}
+
+td input[type="text"]:focus,
+td select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+td input[type="checkbox"] {
+    accent-color: var(--accent-primary);
+}
+
+/* Custom Table Styles */
 @set customtable_index {
-  td > input[type=checkbox]{margin-left:-14dip;}
-  td:first-child {text-align:left; }
-  td:nth-child(1),th:nth-child(1){width:50dip;text-align:center;}
-  td:nth-child(2),th:nth-child(2) {width:30dip;text-align:center;}
-  th:nth-child(3) { width:100%%;}
-  th:nth-child(4) { width:100%%r;}
-  th:nth-child(5) { width:150dip; }
-  th:nth-child(6) { width:100dip; }
-  td:last-child,
-  th:last-child{ width:max-content; text-align:center;border-right:1px solid transparent; }
+    td > input[type=checkbox] { margin-left: -14dip; }
+    td:first-child { text-align: left; }
+    td:nth-child(1), th:nth-child(1) { width: 50dip; text-align: center; }
+    td:nth-child(2), th:nth-child(2) { width: 30dip; text-align: center; }
+    th:nth-child(3) { width: 100%%; }
+    th:nth-child(4) { width: 100%%r; }
+    th:nth-child(5) { width: 150dip; }
+    th:nth-child(6) { width: 100dip; }
+    td:last-child, th:last-child { width: max-content; text-align: center; }
 }
+
 @set customtable_config {
-  td > select, td > input{height:24dip;padding:0 4dip;background:#fff;border:1dip solid #DCDCDC;border-radius:4dip;}
-  td:first-child {text-align:left; }
-  td:nth-child(1),th:nth-child(1){width:30dip;text-align:center;}
-  td:nth-child(2),th:nth-child(2){width:80dip;text-align:center;}
-  th:nth-child(3) { width:*;}
-  th:nth-child(4) { width:*;}
-  th:nth-child(5) { width:120dip; }
-  th:nth-child(6) { width:90dip; }
-  td:last-child{ text-align:left;border-right:1px solid transparent; }
-  th:last-child{ text-align:center;border-right:1px solid transparent; }
+    td > select, td > input {
+        height: 26dip;
+        padding: 0 var(--space-sm);
+        background: var(--bg-primary);
+        border: 1dip solid var(--surface-border);
+        border-radius: var(--radius-sm);
+        color: var(--text-primary);
+    }
+    td:first-child { text-align: left; }
+    td:nth-child(1), th:nth-child(1) { width: 30dip; text-align: center; }
+    td:nth-child(2), th:nth-child(2) { width: 80dip; text-align: center; }
+    th:nth-child(3) { width: *; }
+    th:nth-child(4) { width: *; }
+    th:nth-child(5) { width: 120dip; }
+    th:nth-child(6) { width: 90dip; }
+    td:last-child { text-align: left; }
+    th:last-child { text-align: center; }
 }
 
-.indextable{style-set:customtable_index;}
-.configtable{style-set:customtable_config;height:250dip;margin-top:4dip;}
+.indextable { style-set: customtable_index; }
+.configtable { margin-top: var(--space-sm); }
 
-/* button style */
-.btntoolbar{width:*;height:50dip;vertical-align:middle;flow:horizontal;}
-.btntoolbar span{color:#dcdcdc;font-size:18dip;padding:0 8dip;}
-.btn{width:max-content;height:30dip;flow:horizontal;padding:0 12dip;margin:0 12dip;border-radius:4dip;}
-.btn i{size:20dip *;display: inline-block;foreground-repeat: no-repeat;foreground-position:50% 50%;stroke-width:0;margin:0 4dip 0 0;}
-.ibtn{size:20dip;background:transparent;padding:0;margin:0 4dip;border:none;}
-.ibtn i{size:20dip;display: inline-block;foreground-repeat: no-repeat;foreground-position:50% 50%;stroke-width:0;}
-.btn:hover{opacity: 0.75;}
-.ibtn:hover{background:#eee;}
-.btn:active,.ibtn:active{opacity: 0.95;}
-.btn:disabled,.ibtn:disabled{opacity: 0.25;}
-.bluebtn{background:#1676C4;border:1dip solid #1676C4;color:#fff;}
-.redbtn{background:#E5404F;border:1dip solid #E5404F;color:#fff;}
-.greenbtn{background:#0B9682;border:1dip solid #0B9682;color:#fff;}
-.linebtn{background:#fff;border:1dip solid #5D6D7E;color:#5D6D7E;}
-.greybtn{background:#DDDDDD;border:1dip solid #DDDDDD;color:#000;}
-.linebtn:hover{background:#5D6D7E;border:1dip solid #5D6D7E;color:#fff;}
-.linebtn:hover > i{fill:#fff;}
-.onebtn{margin-left:0;}
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
 
-/* icon */
-.i_add{fill:#5D6D7E;foreground-size:12dip 12dip;foreground-image:url(path:M7,15V8H0V7H7V0H8V7h7V8H8v7Z);}
-.i_start{fill:#fff;foreground-size:10dip 14dip;foreground-image:url(path:M0.362488 0L9.81249 7L0.362488 14V0Z);}
-.i_test{fill:#000;foreground-size:10dip 14dip;foreground-image:url(path:M0.362488 0L9.81249 7L0.362488 14V0Z);}
-.i_stop{fill:#fff;foreground-size:9dip 12dip;foreground-image:url(path:M7.31388 0C6.61316 0 6.04382 0.613128 6.04382 1.27006V10.7299C6.04382 11.4307 6.65695 12 7.31388 12C7.97081 12 8.58398 11.3869 8.58398 10.7299V1.27006C8.58398 0.569344 7.97083 0 7.3139 0H7.31388ZM1.27008 0C0.569366 0 0 0.613128 0 1.27006V10.7299C0 11.4307 0.61315 12 1.27008 12C1.92702 12 2.54014 11.3869 2.54014 10.7299V1.27006C2.58395 0.569344 1.9708 0 1.27008 0Z);}
-.i_set{fill:#5D6D7E;foreground-size:16dip 18dip;foreground-image:url(path:M7.58398 17.3333C7.47696 17.3333 7.37173 17.3058 7.27836 17.2535L0.403359 13.3994C0.306486 13.3451 0.225833 13.2659 0.169699 13.1701C0.113565 13.0743 0.0839789 12.9652 0.0839844 12.8542V5.14582C0.0839789 5.03477 0.113565 4.92571 0.169699 4.82989C0.225833 4.73406 0.306486 4.65492 0.403359 4.60062L7.27836 0.746449C7.37172 0.694111 7.47695 0.666626 7.58398 0.666626C7.69101 0.666626 7.79625 0.694111 7.88961 0.746449L14.7646 4.60062C14.8615 4.65492 14.9421 4.73406 14.9983 4.82989C15.0544 4.92571 15.084 5.03477 15.084 5.14582V12.8542C15.084 12.9652 15.0544 13.0743 14.9983 13.1701C14.9421 13.2659 14.8615 13.3451 14.7646 13.3994L7.88961 17.2535C7.79625 17.3059 7.69101 17.3333 7.58398 17.3333ZM1.33398 12.4879L7.58398 15.9917L13.834 12.4879V5.51186L7.58398 2.00812L1.33398 5.51186V12.4879ZM7.58398 12.3333C5.74607 12.3333 4.25065 10.8379 4.25065 8.99999C4.25065 7.16207 5.74607 5.66666 7.58398 5.66666C9.4219 5.66666 10.9173 7.16207 10.9173 8.99999C10.9173 10.8379 9.4219 12.3333 7.58398 12.3333ZM7.58398 6.91666C6.43523 6.91666 5.50065 7.85124 5.50065 8.99999C5.50065 10.1487 6.43523 11.0833 7.58398 11.0833C8.73273 11.0833 9.66732 10.1487 9.66732 8.99999C9.66732 7.85124 8.73273 6.91666 7.58398 6.91666Z);}
-.i_debug{fill:#fff;foreground-size:18dip 18dip;foreground-image:url(path:M17.966 10.2551C17.966 10.4494 17.8951 10.6175 17.7531 10.7595C17.6111 10.9015 17.443 10.9725 17.2488 10.9725H14.7383C14.7383 12.2503 14.4881 13.3336 13.9874 14.2227L16.3185 16.5652C16.4605 16.707 16.5315 16.8752 16.5315 17.0696C16.5315 17.2638 16.4606 17.4319 16.3185 17.5739C16.184 17.7157 16.016 17.7867 15.8142 17.7867C15.6125 17.7867 15.4444 17.7157 15.3099 17.5739L13.0907 15.366C13.0534 15.4032 12.9974 15.4518 12.9227 15.5116C12.8479 15.5713 12.691 15.6779 12.4519 15.831C12.2128 15.9842 11.97 16.1206 11.7235 16.2402C11.4768 16.3596 11.1704 16.4681 10.8043 16.5652C10.4382 16.6622 10.0757 16.7109 9.71722 16.7109V6.6689H8.28264V16.7109C7.90175 16.7109 7.52238 16.6604 7.1452 16.5594C6.76774 16.4586 6.44277 16.3353 6.17002 16.1896C5.89724 16.0439 5.65073 15.8983 5.43038 15.7525C5.20992 15.6068 5.04751 15.4854 4.94277 15.3884L4.77475 15.2313L2.72374 17.5514C2.57432 17.7082 2.39503 17.7867 2.18574 17.7867C2.00642 17.7867 1.84586 17.7269 1.70394 17.6074C1.56193 17.4729 1.48532 17.3066 1.474 17.1086C1.46287 16.9107 1.52075 16.737 1.64791 16.5875L3.91174 14.0435C3.47844 13.1915 3.2617 12.1679 3.2617 10.9724H0.751269C0.556893 10.9724 0.388869 10.9014 0.246945 10.7595C0.104931 10.6174 0.0338974 10.4494 0.0338974 10.2551C0.0338974 10.0608 0.104931 9.8926 0.246945 9.75075C0.388869 9.60884 0.556893 9.53792 0.751269 9.53792H3.26168V6.24298L1.32278 4.30408C1.18084 4.16208 1.10984 3.99399 1.10984 3.79974C1.10984 3.6055 1.18093 3.43728 1.32278 3.29541C1.46467 3.15344 1.63283 3.08231 1.82712 3.08231C2.02148 3.08231 2.18945 3.15354 2.33148 3.29541L4.27039 5.23432H13.7297L15.6686 3.29541C15.8105 3.15344 15.9785 3.08231 16.1729 3.08231C16.3672 3.08231 16.5353 3.15354 16.6772 3.29541C16.8192 3.43728 16.8903 3.6055 16.8903 3.79974C16.8903 3.99399 16.8192 4.1621 16.6772 4.30408L14.7383 6.24298V9.53797H17.2487C17.4431 9.53797 17.6112 9.6089 17.7531 9.75091C17.8951 9.89276 17.9661 10.061 17.9661 10.2551L17.966 10.2551ZM12.5863 3.79965H5.41351C5.41351 2.80602 5.76281 1.95978 6.46146 1.26112C7.15991 0.562454 8.00627 0.213257 8.99994 0.213257C9.99362 0.213257 10.84 0.562454 11.5384 1.26112C12.2371 1.95976 12.5863 2.80602 12.5863 3.79965Z);}
-.i_import{fill:#5D6D7E;foreground-size:14dip 16dip;foreground-image:url(path:M12.9161 4.01071L8.91446 0.167857C8.80289 0.0607143 8.65227 0 8.49421 0H0.595041C0.265909 0 0 0.255357 0 0.571429V15.4286C0 15.7446 0.265909 16 0.595041 16H12.4959C12.825 16 13.0909 15.7446 13.0909 15.4286V4.41607C13.0909 4.26429 13.0277 4.11786 12.9161 4.01071ZM11.7186 4.67857H8.21901V1.31786L11.7186 4.67857ZM11.7521 14.7143H1.33884V1.28571H6.95455V5.14286C6.95455 5.55714 7.30413 5.89286 7.73554 5.89286H11.7521V14.7143ZM6.5845 9.21607L5.43533 7.3875C5.39442 7.32321 5.3219 7.28393 5.2438 7.28393H4.52975C4.48698 7.28393 4.44607 7.29464 4.41074 7.31786C4.30661 7.38036 4.275 7.5125 4.34194 7.61429L5.87231 9.94286L4.32149 12.3143C4.29917 12.3482 4.28802 12.3875 4.28802 12.4286C4.28802 12.5464 4.38843 12.6429 4.51116 12.6429H5.15269C5.23079 12.6429 5.30145 12.6036 5.34236 12.5411L6.50826 10.7286L7.66674 12.5393C7.70764 12.6036 7.78017 12.6411 7.85641 12.6411H8.55372C8.59649 12.6411 8.6374 12.6286 8.67459 12.6071C8.77872 12.5429 8.80847 12.4107 8.74153 12.3107L7.17955 9.98214L8.7657 7.61607C8.78802 7.58214 8.80103 7.54107 8.80103 7.5C8.80103 7.38214 8.70062 7.28571 8.57789 7.28571H7.91405C7.83595 7.28571 7.76343 7.325 7.72252 7.38929L6.5845 9.21607V9.21607Z);}
-.i_save{fill:#5D6D7E;foreground-size:16dip 16dip;foreground-image:url(path:M15.1016 4.16094L11.8391 0.898438L11.1781 0.2375C11.1061 0.16543 11.0076 0.125 10.9039 0.125H1.92676C0.931836 0.125 0.125 0.931836 0.125 1.925V14.0732C0.125 15.0682 0.931836 15.875 1.925 15.875H14.0732C15.0682 15.875 15.8732 15.0682 15.8732 14.075V5.09434C15.8732 4.99238 15.8328 4.89395 15.7607 4.82012L15.1016 4.16094ZM3.47715 15.1016V9.39043C3.47715 8.82266 3.9377 8.36387 4.50371 8.36387H11.4963C12.0641 8.36387 12.5229 8.82441 12.5229 9.39043V15.1016H3.47715ZM15.1016 14.075C15.1016 14.6428 14.641 15.1016 14.075 15.1016H13.298V9.39043C13.298 8.39551 12.4912 7.59043 11.498 7.59043H4.50371C3.50879 7.59043 2.70371 8.39727 2.70371 9.39043V15.1016H1.92676C1.35898 15.1016 0.900195 14.641 0.900195 14.075V1.925C0.900195 1.35723 1.36074 0.898438 1.92676 0.898438H2.70371V3.5457C2.70371 4.54063 3.51055 5.3457 4.50371 5.3457H10.2096C10.424 5.3457 10.5963 5.17344 10.5963 4.95898C10.5963 4.74453 10.424 4.57227 10.2096 4.57227H4.50371C3.93594 4.57227 3.47715 4.11172 3.47715 3.5457V0.898438H10.5857C10.6877 0.898438 10.7861 0.938867 10.86 1.01094L14.9891 5.14004C15.0611 5.21211 15.1016 5.31055 15.1016 5.41426V14.075Z);}
-.i_edit{fill:#000;foreground-size:16dip 16dip;foreground-image:url(path:M17.0618 2.66181C16.431 2.02877 15.8443 1.31857 15.1134 0.798317C14.4443 0.659782 14.1215 1.38285 13.662 1.72091C14.4389 2.62328 15.344 3.42039 16.1801 4.274C16.5591 3.82293 17.4568 3.36142 17.0618 2.66183V2.66181ZM16.6464 6.07082C16.116 6.6039 15.5672 7.12172 15.0543 7.67523C15.0416 9.81052 15.0596 11.9456 15.0469 14.0804C15.0363 14.8675 14.3467 15.5649 13.56 15.593C10.3218 15.6057 7.08119 15.6057 3.84298 15.5955C2.96896 15.5722 2.26876 14.7341 2.33814 13.8756C2.3357 10.7843 2.3357 7.69588 2.33814 4.6074C2.27162 3.75115 2.97388 2.92834 3.83808 2.89773C5.98359 2.86939 8.12986 2.90017 10.2729 2.88222C10.8294 2.37994 11.342 1.82867 11.8757 1.30066C9.01939 1.30066 6.16597 1.28556 3.31011 1.30841C1.97664 1.33146 0.78189 2.49783 0.759058 3.83582C0.753745 7.43963 0.74357 11.0408 0.763941 14.6444C0.769253 15.9415 1.87136 17.0665 3.14853 17.1897H14.37C15.5799 16.9772 16.6184 15.9208 16.6338 14.6623C16.6698 11.7995 16.6416 8.93388 16.6465 6.07088L16.6464 6.07082ZM15.7904 4.66881C14.9494 3.82293 14.1036 2.98215 13.2524 2.1465C11.3909 3.99453 9.52451 5.83765 7.67367 7.69588C8.51175 8.53927 9.35519 9.37986 10.2064 10.2129C12.0703 8.3675 13.9313 6.51683 15.7904 4.66882V4.66881ZM6.29693 11.5738C7.4374 11.2637 8.04496 11.0685 9.18582 10.761C9.49064 10.6639 9.69341 10.6052 9.84972 10.5429C9.0422 9.77398 8.11433 8.82629 7.30925 8.05222C6.97097 9.22617 6.63476 10.3999 6.29691 11.5738L6.29693 11.5738Z);}
-.i_del{fill:#E5404F;foreground-size:14dip 16dip;foreground-image:url(path:M15.3153 2.53125H11.9375V1.125C11.9375 0.975816 11.8782 0.832742 11.7728 0.727252C11.6673 0.621763 11.5242 0.5625 11.375 0.5625H4.625C4.47582 0.5625 4.33275 0.621763 4.22726 0.727252C4.12177 0.832742 4.0625 0.975816 4.0625 1.125V2.53125H0.684692C0.535508 2.53125 0.392434 2.59051 0.286945 2.696C0.181456 2.80149 0.122192 2.94457 0.122192 3.09375C0.122192 3.24293 0.181456 3.38601 0.286945 3.4915C0.392434 3.59699 0.535508 3.65625 0.684692 3.65625H1.27813L2.64782 15.9373C2.69389 16.3498 2.89038 16.7309 3.19972 17.0076C3.50906 17.2844 3.90955 17.4374 4.32463 17.4375H11.6748C12.09 17.4375 12.4905 17.2844 12.7999 17.0077C13.1094 16.7309 13.306 16.3499 13.3522 15.9373L14.7219 3.65625H15.3148C15.3886 3.65629 15.4618 3.64177 15.53 3.61354C15.5983 3.58531 15.6603 3.5439 15.7126 3.4917C15.7648 3.43949 15.8063 3.3775 15.8346 3.30927C15.8629 3.24104 15.8775 3.1679 15.8775 3.09403C15.8776 3.02016 15.8631 2.94701 15.8348 2.87875C15.8066 2.81049 15.7652 2.74846 15.713 2.6962C15.6608 2.64394 15.5988 2.60248 15.5306 2.57418C15.4623 2.54587 15.3892 2.53129 15.3153 2.53125V2.53125ZM5.1875 1.6875H10.8125V2.53125H5.1875V1.6875ZM12.2345 15.8124C12.2191 15.95 12.1536 16.077 12.0505 16.1693C11.9473 16.2615 11.8138 16.3125 11.6754 16.3125H4.32463C4.18624 16.3125 4.0527 16.2615 3.94954 16.1693C3.84639 16.077 3.78087 15.95 3.76551 15.8124L2.40988 3.65625H13.5901L12.2345 15.8124V15.8124ZM9.6875 14.4304C9.83669 14.4304 9.97976 14.3711 10.0853 14.2656C10.1907 14.1601 10.25 14.0171 10.25 13.8679V5.60925C10.25 5.46007 10.1907 5.31699 10.0853 5.2115C9.97976 5.10601 9.83669 5.04675 9.6875 5.04675C9.53832 5.04675 9.39525 5.10601 9.28976 5.2115C9.18427 5.31699 9.125 5.46007 9.125 5.60925V13.8679C9.125 14.0171 9.18427 14.1601 9.28976 14.2656C9.39525 14.3711 9.53832 14.4304 9.6875 14.4304ZM6.59375 14.4304C6.74294 14.4304 6.88601 14.3711 6.9915 14.2656C7.09699 14.1601 7.15625 14.0171 7.15625 13.8679V5.60925C7.15625 5.46007 7.09699 5.31699 6.9915 5.2115C6.88601 5.10601 6.74294 5.04675 6.59375 5.04675C6.44457 5.04675 6.3015 5.10601 6.19601 5.2115C6.09052 5.31699 6.03125 5.46007 6.03125 5.60925V13.8679C6.03125 14.0171 6.09052 14.1601 6.19601 14.2656C6.3015 14.3711 6.44457 14.4304 6.59375 14.4304Z);}
-.i_istall{fill:#000;foreground-size:17dip 14dip;foreground-image:url(path:M16.1039 3.53579C16.0613 3.49615 16.0149 3.46073 15.9655 3.43002L11.7818 0.94648C11.6363 0.859088 11.4602 0.849625 11.3904 0.849625H5.45701C5.38614 0.849625 5.20615 0.859459 5.05957 0.950191L1.03784 3.4278L1.03432 3.43002C0.984987 3.46065 0.938753 3.49601 0.896272 3.5356C0.799182 3.5709 0.715286 3.63518 0.655946 3.71975C0.596605 3.80431 0.564687 3.90507 0.564514 4.00837V13.3325C0.564661 13.466 0.617764 13.594 0.71217 13.6884C0.806577 13.7828 0.934577 13.8359 1.06809 13.836H15.9317C16.0649 13.8363 16.1927 13.7837 16.2871 13.6897C16.3815 13.5958 16.4348 13.4683 16.4353 13.3351V4.00837C16.4351 3.90514 16.4032 3.80446 16.3439 3.71994C16.2847 3.63542 16.2009 3.57113 16.1039 3.53579V3.53579ZM5.49969 1.82616H11.3504L14.1777 3.5048H2.77493L5.49969 1.82616ZM15.458 12.8593H1.54198V4.48152H15.458V12.8593ZM11.4619 8.64927L10.7388 7.99262L8.98834 9.9199V5.64434H8.01162V9.9199L6.26117 7.99262L5.5381 8.64927L8.49998 11.9101L11.4619 8.64927V8.64927Z);}
+.btn {
+    flow: horizontal;
+    min-height: 32dip;
+    vertical-align: middle;
+    alignment: center;
+    padding: 0 var(--space-md);
+    font-size: 12dip;
+    line-height: 16dip;
+    font-weight: 500;
+    border: 1dip solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.btn > i {
+    size: 16dip;
+    display: inline-block;
+    foreground-repeat: no-repeat;
+    foreground-position: 50% 50%;
+    stroke-width: 0;
+    margin: 0 var(--space-xs) 0 0;
+}
+
+.btn > i {
+    size: 16dip;
+    display: inline-block;
+    foreground-repeat: no-repeat;
+    foreground-position: 50% 50%;
+    stroke-width: 0;
+    margin: 0 var(--space-xs) 0 0;
+}
+
+.btn:hover:not(:disabled) {
+    background: var(--bg-elevated);
+    border-color: var(--surface-border);
+}
+
+.btn:active:not(:disabled) {
+    background: var(--bg-hover);
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Primary button (cyan) */
+.bluebtn {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: #fff;
+    font-weight: 600;
+}
+
+.bluebtn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+/* Destructive button (orange/red) */
+.redbtn {
+    background: var(--accent-destructive);
+    border-color: var(--accent-destructive);
+    color: #fff;
+    font-weight: 600;
+}
+
+.redbtn:hover:not(:disabled) {
+    background: var(--accent-destructive-hover);
+    border-color: var(--accent-destructive-hover);
+}
+
+/* Success button (green) */
+.greenbtn {
+    background: var(--accent-success);
+    border-color: var(--accent-success);
+    color: #fff;
+    font-weight: 600;
+}
+
+.greenbtn:hover:not(:disabled) {
+    background: #0a8a82;
+    border-color: #0a8a82;
+}
+
+/* Secondary button (line) */
+.linebtn {
+    background: transparent;
+    border-color: var(--surface-border);
+    color: var(--text-primary);
+}
+
+.linebtn:hover:not(:disabled) {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+}
+
+.linebtn > i { fill: var(--text-secondary); }
+.linebtn:hover > i { fill: var(--text-primary); }
+
+/* Utility button (grey) */
+.greybtn {
+    background: var(--bg-secondary);
+    border-color: var(--surface-border);
+    color: var(--text-primary);
+}
+
+.greybtn:hover:not(:disabled) {
+    background: var(--bg-elevated);
+    border-color: var(--surface-border);
+}
+
+/* Icon-only button */
+.ibtn {
+    size: 28dip;
+    background: transparent;
+    padding: 0;
+    margin: 0 2dip 0 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.ibtn > i {
+    size: 16dip;
+    display: inline-block;
+    foreground-repeat: no-repeat;
+    foreground-position: 50% 50%;
+    stroke-width: 0;
+}
+
+.ibtn:hover {
+    background: var(--bg-hover);
+}
+
+.ibtn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Toolbar */
+.btntoolbar {
+    width: *;
+    height: 52dip;
+    padding: 0 var(--space-md);
+    flow: horizontal;
+    vertical-align: middle;
+    background: var(--bg-secondary);
+    border-bottom: 1dip solid var(--surface-border);
+}
+
+.btntoolbar span {
+    color: var(--surface-border);
+    font-size: 16dip;
+    padding: 0 var(--space-md);
+}
+
+.btntoolbar .btn {
+    margin: 0 var(--space-sm);
+}
+
+.onebtn { margin-left: 0; }
+
+/* Dialog bottom bar */
+.dlgbtm {
+    width: *;
+    height: 56dip;
+    padding: 0 var(--space-lg);
+    text-align: center;
+    border-top: 1dip solid var(--surface-border);
+    vertical-align: middle;
+    background: var(--bg-secondary);
+}
+
+.dlgbtm .btn {
+    width: 80dip;
+    horizontal-align: center;
+    margin: 0 var(--space-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORM ELEMENTS
+   ═══════════════════════════════════════════════════════════════ */
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    font-size: 13dip;
+    background: var(--bg-primary);
+    border: 1dip solid var(--surface-border);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    height: 32dip;
+    padding: 0 var(--space-sm);
+}
+
+textarea {
+    padding: var(--space-sm);
+    min-height: 80dip;
+    resize: vertical;
+    line-height: 1.4;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--accent-primary);
+    width: 16dip;
+    height: 16dip;
+    cursor: pointer;
+}
+
+label {
+    color: var(--text-secondary);
+    font-size: 12dip;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN PAGE SPECIFIC
+   ═══════════════════════════════════════════════════════════════ */
+
+terminal#log {
+    behavior: virtual-list;
+    prototype: Logger;
+    background: #d8d8d8;
+    border-color: var(--surface-border);
+    overflow: scroll-indicator;
+    font-family: monospace;
+    font-size: 12dip;
+    color: #3a3a3a;
+}
+
+text.info {
+    color: var(--accent-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DIALOGS
+   ═══════════════════════════════════════════════════════════════ */
+
+.wswitch {
+    width: 800dip;
+    height: 550dip;
+}
+
+div#switches {
+    flow: horizontal-wrap;
+    padding: var(--space-md);
+    width: *;
+    height: 100%%;
+    overflow: scroll-indicator;
+}
+
+div#sw {
+    flow: horizontal;
+    width: 380dip;
+    margin: 2dip;
+    vertical-align: middle;
+}
+
+.wtask {
+    window-width: 680dip;
+    window-height: 500dip;
+}
+
+.wconfig {
+    window-width: 800;
+    window-height: 650;
+}
+
+.taskmian,
+.wconfigmian {
+    width: *;
+    height: calc(100%% - 56dip);
+    padding: var(--space-lg);
+    overflow: scroll-indicator;
+    background: var(--bg-secondary);
+}
+
+/* Task form */
+.taskmian li {
+    width: 95%%;
+    min-height: max-content;
+    margin: var(--space-md) 0;
+}
+
+.taskmian li span {
+    display: inline-block;
+    width: 80dip;
+    height: max-content;
+    text-align: right;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 12dip;
+}
+
+.taskmian li span.b {
+    width: 80dip;
+    height: 140dip;
+}
+
+.taskmian li input.ipt {
+    width: 100%%;
+    height: 32dip;
+}
+
+.taskmian li textarea {
+    display: inline-block;
+    word-wrap: break-word;
+    width: calc(100%% - 90dip);
+    height: 100dip;
+    margin-left: var(--space-sm);
+}
+
+.taskmian li select {
+    width: 50%%;
+    height: 32dip;
+}
+
+.taskmian li button {
+    margin: 0 0 0 var(--space-sm);
+}
+
+.taskmian li p {
+    padding-left: 84dip;
+}
+
+.taskmian li p button {
+    margin: 0 var(--space-sm) 0 0;
+}
+
+/* Config form */
+.keybox {
+    flow: horizontal;
+    height: 36dip;
+    vertical-align: middle;
+    padding: var(--space-sm) 0;
+    margin-bottom: var(--space-md);
+}
+
+.keybox span {
+    margin: 0 0 0 var(--space-sm);
+    color: var(--text-secondary);
+}
+
+.modulelist,
+.authslist {
+    width: *;
+}
+
+.modulelist > span,
+.authslist > span {
+    display: block;
+    width: *;
+    padding: var(--space-sm) 0;
+    margin-top: var(--space-md);
+    font-weight: 600;
+    font-size: 11dip;
+    text-transform: uppercase;
+    letter-spacing: 0.5dip;
+    color: var(--text-secondary);
+}
+
+.modulelist ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.modulelist ul li {
+    position: relative;
+    vertical-align: middle;
+    height: 48dip;
+    border-bottom: 1dip solid var(--surface-divider);
+    padding: var(--space-sm) 0;
+    flow: horizontal;
+}
+
+.modulelist ul li span {
+    display: inline-block;
+    margin: 0 var(--space-md) 0 0;
+    color: var(--text-secondary);
+}
+
+.modulelist ul li button.btn {
+    margin: 0 var(--space-sm) 0 0;
+    height: 32dip;
+}
+
+.modulelist ul li button.ibtn {
+    position: absolute;
+    right: 0;
+    top: 10dip;
+}
+
+.modulelist ul li input[type="text"] {
+    height: 32dip;
+    margin-right: var(--space-sm);
+}
+
+.modulelist ul li input.urlipt {
+    width: 85%%;
+}
+
+.modulelist ul li input[type="checkbox"] {
+    padding: 0 var(--space-sm) 0 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ICONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.i_add {
+    fill: var(--text-secondary);
+    foreground-size: 14dip 14dip;
+    foreground-image: url(path: M11 5v6H6v5h5v-5h5V9h-5V4h-5v1zm3-3V2H6v3h5v5h5V7h-5V2h-3z);
+}
+
+.i_start {
+    fill: currentColor;
+    foreground-size: 12dip 14dip;
+    foreground-image: url(path: M1.5 1l9 6-9 6v-12z);
+}
+
+.i_stop {
+    fill: currentColor;
+    foreground-size: 12dip 14dip;
+    foreground-image: url(path: M2 2h5v10H2V2zm7 0h5v10H9V2z);
+}
+
+.i_set {
+    fill: var(--text-secondary);
+    foreground-size: 18dip 18dip;
+    foreground-image: url(path: M19.14 12.94c.04-.3.06-.61.06-.94 0-1.49-.89-2.78-2.17-3.37l2.47-2.47c.19-.19.19-.51 0-.71l-2.83-2.83c-.19-.19-.51-.19-.71 0l-2.47 2.47c-.59-.29-1.88-1.17-3.37-2.17-.33 0-.64.02-.94.06l-2.53-2.53c-.3-.3-.79-.3-1.09 0l-2.12 2.12c-.3.3-.3.79 0 1.09l2.53 2.53c-.04.3-.06.61-.06.94 0 1.49.89 2.78 2.17 3.37l-2.47 2.47c-.19.19-.19.51 0 .71l2.83 2.83c.19.19.51.19.71 0l2.47-2.47c.59.29 1.88 1.17 3.37 2.17.33 0 .64-.02.94-.06l2.53 2.53c.3.3.79.3 1.09 0l2.12-2.12c.3-.3.3-.79 0-1.09l-2.53-2.53zM11 13c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1z);
+}
+
+.i_debug {
+    fill: currentColor;
+    foreground-size: 18dip 18dip;
+    foreground-image: url(path: M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-1.17 1.17C13.68 3.66 12.87 3.5 12 3.5s-1.68.16-2.42.67L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c.05.33.12.66.23.97l-1.32 1.32 1.41 1.41 1.32-1.32c.31.11.64.18.97.23V16h2v-2.09c.33-.05.66-.12.97-.23l1.32 1.32 1.41-1.41-1.32-1.32c.11-.31.18-.64.23-.97H20V8zm-8 3c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z);
+}
+
+.i_import {
+    fill: var(--text-secondary);
+    foreground-size: 16dip 16dip;
+    foreground-image: url(path: M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z);
+}
+
+.i_save {
+    fill: var(--text-secondary);
+    foreground-size: 16dip 16dip;
+    foreground-image: url(path: M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z);
+}
+
+.i_edit {
+    fill: var(--text-secondary);
+    foreground-size: 16dip 16dip;
+    foreground-image: url(path: M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z);
+}
+
+.i_del {
+    fill: var(--accent-destructive);
+    foreground-size: 16dip 16dip;
+    foreground-image: url(path: M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z);
+}
+
+.i_istall {
+    fill: var(--text-secondary);
+    foreground-size: 18dip 16dip;
+    foreground-image: url(path: M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z);
+}
+
+.i_test {
+    fill: currentColor;
+    foreground-size: 12dip 14dip;
+    foreground-image: url(path: M22 11V3h-7v3H9V3H2v8h7V8h2v3h7v-2h4zM4 9V5h3v4H4zm6 0V5h4v4h-4zm7 0V5h3v4h-3z);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBARS (Sciter native styling)
+   ═══════════════════════════════════════════════════════════════ */
+
+scrollbar {
+    width: 10dip;
+    height: 10dip;
+}
+
+scrollbar > track {
+    background: var(--bg-secondary);
+}
+
+scrollbar > thumb {
+    background: var(--surface-border);
+    border-radius: 5dip;
+}
+
+scrollbar > thumb:hover {
+    background: var(--text-muted);
+}

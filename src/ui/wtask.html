@@ -1,31 +1,56 @@
 <!DOCTYPE html>
-<html lang="en" window-width="800" window-height="600">
+<html lang="en" window-width="720" window-height="540">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task</title>
+    <title>Task — YARU</title>
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="wtask.js"></script>
-    <style> *{margin:0;} </style>
 </head>
 <body>
-    <div.taskmian>
-        <li><span>Enabled:</span> <input #enabled type="checkbox"/></li>
-        <li><span>ID:</span> <label #id></label></li>
-        <li><span>Src:</span> <select #authsrc></select><input .ipt #src type="text"/><button .btn .greybtn #browsesrc>Select...</button></li>
-        <li><span>Dest:</span> <select #authdst></select><input .ipt #dst type="text"/><button .btn .greybtn #browsedst>Select...</button></li>
+    <div class="taskmian">
         <li>
-            <div.h-flow><span.b>Exclude:</span> <textarea #exclude type="text"/></div>
-            <p><button .btn .linebtn #import><i .i_import/>Import</button> <button .btn .linebtn #export><i .i_save/>Save As</button></p>
+            <span>Enabled:</span>
+            <input id="enabled" type="checkbox"/>
         </li>
-        <li><span>Params:</span> <input .ipt #params type="text"/><button .btn .greybtn #swch>Set >></button></li>
+        <li>
+            <span>ID:</span>
+            <label id="id"></label>
+        </li>
+        <li>
+            <span>Src:</span>
+            <select id="authsrc"></select>
+            <input class="ipt" id="src" type="text"/>
+            <button class="btn greybtn" id="browsesrc">Select...</button>
+        </li>
+        <li>
+            <span>Dest:</span>
+            <select id="authdst"></select>
+            <input class="ipt" id="dst" type="text"/>
+            <button class="btn greybtn" id="browsedst">Select...</button>
+        </li>
+        <li>
+            <div class="h-flow">
+                <span class="b">Exclude:</span>
+                <textarea id="exclude" type="text"></textarea>
+            </div>
+            <p>
+                <button class="btn linebtn" id="import"><i class="i_import"></i>Import</button>
+                <button class="btn linebtn" id="export"><i class="i_save"></i>Save As</button>
+            </p>
+        </li>
+        <li>
+            <span>Params:</span>
+            <input class="ipt" id="params" type="text"/>
+            <button class="btn greybtn" id="swch">Set >></button>
+        </li>
     </div>
-    
-    <div .dlgbtm>
-        <button .btn .linebtn #swap>Src<->Dest</button>
-        <button .btn .bluebtn #ok>OK</button>
-        <button .btn .linebtn #cancel>Cancel</button>
+
+    <div class="dlgbtm">
+        <button class="btn linebtn" id="swap">Src&lt;-&gt;Dest</button>
+        <button class="btn bluebtn" id="ok">OK</button>
+        <button class="btn linebtn" id="cancel">Cancel</button>
     </div>
 </body>
 </html>
