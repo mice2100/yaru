@@ -13,7 +13,10 @@ const elTask = document.$("table>tbody")
 var processRsync
 var processDaemon
 var stopping = false
-const terminal = document.$("terminal").terminal;
+const terminal = document.$("terminal").terminal
+
+// Config dialog element reference
+let configDialogElement = null
 
 function fnNewLine(cline, cls){
     let txt=""
@@ -175,22 +178,15 @@ document.on("click", "#rmtask", function (evt, el) {
 })
 
 document.on("click", "#config", function (evt) {
-    document.state.disabled = true;
-
-    var retval = document.popup(
-        <ConfigDialog />,
-        {
-            anchorAt: 7,
-            animationType: "blend"
-        }
-    );
-
-    if (retval) {
-        init()
-    }
-
-    document.state.disabled = false;
+    showConfigPopup()
 })
+
+function showConfigPopup() {
+    document.popup(<ConfigDialog />, {
+      anchorAt: 5,
+        animationType: "blend"
+    })
+}
 
 document.on("click", "#startserv", async ()=>{
     document.$("#startserv").disabled = true

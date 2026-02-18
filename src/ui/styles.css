@@ -142,7 +142,7 @@ table > tbody > tr:current {
 
 table td {
     border: none;
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-sm) var(--space-sm);
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
@@ -171,6 +171,9 @@ td input[type="checkbox"] {
 
 /* Custom Table Styles */
 @set customtable_index {
+    td {
+        padding: var(--space-sm);
+    }
     td > input[type=checkbox] { margin-left: -14dip; }
     td:first-child { text-align: left; }
     td:nth-child(1), th:nth-child(1) { width: 50dip; text-align: center; }
@@ -203,7 +206,11 @@ td input[type="checkbox"] {
 }
 
 .indextable { style-set: customtable_index; }
-.configtable { margin-top: var(--space-sm); }
+.configtable {
+    margin-top: var(--space-sm);
+    width: *;
+    overflow-x: auto;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    BUTTONS
@@ -374,23 +381,6 @@ td input[type="checkbox"] {
 
 .onebtn { margin-left: 0; }
 
-/* Dialog bottom bar */
-.dlgbtm {
-    width: *;
-    height: 56dip;
-    padding: 0 var(--space-lg);
-    text-align: center;
-    border-top: 1dip solid var(--surface-border);
-    vertical-align: middle;
-    background: var(--bg-secondary);
-}
-
-.dlgbtm .btn {
-    width: 80dip;
-    horizontal-align: center;
-    margin: 0 var(--space-sm);
-}
-
 /* ═══════════════════════════════════════════════════════════════
    FORM ELEMENTS
    ═══════════════════════════════════════════════════════════════ */
@@ -495,10 +485,11 @@ div#sw {
 
 .taskmian,
 .wconfigmian {
+    flow: vertical;
     width: *;
-    height: calc(100%% - 56dip);
     padding: var(--space-lg);
-    overflow: scroll-indicator;
+    overflow-x: hidden;
+    overflow-y: auto;
     background: var(--bg-secondary);
 }
 
@@ -557,20 +548,42 @@ div#sw {
 /* Config form */
 .keybox {
     flow: horizontal;
-    height: 36dip;
+    height: 40dip;
     vertical-align: middle;
     padding: var(--space-sm) 0;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.keybox b {
+    font-weight: 600;
+    font-size: 13dip;
+    color: var(--text-primary);
+    vertical-align: middle;
 }
 
 .keybox span {
     margin: 0 0 0 var(--space-sm);
     color: var(--text-secondary);
+    vertical-align: middle;
 }
 
 .modulelist,
 .authslist {
+    flow: vertical;
     width: *;
+    overflow-y: auto;
+    max-height: 250dip;
+}
+
+.module-list {
+    flow: vertical;
+    overflow-y: auto;
+    max-height: 200dip;
+}
+
+.module-list > li {
+    flow: horizontal;
+    vertical-align: middle;
 }
 
 .modulelist > span,
@@ -625,6 +638,17 @@ div#sw {
 
 .modulelist ul li input.urlipt {
     width: 85%%;
+    height: 32dip;
+    vertical-align: middle;
+}
+
+.modulelist ul li button {
+    height: 32dip;
+    vertical-align: middle;
+}
+
+.modulelist ul li span {
+    vertical-align: middle;
 }
 
 .modulelist ul li input[type="checkbox"] {
@@ -721,4 +745,52 @@ scrollbar > thumb {
 
 scrollbar > thumb:hover {
     background: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG POPUP
+   ═══════════════════════════════════════════════════════════════ */
+
+.config-popup-wrapper {
+    flow: vertical;
+    width: 850dip;
+    height: 620dip;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 1dip solid var(--surface-border);
+    box-shadow: 0 8dip 32dip rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG PANEL OVERLAY (deprecated - now using popup)
+   ═══════════════════════════════════════════════════════════════ */
+
+#config-panel {
+    flow: stack;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    animation: fade-in 0.2s ease-out;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#config-panel > div {
+    flow: vertical;
+    margin: *;
+    width: 850dip;
+    max-height: calc(100% - 40dip);
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 1dip solid var(--surface-border);
+    box-shadow: 0 8dip 32dip rgba(0, 0, 0, 0.3);
+    overflow: hidden; /* Prevent outer scrolling */
 }

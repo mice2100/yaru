@@ -4,9 +4,13 @@ import * as utils from './utils.js';
 
 export class AuthTable extends Element {
     auths = [];
+    sshroot = "";
+    keyexists = false;
 
     this(props) {
         this.auths = props.auths || [];
+        this.sshroot = props.sshroot || "";
+        this.keyexists = props.keyexists || false;
     }
 
     // Delete button handler
@@ -14,7 +18,7 @@ export class AuthTable extends Element {
         const tr = el.$p("tr");
         const id = Number(tr.getAttribute("data"));
         uconfig.removeAuth(id);
-        this.componentUpdate({ auths: uconfig.configs.auths });
+        this.componentUpdate();
     }
 
     // Install Key button handler
@@ -76,6 +80,22 @@ export class AuthTable extends Element {
         tr.$(".btn-test").style.display = isSsh ? "inline-block" : "none";
     }
 
+    // Generate SSH Key button handler
+    ["on click at #btngen"](evt, el) {
+        (async () => {
+            await uconfig.genSSHKey();
+            this.keyexists = uconfig.configs.ssh.keyexists;
+            this.componentUpdate();
+        })();
+    }
+
+    // New auth button handler
+  ["on click at #newauth"](evt, el) {
+        uconfig.newAuth();
+    this.auths = uconfig.configs.auths;
+        this.componentUpdate();
+    }
+
     // Field value change handlers
     ["on change at .field-host"](evt, el) {
         const tr = el.$p("tr");
@@ -100,9 +120,30 @@ export class AuthTable extends Element {
 
     render(props, kids) {
         const auths = props.auths || this.auths || [];
+        const sshroot = props.sshroot || this.sshroot || "";
+        const keyexists = props.keyexists !== undefined ? props.keyexists : this.keyexists;
 
         return (
-            <table class="configtable">
+            <div style="flow: vertical;">
+                {/* SSH Key Folder Section */}
+                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 16dip;">
+                    <div style="flow: horizontal; vertical-align: middle; width: *;">
+                        <b style="margin-right: 8dip;">SSH Key folder:</b>
+                        <span id="sshroot" style="color: var(--text-secondary);">{sshroot}</span>
+                    </div>
+                    <button.btn .greybtn #btngen if={keyexists === false} style="height: 32dip; margin-left: 12dip;">Generate</button>
+                </div>
+
+                {/* Auths Header Section */}
+                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 16dip;">
+                    <div style="flow: horizontal; vertical-align: middle; width: *;">
+                        <b style="margin-right: 12dip;">Auths:</b>
+                    </div>
+                    <button.btn .linebtn #newauth style="height: 32dip;"><i .i_add />New</button>
+                </div>
+
+                {/* Auths Table */}
+                <table class="configtable">
                 <thead>
                     <th value="1">ID</th>
                     <th value="2">Type</th>
@@ -144,6 +185,7 @@ export class AuthTable extends Element {
                     })}
                 </tbody>
             </table>
+            </div>
         );
     }
 }

@@ -48,25 +48,27 @@ export class DaemonModuleList extends Element {
 
         return (
             <div .modulelist>
-                <span>
-                    <b>Daemon Config:</b>
-                    <button .btn linebtn .btn-new-module><i .i_add />New</button>
-                </span>
-                <ul .module-list>
+                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 12dip;">
+                    <div style="flow: horizontal; vertical-align: middle; width: *;">
+                        <b style="margin-right: 12dip;">Daemon Config:</b>
+                    </div>
+                    <button .btn linebtn .btn-new-module style="height: 32dip;"><i .i_add />New</button>
+                </div>
+                <ul .module-list style="border-spacing: 8dip;">
                     {modules.map((m, idx) => (
-                        <li .module-item data={idx}>
-                            <input|text .field-module value={m.module} />
-                            <input .urlipt .field-path value={m.path} />
-                            <button .btn greybtn .btn-browse-module data={idx}>Select...</button>
-                            <span>
+                        <li .module-item data={idx} style="flow: horizontal; vertical-align: middle; height: 36dip; border-spacing: 8dip;">
+                            <input|text .field-module value={m.module} style="height: 32dip;" />
+                            <input .urlipt .field-path value={m.path} style="height: 32dip;" />
+                            <button .btn greybtn .btn-browse-module data={idx} style="height: 32dip; min-width: 70dip;">Select...</button>
+                            <span style="flow: horizontal; vertical-align: middle; border-spacing: 4dip;">
                                 <input type="checkbox" .field-readonly checked={m.readonly || false} />
-                                <label for="readonly">read only</label>
+                                <label for="readonly">RO</label>
                             </span>
-                            <span>
+                            <span style="flow: horizontal; vertical-align: middle; border-spacing: 4dip;">
                                 <input type="checkbox" .field-writeonly checked={m.writeonly || false} />
-                                <label for="writeonly">write only</label>
+                                <label for="writeonly">WO</label>
                             </span>
-                            <button .ibtn .btn-remove-module data={idx}><i .i_del /></button>
+                            <button .ibtn .btn-remove-module data={idx} style="height: 32dip; width: 32dip;"><i .i_del /></button>
                         </li>
                     ))}
                 </ul>
