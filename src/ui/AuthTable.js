@@ -14,7 +14,7 @@ export class AuthTable extends Element {
     }
 
     // Delete button handler
-    ["on click at .btn-delete"](evt, el) {
+    ["on click at #delete"](evt, el) {
         const tr = el.$p("tr");
         const id = Number(tr.getAttribute("data"));
         uconfig.removeAuth(id);
@@ -22,7 +22,7 @@ export class AuthTable extends Element {
     }
 
     // Install Key button handler
-    ["on click at .btn-install"](evt, el) {
+    ["on click at #install"](evt, el) {
         const tr = el.$p("tr");
         const id = Number(tr.getAttribute("data"));
         const a = uconfig.findAuth(id);
@@ -34,7 +34,7 @@ export class AuthTable extends Element {
     }
 
     // Test button handler
-    ["on click at .btn-test"](evt, el) {
+    ["on click at #test"](evt, el) {
         const tr = el.$p("tr");
         const id = Number(tr.getAttribute("data"));
         const a = uconfig.findAuth(id);
@@ -68,16 +68,7 @@ export class AuthTable extends Element {
         const id = Number(tr.getAttribute("data"));
         const a = uconfig.findAuth(id);
         a.type = el.value;
-
-        // Update field visibility based on type
-        const isLocal = a.type === "local";
-        const isSsh = a.type === "ssh";
-
-        tr.$(".field-host").style.display = isLocal ? "none" : "inline-block";
-        tr.$(".field-user").style.display = isLocal ? "none" : "inline-block";
-        tr.$(".field-port").style.display = isLocal ? "none" : "inline-block";
-        tr.$(".btn-install").style.display = isSsh ? "inline-block" : "none";
-        tr.$(".btn-test").style.display = isSsh ? "inline-block" : "none";
+        this.componentUpdate();
     }
 
     // Generate SSH Key button handler
@@ -90,9 +81,9 @@ export class AuthTable extends Element {
     }
 
     // New auth button handler
-  ["on click at #newauth"](evt, el) {
+    ["on click at #newauth"](evt, el) {
         uconfig.newAuth();
-    this.auths = uconfig.configs.auths;
+        this.auths = uconfig.configs.auths;
         this.componentUpdate();
     }
 
@@ -131,7 +122,7 @@ export class AuthTable extends Element {
                         <b style="margin-right: 8dip;">SSH Key folder:</b>
                         <span id="sshroot" style="color: var(--text-secondary);">{sshroot}</span>
                     </div>
-                    <button.btn .greybtn #btngen if={keyexists === false} style="height: 32dip; margin-left: 12dip;">Generate</button>
+                    {!keyexists && <button class="btn greybtn" #btngen style="height: 32dip; margin-left: 12dip;">Generate</button>}
                 </div>
 
                 {/* Auths Header Section */}
@@ -139,53 +130,60 @@ export class AuthTable extends Element {
                     <div style="flow: horizontal; vertical-align: middle; width: *;">
                         <b style="margin-right: 12dip;">Auths:</b>
                     </div>
-                    <button.btn .linebtn #newauth style="height: 32dip;"><i .i_add />New</button>
+                    <button.btn.linebtn #newauth style="height: 32dip;"><i.i_add />New</button>
                 </div>
 
                 {/* Auths Table */}
                 <table class="configtable">
-                <thead>
-                    <th value="1">ID</th>
-                    <th value="2">Type</th>
-                    <th value="3">Host</th>
-                    <th value="4">User</th>
-                    <th value="5">Port</th>
-                    <th value="6">Actions</th>
-                </thead>
-                <tbody>
-                    {auths.map(a => {
-                        const isLocal = a.type === "local";
-                        const isSsh = a.type === "ssh";
-                        return (
-                            <tr data={a.id}>
-                                <td>{String(a.id)}</td>
-                                <td>
-                                    <select|dropdown .auth-type-select value={a.type}>
-                                        <option value="ssh">ssh</option>
-                                        <option value="local">local</option>
-                                        <option value="rsync">rsync</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input|text .field-host value={a.host}  />
-                                </td>
-                                <td>
-                                    <input|text .field-user value={a.user}  />
-                                </td>
-                                <td>
-                                    <input|text .field-port value={a.port}  />
-                                </td>
-                                <td>
-                                    <button title="Delete" .ibtn .btn-delete><i .i_del /></button>
-                                    <button title="Install Key" .ibtn .btn-install><i .i_istall /></button>
-                                    <button title="Test" .ibtn .btn-test><i .i_test /></button>
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-            </div>
+                    <thead>
+                        <tr>
+                            <th value="1">ID</th>
+                            <th value="2">Type</th>
+                            <th value="3">Host</th>
+                            <th value="4">User</th>
+                            <th value="5">Port</th>
+                            <th value="6">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {auths.map(a => {
+                            let actions = <div>
+                                <button title="Delete" class="ibtn" #delete> <i class="i_del"></i></button>
+                                {a.type === "ssh" && <button title="Install Key" class="ibtn" #install> <i class="i_istall"></i></button>}
+                                {a.type === "ssh" && <button title="Test" class="ibtn" #test><i class="i_test"></i>{a.type}</button>}
+                            </div>
+                            return (
+                                <tr data={a.id}>
+                                    <td>{String(a.id)}</td>
+                                    <td>
+                                        <select type="dropdown" class="auth-type-select">
+                                            {["ssh", "local", "rsync"].map(t => {
+                                                if (t === a.type) {
+                                                    return <option value={t} selected>{t}</option>
+                                                } else {
+                                                    return <option value={t}>{t}</option>
+                                                }
+                                            })}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        {a.type !== "local" && <input type="text" class="field-host" value={a.host}> </input>}
+                                    </td>
+                                    <td>
+                                        {a.type !== "local" && <input type="text" class="field-user" value={a.user}> </input>}
+                                    </td>
+                                    <td>
+                                        {a.type !== "local" && <input type="text" class="field-port" value={a.port}> </input>}
+                                    </td >
+                                    <td>
+                                        {actions}
+                                    </td >
+                                </tr >
+                            );
+                        })}
+                    </tbody>
+                </table >
+            </div >
         );
     }
 }
