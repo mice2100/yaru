@@ -22,7 +22,6 @@ function fnNewLine(cline, cls) {
             txt = xt.red(cline)
             break;
     }
-    console.log(txt);
     document.$("terminal").terminal.write(txt + "\r\n");
 }
 
@@ -79,6 +78,7 @@ async function runit(dryrun = false) {
                 processRsync.stdout.close()
                 await pout
                 await perr
+                processRsync = null;
                 fnNewLine(`Task ${t.id} done with result:${r.exit_status} and ${r.term_signal}`, "info")
                 fnNewLine("", "msg")
             }
@@ -165,4 +165,10 @@ document.on("click", "#startserv", async () => {
 
     daemonRunning = false
     setDaemonBtn(false)
+})
+
+document.on("closerequest", () => {
+    if (processRsync && processRsync.pid) processRsync.kill()
+    if (processDaemon && processDaemon.pid) processDaemon.kill()
+    return true
 })
