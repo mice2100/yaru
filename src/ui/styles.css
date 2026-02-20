@@ -85,10 +85,6 @@ splitter:hover {
     background: var(--accent-primary);
 }
 
-.h-flow {
-    flow: horizontal;
-}
-
 /* ═══════════════════════════════════════════════════════════════
    TABLES
    ═══════════════════════════════════════════════════════════════ */
@@ -172,7 +168,7 @@ td input[type="checkbox"] {
     accent-color: var(--accent-primary);
 }
 
-/* Custom Table Styles */
+/* Task Table */
 @set tasktable {
     td {
         padding: var(--space-sm);
@@ -221,6 +217,7 @@ td input[type="checkbox"] {
     }
 }
 
+/* Config Table (AuthTable in ConfigDialog) */
 @set customtable_config {
 
     td>select,
@@ -258,7 +255,7 @@ td input[type="checkbox"] {
     }
 
     th:nth-child(5) {
-        width: 120dip;
+        width: 70dip;
     }
 
     th:nth-child(6) {
@@ -272,16 +269,6 @@ td input[type="checkbox"] {
     th:last-child {
         text-align: center;
     }
-}
-
-.indextable {
-    style-set: customtable_index;
-}
-
-.configtable {
-    margin-top: var(--space-sm);
-    width: *;
-    overflow-x: auto;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -302,15 +289,6 @@ td input[type="checkbox"] {
     cursor: pointer;
     background: var(--bg-tertiary);
     color: var(--text-primary);
-}
-
-.btn>i {
-    size: 16dip;
-    display: inline-block;
-    foreground-repeat: no-repeat;
-    foreground-position: 50% 50%;
-    stroke-width: 0;
-    margin: 0 var(--space-xs) 0 0;
 }
 
 .btn>i {
@@ -511,21 +489,8 @@ label {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MAIN PAGE SPECIFIC
-   ═══════════════════════════════════════════════════════════════ */
-
-text.info {
-    color: var(--accent-primary);
-}
-
-/* ═══════════════════════════════════════════════════════════════
    DIALOGS
    ═══════════════════════════════════════════════════════════════ */
-
-.wswitch {
-    width: 800dip;
-    height: 550dip;
-}
 
 div#switches {
     flow: horizontal-wrap;
@@ -535,66 +500,17 @@ div#switches {
     overflow: scroll-indicator;
 }
 
-div#sw {
-    flow: horizontal;
-    width: 380dip;
-    margin: 2dip;
-    vertical-align: middle;
-}
+/* ═══════════════════════════════════════════════════════════════
+   MODULE LIST (DaemonModuleList)
+   ═══════════════════════════════════════════════════════════════ */
 
-.wtask {
-    window-width: 680dip;
-    window-height: 500dip;
-}
-
-.wconfig {
-    window-width: 800;
-    window-height: 650;
-}
-
-.wconfigmian {
+.modulelist {
     flow: vertical;
     width: *;
-    padding: var(--space-lg);
-    overflow-x: hidden;
-    overflow-y: auto;
-    background: var(--bg-secondary);
-}
-
-/* Config form */
-.keybox {
-    flow: horizontal;
-    height: 40dip;
-    vertical-align: middle;
-    padding: var(--space-sm) 0;
-    margin-bottom: var(--space-lg);
-}
-
-.keybox b {
-    font-weight: 600;
-    font-size: 13dip;
-    color: var(--text-primary);
-    vertical-align: middle;
-}
-
-.keybox span {
-    margin: 0 0 0 var(--space-sm);
-    color: var(--text-secondary);
-    vertical-align: middle;
-}
-
-.modulelist,
-.authslist {
-    flow: vertical;
-    width: *;
-    overflow-y: auto;
-    max-height: 250dip;
 }
 
 .module-list {
     flow: vertical;
-    overflow-y: auto;
-    max-height: 200dip;
 }
 
 .module-list>li {
@@ -602,8 +518,7 @@ div#sw {
     vertical-align: middle;
 }
 
-.modulelist>span,
-.authslist>span {
+.modulelist>span {
     display: block;
     width: *;
     padding: var(--space-sm) 0;
@@ -634,6 +549,7 @@ div#sw {
     display: inline-block;
     margin: 0 var(--space-md) 0 0;
     color: var(--text-secondary);
+    vertical-align: middle;
 }
 
 .modulelist ul li button.btn {
@@ -642,9 +558,7 @@ div#sw {
 }
 
 .modulelist ul li button.ibtn {
-    position: absolute;
-    right: 0;
-    top: 10dip;
+    margin-left: auto;
 }
 
 .modulelist ul li input[type="text"] {
@@ -660,10 +574,6 @@ div#sw {
 
 .modulelist ul li button {
     height: 32dip;
-    vertical-align: middle;
-}
-
-.modulelist ul li span {
     vertical-align: middle;
 }
 
@@ -697,12 +607,6 @@ div#sw {
     fill: var(--text-secondary);
     foreground-size: 18dip 18dip;
     foreground-image: url(path: M19.14 12.94c.04-.3.06-.61.06-.94 0-1.49-.89-2.78-2.17-3.37l2.47-2.47c.19-.19.19-.51 0-.71l-2.83-2.83c-.19-.19-.51-.19-.71 0l-2.47 2.47c-.59-.29-1.88-1.17-3.37-2.17-.33 0-.64.02-.94.06l-2.53-2.53c-.3-.3-.79-.3-1.09 0l-2.12 2.12c-.3.3-.3.79 0 1.09l2.53 2.53c-.04.3-.06.61-.06.94 0 1.49.89 2.78 2.17 3.37l-2.47 2.47c-.19.19-.19.51 0 .71l2.83 2.83c.19.19.51.19.71 0l2.47-2.47c.59.29 1.88 1.17 3.37 2.17.33 0 .64-.02.94-.06l2.53 2.53c.3.3.79.3 1.09 0l2.12-2.12c.3-.3.3-.79 0-1.09l-2.53-2.53zM11 13c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1z);
-}
-
-.i_debug {
-    fill: currentColor;
-    foreground-size: 18dip 18dip;
-    foreground-image: url(path: M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-1.17 1.17C13.68 3.66 12.87 3.5 12 3.5s-1.68.16-2.42.67L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c.05.33.12.66.23.97l-1.32 1.32 1.41 1.41 1.32-1.32c.31.11.64.18.97.23V16h2v-2.09c.33-.05.66-.12.97-.23l1.32 1.32 1.41-1.41-1.32-1.32c.11-.31.18-.64.23-.97H20V8zm-8 3c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z);
 }
 
 .i_import {
@@ -761,15 +665,4 @@ scrollbar>thumb {
 
 scrollbar>thumb:hover {
     background: var(--text-muted);
-}
-
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
 }

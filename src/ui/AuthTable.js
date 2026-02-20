@@ -147,10 +147,10 @@ export class AuthTable extends Element {
                     </thead>
                     <tbody>
                         {auths.map(a => {
-                            let actions = <div>
+                            let actions = <div width="*" style="horizontal-align: center; vertical-align: middle;">
                                 <button title="Delete" class="ibtn" #delete> <i class="i_del"></i></button>
                                 {a.type === "ssh" && <button title="Install Key" class="ibtn" #install> <i class="i_istall"></i></button>}
-                                {a.type === "ssh" && <button title="Test" class="ibtn" #test><i class="i_test"></i>{a.type}</button>}
+                                {a.type === "ssh" && <button title="Test" class="ibtn" #test><i class="i_test"></i></button>}
                             </div>
                             return (
                                 <tr data={a.id}>
@@ -166,14 +166,14 @@ export class AuthTable extends Element {
                                             })}
                                         </select>
                                     </td>
-                                    <td>
-                                        {a.type !== "local" && <input type="text" class="field-host" value={a.host}> </input>}
+                                    <td style="width: *;">
+                                        {a.type !== "local" && <input type="text" class="field-host" style="width: 215dip;" value={a.host}> </input>}
                                     </td>
                                     <td>
                                         {a.type !== "local" && <input type="text" class="field-user" value={a.user}> </input>}
                                     </td>
                                     <td>
-                                        {a.type !== "local" && <input type="text" class="field-port" value={a.port}> </input>}
+                                        {a.type !== "local" && <input type="text" class="field-port" style="width: 90dip;" value={a.port}> </input>}
                                     </td >
                                     <td>
                                         {actions}

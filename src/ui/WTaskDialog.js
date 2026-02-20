@@ -152,7 +152,7 @@ export class WTaskDialog extends Element {
                     {/* Src */}
                     <div style="flow: horizontal; vertical-align: middle; margin-bottom: 8dip; height: 32dip;">
                         <span style="width: 70dip;">Src:</span>
-                        <select #authsrc style="width: 120dip; margin-right: 6dip;">
+                        <select #authsrc style="width: 160dip; margin-right: 6dip;">
                             {authOptions}
                         </select>
                         <input class="ipt" #src type="text" value={tsk ? tsk.src : ""} style="width: *; margin-right: 6dip;" />
@@ -162,7 +162,7 @@ export class WTaskDialog extends Element {
                     {/* Dest */}
                     <div style="flow: horizontal; vertical-align: middle; margin-bottom: 8dip; height: 32dip;">
                         <span style="width: 70dip;">Dest:</span>
-                        <select #authdst style="width: 120dip; margin-right: 6dip;">
+                        <select #authdst style="width: 160dip; margin-right: 6dip;">
                             {authOptions}
                         </select>
                         <input class="ipt" #dst type="text" value={tsk ? tsk.dst : ""} style="width: *; margin-right: 6dip;" />

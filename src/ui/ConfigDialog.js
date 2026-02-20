@@ -23,8 +23,8 @@ export class ConfigDialog extends Element {
     }
 
     render() {
-        return <div style="flow: vertical; width: 850dip; height: 620dip; background: var(--bg-primary);">
-            <div style="flow: vertical; overflow-y: scroll; padding: 20dip;">
+        return <div style="flow: vertical; width: 800dip; height: 480dip; background: var(--bg-primary);">
+            <div style="flow: vertical; height: *; overflow-y: scroll; padding: 20dip;">
                 <div style="flow: vertical;">
                     <AuthTable
                         auths={uconfig.configs.auths}
