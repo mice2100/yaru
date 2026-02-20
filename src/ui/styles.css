@@ -58,7 +58,8 @@
     padding: 0;
 }
 
-html, body {
+html,
+body {
     font-family: system-ui, -apple-system, sans-serif;
     font-size: 13dip;
     background: var(--bg-primary);
@@ -104,39 +105,40 @@ table {
     border-radius: var(--radius-md);
 }
 
-table > uad {
+table>thead {
     behavior: column-resizer;
     font-weight: 600;
     font-size: 11dip;
+    text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.5dip;
     background: var(--bg-tertiary);
     color: var(--text-secondary);
 }
 
-table > uad th {
+table>thead>th {
     border-bottom: 1dip solid var(--surface-border);
     padding: var(--space-sm) var(--space-md);
     white-space: nowrap;
 }
 
-table > tbody {
+table>tbody {
     size: *;
 }
 
-table > tbody > tr {
+table>tbody>tr {
     border-bottom: 1dip solid var(--surface-divider);
 }
 
-table > tbody > tr:last-child {
+table>tbody>tr:last-child {
     border-bottom: none;
 }
 
-table > tbody > tr:hover {
+table>tbody>tr:hover {
     background: var(--bg-elevated);
 }
 
-table > tbody > tr:current {
+table>tbody>tr:current {
     background: var(--accent-subtle);
 }
 
@@ -174,19 +176,54 @@ td input[type="checkbox"] {
     td {
         padding: var(--space-sm);
     }
-    td > input[type=checkbox] { margin-left: -14dip; }
-    td:first-child { text-align: left; }
-    td:nth-child(1), th:nth-child(1) { width: 50dip; text-align: center; }
-    td:nth-child(2), th:nth-child(2) { width: 30dip; text-align: center; }
-    th:nth-child(3) { width: 100%%; }
-    th:nth-child(4) { width: 100%%r; }
-    th:nth-child(5) { width: 150dip; }
-    th:nth-child(6) { width: 100dip; }
-    td:last-child, th:last-child { width: max-content; text-align: center; }
+
+    td>input[type=checkbox] {
+        margin-left: -14dip;
+    }
+
+    td:first-child {
+        text-align: left;
+    }
+
+    td:nth-child(1),
+    th:nth-child(1) {
+        width: 50dip;
+        text-align: center;
+    }
+
+    td:nth-child(2),
+    th:nth-child(2) {
+        width: 30dip;
+        text-align: center;
+    }
+
+    th:nth-child(3) {
+        width: 100%%;
+    }
+
+    th:nth-child(4) {
+        width: 100%%r;
+    }
+
+    th:nth-child(5) {
+        width: 150dip;
+    }
+
+    th:nth-child(6) {
+        width: 100dip;
+    }
+
+    td:last-child,
+    th:last-child {
+        width: max-content;
+        text-align: center;
+    }
 }
 
 @set customtable_config {
-    td > select, td > input {
+
+    td>select,
+    td>input {
         height: 26dip;
         padding: 0 var(--space-sm);
         background: var(--bg-primary);
@@ -194,18 +231,52 @@ td input[type="checkbox"] {
         border-radius: var(--radius-sm);
         color: var(--text-primary);
     }
-    td:first-child { text-align: left; }
-    td:nth-child(1), th:nth-child(1) { width: 30dip; text-align: center; }
-    td:nth-child(2), th:nth-child(2) { width: 80dip; text-align: center; }
-    th:nth-child(3) { width: *; }
-    th:nth-child(4) { width: *; }
-    th:nth-child(5) { width: 120dip; }
-    th:nth-child(6) { width: 90dip; }
-    td:last-child { text-align: left; }
-    th:last-child { text-align: center; }
+
+    td:first-child {
+        text-align: left;
+    }
+
+    td:nth-child(1),
+    th:nth-child(1) {
+        width: 30dip;
+        text-align: center;
+    }
+
+    td:nth-child(2),
+    th:nth-child(2) {
+        width: 80dip;
+        text-align: center;
+    }
+
+    th:nth-child(3) {
+        width: *;
+    }
+
+    th:nth-child(4) {
+        width: *;
+    }
+
+    th:nth-child(5) {
+        width: 120dip;
+    }
+
+    th:nth-child(6) {
+        width: 90dip;
+    }
+
+    td:last-child {
+        text-align: left;
+    }
+
+    th:last-child {
+        text-align: center;
+    }
 }
 
-.indextable { style-set: customtable_index; }
+.indextable {
+    style-set: customtable_index;
+}
+
 .configtable {
     margin-top: var(--space-sm);
     width: *;
@@ -232,7 +303,7 @@ td input[type="checkbox"] {
     color: var(--text-primary);
 }
 
-.btn > i {
+.btn>i {
     size: 16dip;
     display: inline-block;
     foreground-repeat: no-repeat;
@@ -241,7 +312,7 @@ td input[type="checkbox"] {
     margin: 0 var(--space-xs) 0 0;
 }
 
-.btn > i {
+.btn>i {
     size: 16dip;
     display: inline-block;
     foreground-repeat: no-repeat;
@@ -315,8 +386,13 @@ td input[type="checkbox"] {
     border-color: var(--accent-primary);
 }
 
-.linebtn > i { fill: var(--text-secondary); }
-.linebtn:hover > i { fill: var(--text-primary); }
+.linebtn>i {
+    fill: var(--text-secondary);
+}
+
+.linebtn:hover>i {
+    fill: var(--text-primary);
+}
 
 /* Utility button (grey) */
 .greybtn {
@@ -341,7 +417,7 @@ td input[type="checkbox"] {
     cursor: pointer;
 }
 
-.ibtn > i {
+.ibtn>i {
     size: 16dip;
     display: inline-block;
     foreground-repeat: no-repeat;
@@ -379,7 +455,9 @@ td input[type="checkbox"] {
     margin: 0 var(--space-sm);
 }
 
-.onebtn { margin-left: 0; }
+.onebtn {
+    margin-left: 0;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    FORM ELEMENTS
@@ -581,13 +659,13 @@ div#sw {
     max-height: 200dip;
 }
 
-.module-list > li {
+.module-list>li {
     flow: horizontal;
     vertical-align: middle;
 }
 
-.modulelist > span,
-.authslist > span {
+.modulelist>span,
+.authslist>span {
     display: block;
     width: *;
     padding: var(--space-sm) 0;
@@ -734,16 +812,16 @@ scrollbar {
     height: 10dip;
 }
 
-scrollbar > track {
+scrollbar>track {
     background: var(--bg-secondary);
 }
 
-scrollbar > thumb {
+scrollbar>thumb {
     background: var(--surface-border);
     border-radius: 5dip;
 }
 
-scrollbar > thumb:hover {
+scrollbar>thumb:hover {
     background: var(--text-muted);
 }
 
@@ -779,11 +857,16 @@ scrollbar > thumb:hover {
 }
 
 @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
-#config-panel > div {
+#config-panel>div {
     flow: vertical;
     margin: *;
     width: 850dip;
@@ -792,5 +875,6 @@ scrollbar > thumb:hover {
     border-radius: var(--radius-lg);
     border: 1dip solid var(--surface-border);
     box-shadow: 0 8dip 32dip rgba(0, 0, 0, 0.3);
-    overflow: hidden; /* Prevent outer scrolling */
+    overflow: hidden;
+    /* Prevent outer scrolling */
 }

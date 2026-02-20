@@ -4,8 +4,9 @@ import * as utils from "./utils"
 import * as uswitch from "./uswitch"
 import { uexclude } from './uexclude.js'
 import * as env from '@env'
-import {xt} from "./xterm.js"
+import { xt } from "./xterm.js"
 import { ConfigDialog } from "./ConfigDialog.js"
+import { WTaskDialog } from "./WTaskDialog.js"
 
 uswitch.initSwitches()
 
@@ -18,9 +19,9 @@ const terminal = document.$("terminal").terminal
 // Config dialog element reference
 let configDialogElement = null
 
-function fnNewLine(cline, cls){
-    let txt=""
-    switch(cls) {
+function fnNewLine(cline, cls) {
+    let txt = ""
+    switch (cls) {
         case 'msg':
             txt = xt.white(cline)
             break;
@@ -31,21 +32,21 @@ function fnNewLine(cline, cls){
             txt = xt.red(cline)
             break;
     }
-    terminal.write(txt+"\r\n");
+    terminal.write(txt + "\r\n");
 }
 
 function genTaskReact(t) {
-    return <tr #tsk data={t.id}><td><input #sel type="checkbox" checked={t.enabled}/></td>
+    return <tr #tsk data={t.id}><td><input #sel type="checkbox" checked={t.enabled} /></td>
         <td>{t.id}</td><td>{uconfig.genAuthString(t.authsrc)}|{t.src}</td><td>{uconfig.genAuthString(t.authdst)}|{t.dst}</td>
         <td>{uswitch.cvtSwitches2Str(t.params)}</td>
-        <td><button .ibtn #edittask title="Edit" tid={t.id}><i .i_edit/></button> <button .ibtn #rmtask title="Delete" tid={t.id}><i .i_del/></button></td>
-        </tr>
+        <td><button.ibtn #edittask title="Edit" tid={t.id}><i.i_edit /></button> <button.ibtn #rmtask title="Delete" tid={t.id}><i.i_del /></button></td>
+    </tr>
 }
 
 function init() {
     elTask.clear()
-    if(!uconfig.loadCfg()){
-        fnNewLine(`Can't find cwrsync/bin in the same path, please check!`,'error')
+    if (!uconfig.loadCfg()) {
+        fnNewLine(`Can't find cwrsync/bin in the same path, please check!`, 'error')
     }
 
     for (let t of uconfig.configs.taskList) {
@@ -53,7 +54,7 @@ function init() {
     }
 }
 
-document.on("ready", ()=>{
+document.on("ready", () => {
     init()
 })
 
@@ -62,7 +63,7 @@ async function runit(dryrun = false) {
     let elStop = document.$("#stop")
     elStart.disabled = true
     elStop.disabled = false
-    let dry = dryrun?"-n":undefined
+    let dry = dryrun ? "-n" : undefined
 
     try {
         for (let t of uconfig.configs.taskList) {
@@ -81,7 +82,7 @@ async function runit(dryrun = false) {
                 await pout
                 await perr
                 fnNewLine(`Task ${t.id} done with result:${r.exit_status} and ${r.term_signal}`, "info")
-                fnNewLine("","msg")
+                fnNewLine("", "msg")
             }
         }
     } catch (e) {
@@ -99,7 +100,7 @@ document.on("click", "#exec", async function () {
 
 document.on("click", "#stop", async function () {
     stopping = true
-    if(processRsync && processRsync.pid) {
+    if (processRsync && processRsync.pid) {
         processRsync.kill()
     }
 })
@@ -111,27 +112,19 @@ document.on("click", "#test", async function () {
 function addTask() {
     let id = uconfig.newTaskId()
     let exclude = uexclude.defaultExcludes()
-    let t = { enabled: false, id: id, src: "", dst: "", authsrc: 1, authdst: 1, params: [], exclude: exclude.join(" ")}
-    if(id===1){
+    let t = { enabled: false, id: id, src: "", dst: "", authsrc: 1, authdst: 1, params: [], exclude: exclude.join(" ") }
+    if (id === 1) {
         t.src = URL.toPath(env.path("documents"))
     }
 
-    document.state.disabled = true;
-
-    var retval = Window.this.modal({
-        url: __DIR__ + "wtask.html",
-        alignment: -5,
-        parameters: t
-    })
-
-    if (retval) {
-        let t = JSON.parse(retval)
-        uconfig.configs.taskList.push(t)
-        elTask.append(genTaskReact(t))
-        uconfig.saveCfg()
-    }
-
-    document.state.disabled = false;
+    document.popup(
+        <WTaskDialog tsk={t} onOk={(saved) => {
+            uconfig.configs.taskList.push(saved)
+            elTask.append(genTaskReact(saved))
+            uconfig.saveCfg()
+        }} />,
+        { anchorAt: 5, animationType: "blend" }
+    )
 }
 
 document.on("change", "#sel", function (evt, el) {
@@ -147,23 +140,15 @@ document.on("click", "#edittask", function (evt, el) {
     let id = Number(el.getAttribute("tid"))
     let t = uconfig.findTask(id)
 
-    document.state.disabled = true;
-
-    var retval = Window.this.modal({
-        url: __DIR__ + "wtask.html",
-        alignment: -5,
-        parameters: t
-    })
-
-    if (retval) {
-        let t = JSON.parse(retval)
-        el.$p("tr").patch(genTaskReact(t))
-        let t0 = uconfig.findTask(id)
-        Object.assign(t0, t)
-        uconfig.saveCfg()
-    }
-
-    document.state.disabled = false;
+    document.popup(
+        <WTaskDialog tsk={t} onOk={(saved) => {
+            el.$p("tr").patch(genTaskReact(saved))
+            let t0 = uconfig.findTask(id)
+            Object.assign(t0, saved)
+            uconfig.saveCfg()
+        }} />,
+        { anchorAt: 5, animationType: "blend" }
+    )
 })
 
 document.on("click", "#newtask", function (evt, el) {
@@ -183,26 +168,26 @@ document.on("click", "#config", function (evt) {
 
 function showConfigPopup() {
     document.popup(<ConfigDialog />, {
-      anchorAt: 5,
+        anchorAt: 5,
         animationType: "blend"
     })
 }
 
-document.on("click", "#startserv", async ()=>{
+document.on("click", "#startserv", async () => {
     document.$("#startserv").disabled = true
     document.$("#stopserv").disabled = false
 
     let cmds = utils.makeDaemonCmd()
-    if(!cmds) {
+    if (!cmds) {
         Window.this.modal(<alert>No module in daemon. Please check section: "Daemon Config" in the configurations first.</alert>)
-    } else{
+    } else {
         let ips = await utils.getLocalIP()
         let mod = []
-        for(let m of uconfig.configs.daemon.modules){
+        for (let m of uconfig.configs.daemon.modules) {
             mod.push(m.module)
         }
         fnNewLine(`Rsync daemon is running at: ${ips.join(", ")}`, "info");
-        fnNewLine(`Rsync daemon module: ${mod.join(", ")}`,"info")
+        fnNewLine(`Rsync daemon module: ${mod.join(", ")}`, "info")
         processDaemon = sys.spawn(cmds)
         await processDaemon.wait()
     }
@@ -211,8 +196,8 @@ document.on("click", "#startserv", async ()=>{
     document.$("#stopserv").disabled = true
 })
 
-document.on("click", "#stopserv", ()=>{
-    if(processDaemon.pid) {
+document.on("click", "#stopserv", () => {
+    if (processDaemon.pid) {
         processDaemon.kill()
     }
     fnNewLine("Rsync daemon stopped.", "info")

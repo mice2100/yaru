@@ -174,26 +174,37 @@ export function initSwitches() {
     })
 }
 
-export function cvtSwitches2Str(arrSwitch, asArray=false) {
-    let short = []
-    let ret = []
-    arrSwitch.forEach(v => {
-        if (v.short) {
-            if (!v.param) short.push(v.short)
-            else ret.push(`-${v.short}=${v.param}`)
-        } else {
-            if (!v.param) ret.push(v.switch)
-            else {
-                ret.push(`${v.switch}=${v.param}`)
-            }
+export function cvtSwitches2Str(arrSwitch, asArray = false) {
+    const shortNoParam = []; // will be collapsed into -avz
+    const tokens = [];
+
+    for (const v of arrSwitch) {
+        // treat empty string param same as no param
+        const hasParam = v.param !== undefined && v.param !== null && v.param !== "";
+
+        if (v.short && !hasParam) {
+            // pure flag with a short name → collect for combining
+            shortNoParam.push(v.short);
+        } else if (v.short && hasParam) {
+            // flag with short name + param → prefer short form: -e=VALUE
+            tokens.push(`-${v.short}=${v.param}`);
+        } else if (v.switch && !hasParam) {
+            // long-only flag
+            tokens.push(v.switch);
+        } else if (v.switch && hasParam) {
+            // long-only flag with param
+            tokens.push(`${v.switch}=${v.param}`);
         }
-    })
-    if (short.length > 0) {
-        ret = [`-${short.join("")}`, ...ret]
     }
 
-    if(asArray) return ret
-    else return ret.join("  ")
+    const result = [];
+    if (shortNoParam.length > 0) {
+        result.push(`-${shortNoParam.join('')}`);
+    }
+    result.push(...tokens);
+
+    if (asArray) return result;
+    return result.join(' ');
 }
 
 export function findSwith(strSwitch) {
@@ -218,43 +229,48 @@ export function findSwith(strSwitch) {
     return ret
 }
 
-export function cvtStr2Switches(strSwitch) {
-    var obj
-    var ret = []
-    let pos = strSwitch.indexOf("=")
-    if (strSwitch.startsWith("--")) {
-        let sw = findSwith(strSwitch)
+export function cvtStr2Switches(str) {
+    const ret = [];
+    if (!str || !str.trim()) return ret;
 
-        if (sw) {
-            obj = new Object()
-            Object.assign(obj, sw)
-            obj.info = undefined
-            if (pos >= 0) {
-                obj.param = strSwitch.substr(pos + 1)
-            }
-            ret.push(obj)
-        }
-    } else if (strSwitch.startsWith("-")) {
-        if (pos > 0) {
-            let sw = findSwith(strSwitch[0])
+    // Split on whitespace so callers can pass either a single token or a full string
+    for (const token of str.trim().split(/\s+/)) {
+        if (!token) continue;
+        const eqPos = token.indexOf('=');
+
+        if (token.startsWith('--')) {
+            // Long form: --flag  or  --flag=VALUE
+            const key = eqPos >= 0 ? token.slice(0, eqPos) : token;
+            const sw = findSwith(key);
             if (sw) {
-                obj = new Object()
-                Object.assign(obj, sw)
-                obj.info = undefined
-                obj.param = strSwitch.substr(pos + 1)
-                ret.push(obj)
+                const obj = Object.assign({}, sw);
+                obj.info = undefined;
+                if (eqPos >= 0) obj.param = token.slice(eqPos + 1);
+                ret.push(obj);
             }
-        } else {
-            for (let i = 1; i < strSwitch.length; i++) {
-                let sw = findSwith(strSwitch[i])
+        } else if (token.startsWith('-')) {
+            if (eqPos > 0) {
+                // Short with param: -e=VALUE
+                const sw = findSwith(token[1]);
                 if (sw) {
-                    obj = new Object()
-                    Object.assign(obj, sw)
-                    obj.info = undefined
-                    ret.push(obj)
+                    const obj = Object.assign({}, sw);
+                    obj.info = undefined;
+                    obj.param = token.slice(eqPos + 1);
+                    ret.push(obj);
+                }
+            } else {
+                // Combined short flags: -avz  →  a, v, z
+                for (let i = 1; i < token.length; i++) {
+                    const sw = findSwith(token[i]);
+                    if (sw) {
+                        const obj = Object.assign({}, sw);
+                        obj.info = undefined;
+                        ret.push(obj);
+                    }
                 }
             }
         }
     }
-    return ret
+
+    return ret;
 }
