@@ -10,6 +10,7 @@ import { WTaskDialog } from "./WTaskDialog.js"
 
 uswitch.initSwitches()
 
+// Ensure UTF-8 locale so terminal widget and spawned processes (rsync etc.) output UTF-8
 const elTask = document.$("table>tbody")
 var processRsync
 var processDaemon
@@ -19,7 +20,7 @@ function fnNewLine(cline, cls) {
     let txt = ""
     switch (cls) {
         case 'msg':
-            txt = xt.white(cline)
+            txt = cline  // raw output — ANSI wrapping garbles non-ASCII (CJK) chars
             break;
         case 'info':
             txt = xt.yellow(cline)
@@ -43,7 +44,13 @@ function genTaskReact(t) {
 function init() {
     elTask.clear()
     if (!uconfig.loadCfg()) {
-        fnNewLine(`Can't find cwrsync/bin in the same path, please check!`, 'error')
+        fnNewLine(`Can't load config!`, 'error');
+        return;
+    }
+
+    if (!utils.checkRsync()) {
+        fnNewLine(`Can't find rsync!`, 'error');
+        return;
     }
 
     for (let t of uconfig.configs.taskList) {

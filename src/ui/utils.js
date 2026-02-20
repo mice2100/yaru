@@ -92,23 +92,39 @@ export function makeDaemonCmd() {
 
 export async function pipeReader(pipe, name, fnNewLine) {
     try {
-        var cline = "";
-        reading: while (pipe.fileno()) {
-            var text = await pipe.read();
-            text = sciter.decode(text);
-            while (text) {
-                var eolpos = text.indexOf(EOL);
-                if (eolpos < 0) { cline += text; continue reading; }
-                cline += text.substr(0, eolpos);
-                text = text.substr(eolpos + EOL.length)
-                if (fnNewLine) fnNewLine(cline, "msg")
-                cline = "";
+        // Raw byte accumulator — keeps partial multi-byte chars safe across chunks
+        let pending = [];
+
+        while (pipe.fileno()) {
+            const chunk = await pipe.read();
+            if (!chunk || !chunk.byteLength) continue;
+
+            const bytes = new Uint8Array(chunk);
+            let lineStart = 0;
+
+            for (let i = 0; i < bytes.length; i++) {
+                if (bytes[i] === 10) { // 0x0A = '\n'
+                    for (let j = lineStart; j < i; j++) pending.push(bytes[j]);
+                    // strip trailing \r (CRLF)
+                    if (pending.length > 0 && pending[pending.length - 1] === 13) pending.pop();
+                    const line = sciter.decode(new Uint8Array(pending).buffer, "utf-8");
+                    if (fnNewLine) fnNewLine(line, "msg");
+                    pending = [];
+                    lineStart = i + 1;
+                }
             }
+            // bytes without a newline yet — accumulate for next chunk
+            for (let j = lineStart; j < bytes.length; j++) pending.push(bytes[j]);
+        }
+
+        // flush remaining bytes (last line without trailing newline)
+        if (pending.length > 0) {
+            if (pending[pending.length - 1] === 13) pending.pop();
+            const line = sciter.decode(new Uint8Array(pending).buffer, "utf-8");
+            if (fnNewLine) fnNewLine(line, "msg");
         }
     } catch (e) {
-        // if (e.message != "socket is not connected")
-        // if (fnNewLine) fnNewLine(e.message, "error")
-        // out.append(<text class="error">{e.message}</text>);
+        // pipe closed or process exited — normal exit
     }
 }
 
@@ -157,4 +173,30 @@ export async function getLocalIP() {
 
 export function lang(str) {
 
+}
+
+export function checkRsync() {
+    let ret = true;
+    if (env.PLATFORM == "Windows") {
+        let envpath = env.variable("path")
+        // let rsyncpath = URL.toPath(__DIR__+"cwrsync/bin")
+        let rsyncpath = URL.toPath(env.home("cwrsync/bin"))
+        if (!sys.fs.statSync(rsyncpath + "/rsync.exe")) {
+            ret = false
+        }
+        else if (envpath.indexOf(rsyncpath) == -1) {
+            env.variable("path", `${rsyncpath};${envpath};`)
+        }
+    }
+    else if (env.PLATFORM == "MacOSX") {
+        let envpath = env.variable("path")
+        let rsyncpath = URL.toPath(env.home("/opt/homebrew/bin"))
+        if (!sys.fs.statSync(rsyncpath + "/rsync")) {
+            ret = false
+        }
+        else if (envpath.indexOf(rsyncpath) == -1) {
+            env.variable("path", `${rsyncpath};${envpath};`)
+        }
+    }
+    return ret
 }

@@ -77,7 +77,7 @@ export class WSwitchDialog extends Element {
 
             return (
                 <div class="sw-row" data={sid} title={swch.info} style="margin-right:8dip;">
-                    <input #swsel type="checkbox" checked={enabled} style="margin-right: 4dip;" />
+                    <input #swsel type="checkbox" checked={enabled} title={swch.info} style="margin-right: 4dip;" />
                     {shortLabel}
                     {switchLabel}
                     {paramInput}
