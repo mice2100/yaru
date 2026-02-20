@@ -13,18 +13,7 @@
 <body>
     <frameset rows="*,220dip">
         <div>
-            <table class="indextable">
-                <thead>
-                    <th value="1">Enable</th>
-                    <th value="2">ID</th>
-                    <th value="3">Src</th>
-                    <th value="4">Dest</th>
-                    <th value="6">Params</th>
-                    <th value="7">Actions</th>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div #tasktable></div>
 
             <div class="btntoolbar">
                 <button class="btn linebtn onebtn" id="newtask"><i class="i_add"></i>New Task</button>
@@ -33,7 +22,7 @@
                 <button class="btn bluebtn" id="exec"><i class="i_start"></i>Start</button>
                 <span>|</span>
                 <button class="btn bluebtn" id="startserv"><i class="i_start"></i>Start Daemon</button>
-                <span>|</span>
+                <span style="width: *;"></span>
                 <button class="btn linebtn" id="config"><i class="i_set"></i>Configurations</button>
             </div>
         </div>

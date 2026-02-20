@@ -109,6 +109,7 @@ table>thead {
     behavior: column-resizer;
     font-weight: 600;
     font-size: 11dip;
+    height: 20dip;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.5dip;
@@ -172,7 +173,7 @@ td input[type="checkbox"] {
 }
 
 /* Custom Table Styles */
-@set customtable_index {
+@set tasktable {
     td {
         padding: var(--space-sm);
     }
@@ -551,7 +552,6 @@ div#sw {
     window-height: 650;
 }
 
-.taskmian,
 .wconfigmian {
     flow: vertical;
     width: *;
@@ -559,58 +559,6 @@ div#sw {
     overflow-x: hidden;
     overflow-y: auto;
     background: var(--bg-secondary);
-}
-
-/* Task form */
-.taskmian li {
-    width: 95%%;
-    min-height: max-content;
-    margin: var(--space-md) 0;
-}
-
-.taskmian li span {
-    display: inline-block;
-    width: 80dip;
-    height: max-content;
-    text-align: right;
-    color: var(--text-secondary);
-    font-weight: 500;
-    font-size: 12dip;
-}
-
-.taskmian li span.b {
-    width: 80dip;
-    height: 140dip;
-}
-
-.taskmian li input.ipt {
-    width: 100%%;
-    height: 32dip;
-}
-
-.taskmian li textarea {
-    display: inline-block;
-    word-wrap: break-word;
-    width: calc(100%% - 90dip);
-    height: 100dip;
-    margin-left: var(--space-sm);
-}
-
-.taskmian li select {
-    width: 50%%;
-    height: 32dip;
-}
-
-.taskmian li button {
-    margin: 0 0 0 var(--space-sm);
-}
-
-.taskmian li p {
-    padding-left: 84dip;
-}
-
-.taskmian li p button {
-    margin: 0 var(--space-sm) 0 0;
 }
 
 /* Config form */
@@ -815,36 +763,6 @@ scrollbar>thumb:hover {
     background: var(--text-muted);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CONFIG POPUP
-   ═══════════════════════════════════════════════════════════════ */
-
-.config-popup-wrapper {
-    flow: vertical;
-    width: 850dip;
-    height: 620dip;
-    background: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    border: 1dip solid var(--surface-border);
-    box-shadow: 0 8dip 32dip rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   CONFIG PANEL OVERLAY (deprecated - now using popup)
-   ═══════════════════════════════════════════════════════════════ */
-
-#config-panel {
-    flow: stack;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
-    animation: fade-in 0.2s ease-out;
-}
 
 @keyframes fade-in {
     from {
@@ -854,17 +772,4 @@ scrollbar>thumb:hover {
     to {
         opacity: 1;
     }
-}
-
-#config-panel>div {
-    flow: vertical;
-    margin: *;
-    width: 850dip;
-    max-height: calc(100% - 40dip);
-    background: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    border: 1dip solid var(--surface-border);
-    box-shadow: 0 8dip 32dip rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    /* Prevent outer scrolling */
 }

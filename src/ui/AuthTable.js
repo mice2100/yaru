@@ -134,7 +134,7 @@ export class AuthTable extends Element {
                 </div>
 
                 {/* Auths Table */}
-                <table class="configtable">
+                <table>
                     <thead>
                         <tr>
                             <th value="1">ID</th>

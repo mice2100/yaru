@@ -13,6 +13,7 @@ export class WTaskDialog extends Element {
         this.tsk = props.tsk ? Object.assign({}, props.tsk) : null;
         this.auths = uconfig.configs.auths || [];
         this.onOk = props.onOk || null;
+        uswitch.initSwitches();
     }
 
     // ── event handlers ──────────────────────────────────────────

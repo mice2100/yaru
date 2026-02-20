@@ -1,17 +1,10 @@
 import * as sys from '@sys'
 import * as uconfig from "./uconfig"
 import * as utils from "./utils"
-import * as uswitch from "./uswitch"
-import { uexclude } from './uexclude.js'
-import * as env from '@env'
 import { xt } from "./xterm.js"
 import { ConfigDialog } from "./ConfigDialog.js"
-import { WTaskDialog } from "./WTaskDialog.js"
+import { TaskTable } from "./TaskTable.js"
 
-uswitch.initSwitches()
-
-// Ensure UTF-8 locale so terminal widget and spawned processes (rsync etc.) output UTF-8
-const elTask = document.$("table>tbody")
 var processRsync
 var processDaemon
 var stopping = false
@@ -33,16 +26,7 @@ function fnNewLine(cline, cls) {
     document.$("terminal").terminal.write(txt + "\r\n");
 }
 
-function genTaskReact(t) {
-    return <tr #tsk data={t.id}><td><input #sel type="checkbox" checked={t.enabled} /></td>
-        <td>{t.id}</td><td>{uconfig.genAuthString(t.authsrc)}|{t.src}</td><td>{uconfig.genAuthString(t.authdst)}|{t.dst}</td>
-        <td>{uswitch.cvtSwitches2Str(t.params)}</td>
-        <td><button.ibtn #edittask title="Edit" tid={t.id}><i.i_edit /></button> <button.ibtn #rmtask title="Delete" tid={t.id}><i.i_del /></button></td>
-    </tr>
-}
-
 function init() {
-    elTask.clear()
     if (!uconfig.loadCfg()) {
         fnNewLine(`Can't load config!`, 'error');
         return;
@@ -53,9 +37,7 @@ function init() {
         return;
     }
 
-    for (let t of uconfig.configs.taskList) {
-        elTask.append(genTaskReact(t))
-    }
+    document.$("#tasktable").patch(<TaskTable #tasktable />);
 }
 
 document.on("ready", () => {
@@ -122,57 +104,8 @@ document.on("click", "#exec", async function () {
 
 
 
-function addTask() {
-    let id = uconfig.newTaskId()
-    let exclude = uexclude.defaultExcludes()
-    let t = { enabled: false, id: id, src: "", dst: "", authsrc: 1, authdst: 1, params: [], exclude: exclude.join(" ") }
-    if (id === 1) {
-        t.src = URL.toPath(env.path("documents"))
-    }
-
-    document.popup(
-        <WTaskDialog tsk={t} onOk={(saved) => {
-            uconfig.configs.taskList.push(saved)
-            elTask.append(genTaskReact(saved))
-            uconfig.saveCfg()
-        }} />,
-        { anchorAt: 5, animationType: "blend" }
-    )
-}
-
-document.on("change", "#sel", function (evt, el) {
-    let id = Number(el.$p("tr").getAttribute("data"))
-    let t = uconfig.findTask(id)
-    if (t) {
-        t.enabled = el.checked
-        uconfig.saveCfg()
-    }
-})
-
-document.on("click", "#edittask", function (evt, el) {
-    let id = Number(el.getAttribute("tid"))
-    let t = uconfig.findTask(id)
-
-    document.popup(
-        <WTaskDialog tsk={t} onOk={(saved) => {
-            el.$p("tr").patch(genTaskReact(saved))
-            let t0 = uconfig.findTask(id)
-            Object.assign(t0, saved)
-            uconfig.saveCfg()
-        }} />,
-        { anchorAt: 5, animationType: "blend" }
-    )
-})
-
 document.on("click", "#newtask", function (evt, el) {
-    addTask()
-})
-
-document.on("click", "#rmtask", function (evt, el) {
-    let id = el.getAttribute("tid")
-    uconfig.removeTask(Number(id))
-    uconfig.saveCfg()
-    document.$(`tbody>tr[data=${id}]`).remove()
+    document.$("#tasktable").addTask()
 })
 
 document.on("click", "#config", function (evt) {

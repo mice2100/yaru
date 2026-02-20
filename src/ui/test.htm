@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script|module>
-        import * as env from '@env'
-        document.$("div").innerHTML = env.arguments().toString()
+        document.on("click", "button", () => {
+            document.popup(<h1 title="this is tooltip">This is a popup</h1>, { x: 100, y: 100 });
+        });
 
     </script>
 </head>
+
 <body>
-    <div></div>
+    <button>Test</button>
 </body>
+
 </html>
