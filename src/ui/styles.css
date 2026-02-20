@@ -448,6 +448,7 @@ td input[type="checkbox"] {
 .btntoolbar span {
     color: var(--surface-border);
     font-size: 16dip;
+    vertical-align: middle;
     padding: 0 var(--space-md);
 }
 
@@ -511,17 +512,6 @@ label {
 /* ═══════════════════════════════════════════════════════════════
    MAIN PAGE SPECIFIC
    ═══════════════════════════════════════════════════════════════ */
-
-terminal#log {
-    behavior: virtual-list;
-    prototype: Logger;
-    background: #d8d8d8;
-    border-color: var(--surface-border);
-    overflow: scroll-indicator;
-    font-family: monospace;
-    font-size: 12dip;
-    color: #3a3a3a;
-}
 
 text.info {
     color: var(--accent-primary);

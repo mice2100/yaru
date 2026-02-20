@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" window-icon="rsync.svg" window-width="1100" window-height="700">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +9,7 @@
     <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <frameset rows="*,220dip">
         <div>
@@ -26,19 +28,17 @@
 
             <div class="btntoolbar">
                 <button class="btn linebtn onebtn" id="newtask"><i class="i_add"></i>New Task</button>
-                <span>|</span>
+                <label style="vertical-align: middle;"><input type="checkbox" id="dryrun" /> Dry Run</label>
                 <button class="btn bluebtn" id="exec"><i class="i_start"></i>Start</button>
-                <button class="btn redbtn" id="stop" disabled><i class="i_stop"></i>Stop</button>
-                <button class="btn linebtn" id="config"><i class="i_set"></i>Configurations</button>
-                <span>|</span>
-                <button class="btn greenbtn" id="test"><i class="i_debug"></i>Dry Run</button>
                 <span>|</span>
                 <button class="btn bluebtn" id="startserv"><i class="i_start"></i>Start Daemon</button>
-                <button class="btn redbtn" id="stopserv" disabled><i class="i_stop"></i>Stop Daemon</button>
+                <span>|</span>
+                <button class="btn linebtn" id="config"><i class="i_set"></i>Configurations</button>
             </div>
         </div>
         <splitter></splitter>
-        <terminal id="log" rows="200"></terminal>
+        <terminal rows="200" />
     </frameset>
 </body>
+
 </html>

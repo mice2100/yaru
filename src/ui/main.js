@@ -14,10 +14,6 @@ const elTask = document.$("table>tbody")
 var processRsync
 var processDaemon
 var stopping = false
-const terminal = document.$("terminal").terminal
-
-// Config dialog element reference
-let configDialogElement = null
 
 function fnNewLine(cline, cls) {
     let txt = ""
@@ -32,7 +28,8 @@ function fnNewLine(cline, cls) {
             txt = xt.red(cline)
             break;
     }
-    terminal.write(txt + "\r\n");
+    console.log(txt);
+    document.$("terminal").terminal.write(txt + "\r\n");
 }
 
 function genTaskReact(t) {
@@ -58,11 +55,24 @@ document.on("ready", () => {
     init()
 })
 
+var running = false
+
+function setExecBtn(isRunning) {
+    const el = document.$("#exec")
+    if (isRunning) {
+        el.classList.remove("bluebtn")
+        el.classList.add("redbtn")
+        el.innerHTML = '<i class="i_stop"></i>Stop'
+    } else {
+        el.classList.remove("redbtn")
+        el.classList.add("bluebtn")
+        el.innerHTML = '<i class="i_start"></i>Start'
+    }
+}
+
 async function runit(dryrun = false) {
-    let elStart = document.$("#exec")
-    let elStop = document.$("#stop")
-    elStart.disabled = true
-    elStop.disabled = false
+    running = true
+    setExecBtn(true)
     let dry = dryrun ? "-n" : undefined
 
     try {
@@ -70,8 +80,7 @@ async function runit(dryrun = false) {
             if (stopping) break
             let args = utils.makeRsycCmd(t, dry)
             if (args) {
-
-                fnNewLine(`Starting task ${t.id} ...`, "info");
+                fnNewLine(`Starting task ${t.id} :${args.join(" ")}`, "info");
                 processRsync = sys.spawn(args, { stdout: "pipe", stderr: "pipe" });
                 let pout = utils.pipeReader(processRsync.stdout, "stdout", fnNewLine);
                 let perr = utils.pipeReader(processRsync.stderr, "stderr", fnNewLine);
@@ -87,27 +96,24 @@ async function runit(dryrun = false) {
         }
     } catch (e) {
         console.log(e.message, e.stack)
-        // out.appendItem(e.message, "info")
     }
     stopping = false
-    elStart.disabled = false
-    elStop.disabled = true
+    running = false
+    setExecBtn(false)
 }
 
 document.on("click", "#exec", async function () {
-    runit(false)
-})
-
-document.on("click", "#stop", async function () {
-    stopping = true
-    if (processRsync && processRsync.pid) {
-        processRsync.kill()
+    if (running) {
+        // act as Stop
+        stopping = true
+        if (processRsync && processRsync.pid) processRsync.kill()
+    } else {
+        const dryrun = document.$("#dryrun").checked
+        runit(dryrun)
     }
 })
 
-document.on("click", "#test", async function () {
-    runit(true)
-})
+
 
 function addTask() {
     let id = uconfig.newTaskId()
@@ -173,32 +179,50 @@ function showConfigPopup() {
     })
 }
 
+var daemonRunning = false
+
+function setDaemonBtn(isRunning) {
+    const el = document.$("#startserv")
+    if (isRunning) {
+        el.classList.remove("bluebtn")
+        el.classList.add("redbtn")
+        el.innerHTML = '<i class="i_stop"></i>Stop Daemon'
+    } else {
+        el.classList.remove("redbtn")
+        el.classList.add("bluebtn")
+        el.innerHTML = '<i class="i_start"></i>Start Daemon'
+    }
+}
+
 document.on("click", "#startserv", async () => {
-    document.$("#startserv").disabled = true
-    document.$("#stopserv").disabled = false
+    if (daemonRunning) {
+        // act as Stop Daemon
+        if (processDaemon && processDaemon.pid) processDaemon.kill()
+        fnNewLine("Rsync daemon stopped.", "info")
+        daemonRunning = false
+        setDaemonBtn(false)
+        return
+    }
 
     let cmds = utils.makeDaemonCmd()
     if (!cmds) {
         Window.this.modal(<alert>No module in daemon. Please check section: "Daemon Config" in the configurations first.</alert>)
-    } else {
-        let ips = await utils.getLocalIP()
-        let mod = []
-        for (let m of uconfig.configs.daemon.modules) {
-            mod.push(m.module)
-        }
-        fnNewLine(`Rsync daemon is running at: ${ips.join(", ")}`, "info");
-        fnNewLine(`Rsync daemon module: ${mod.join(", ")}`, "info")
-        processDaemon = sys.spawn(cmds)
-        await processDaemon.wait()
+        return
     }
 
-    document.$("#startserv").disabled = false
-    document.$("#stopserv").disabled = true
-})
+    daemonRunning = true
+    setDaemonBtn(true)
 
-document.on("click", "#stopserv", () => {
-    if (processDaemon.pid) {
-        processDaemon.kill()
+    let ips = await utils.getLocalIP()
+    let mod = []
+    for (let m of uconfig.configs.daemon.modules) {
+        mod.push(m.module)
     }
-    fnNewLine("Rsync daemon stopped.", "info")
+    fnNewLine(`Rsync daemon is running at: ${ips.join(", ")}`, "info");
+    fnNewLine(`Rsync daemon module: ${mod.join(", ")}`, "info")
+    processDaemon = sys.spawn(cmds)
+    await processDaemon.wait()
+
+    daemonRunning = false
+    setDaemonBtn(false)
 })

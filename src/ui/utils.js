@@ -60,27 +60,27 @@ export function makeRsycCmd(t, strOptions = null) {
         args.push(strOptions)
     if (t.exclude) {
         args.push("-C")
-        // args.push("-f=!")
         sys.setenv("CVSIGNORE", t.exclude)
     }
-    // let pwdf = await uconfig.genAuthPassfile(t.auth)
-    // if(pwdf) {
-    //     args.push(pwdf)
-    // }
-    // args.push(cvtPath2Rsync(t.src))
+    // -e ssh flag must come BEFORE src/dst paths, and only once
+    // Use whichever side uses ssh (src takes priority)
+    const sshSuffix = uconfig.genAuthSurfixes(t.authsrc)
+    if (sshSuffix.length === 0) {
+        // src is not ssh, check dst
+        args.push(...uconfig.genAuthSurfixes(t.authdst))
+    } else {
+        args.push(...sshSuffix)
+    }
     args.push(uconfig.genAuthPrefix(t.authsrc) + cvtPath2Rsync(t.src))
-    args.push(...uconfig.genAuthSurfixes(t.authsrc))
     args.push(uconfig.genAuthPrefix(t.authdst) + cvtPath2Rsync(t.dst))
-    args.push(...uconfig.genAuthSurfixes(t.authdst))
-    // out.append(<text>Starting task: {t.id}</text>)
     return args
 }
 
 export function makeDaemonCmd() {
     let cfgfile = uconfig.genDaemonConf()
-    if(!cfgfile) return undefined
+    if (!cfgfile) return undefined
 
-    if(env.PLATFORM==="Windows")
+    if (env.PLATFORM === "Windows")
         cfgfile = cfgfile.replace(/\//g, "\\")
     let args = ["rsync"]
     args.push("--daemon")
@@ -107,24 +107,24 @@ export async function pipeReader(pipe, name, fnNewLine) {
         }
     } catch (e) {
         // if (e.message != "socket is not connected")
-            // if (fnNewLine) fnNewLine(e.message, "error")
+        // if (fnNewLine) fnNewLine(e.message, "error")
         // out.append(<text class="error">{e.message}</text>);
     }
 }
 
 export async function getLocalIP() {
     var ret = []
-    function fnNewLine(cline, cls){
+    function fnNewLine(cline, cls) {
         cline = cline.trim()
-        if(env.PLATFORM==="Windows"){
-            if(cline.startsWith("IPv4 Address")){
+        if (env.PLATFORM === "Windows") {
+            if (cline.startsWith("IPv4 Address")) {
                 let pos = cline.indexOf(":")
-                if(pos>=0){
-                    ret.push(cline.substring(pos+1).trim())
+                if (pos >= 0) {
+                    ret.push(cline.substring(pos + 1).trim())
                 }
             }
-        }else{
-            if(cline.startsWith("inet ")){
+        } else {
+            if (cline.startsWith("inet ")) {
                 let pos = cline.indexOf("netmask")
                 let strip = cline.substring(5, pos).trim()
                 ret.push(strip)
@@ -133,22 +133,22 @@ export async function getLocalIP() {
     }
 
     let cmds
-    if(env.PLATFORM==="Windows")
+    if (env.PLATFORM === "Windows")
         cmds = ["ipconfig"]
     else
         cmds = ["ifconfig"]
-    
-    try{
-        let proc = sys.spawn(cmds, {stdout: "pipe", stderr: "pipe"})
+
+    try {
+        let proc = sys.spawn(cmds, { stdout: "pipe", stderr: "pipe" })
         let po = pipeReader(proc.stdout, "stdout", fnNewLine)
         let pe = pipeReader(proc, "stderr", fnNewLine)
-    
+
         var r = await proc.wait()
         proc.stderr.close()
         proc.stdout.close()
         // await po
         // await pe
-    } catch(ex){
+    } catch (ex) {
 
     }
 
@@ -156,5 +156,5 @@ export async function getLocalIP() {
 }
 
 export function lang(str) {
-    
+
 }

@@ -22,10 +22,10 @@ export function loadCfg() {
         configs.ssh.keyexists = true
     }
 
-    configs.daemon = configs.daemon || {modules: []}
+    configs.daemon = configs.daemon || { modules: [] }
     configs.auths = configs.auths || []
     configs.taskList = configs.taskList || []
-    if(configs.auths.length==0) {
+    if (configs.auths.length == 0) {
         let a = newAuth()
         a.type = "local"
 
@@ -33,14 +33,14 @@ export function loadCfg() {
         a.type = "ssh"
     }
 
-    if (env.PLATFORM=="Windows") {
+    if (env.PLATFORM == "Windows") {
         let envpath = env.variable("path")
         // let rsyncpath = URL.toPath(__DIR__+"cwrsync/bin")
         let rsyncpath = URL.toPath(env.home("cwrsync/bin"))
         if (!sys.fs.statSync(rsyncpath)) {
             ret = false
         }
-        else if (envpath.indexOf(rsyncpath) ==-1 ) {
+        else if (envpath.indexOf(rsyncpath) == -1) {
             env.variable("path", `${rsyncpath};${envpath};`)
         }
     }
@@ -105,21 +105,21 @@ export function sshPublicId() {
 }
 
 export function newDaemonModule() {
-    let newModule = {module:"modulename", path:"path", readonly: false, writeonly: false}
-    if(configs.daemon.modules.length==0){
+    let newModule = { module: "modulename", path: "path", readonly: false, writeonly: false }
+    if (configs.daemon.modules.length == 0) {
         newModule.module = "home"
         newModule.path = URL.toPath(env.path("home"))
     }
     // configs.daemon.modules.push(newModule)
-  return newModule;
+    return newModule;
 }
 
-export function genDaemonConf(){
-    if(configs.daemon.modules.length==0) return undefined
+export function genDaemonConf() {
+    if (configs.daemon.modules.length == 0) return undefined
     let fn = utils.getDataPath("rsyncd.conf", true)
     let f = sys.fs.sync.open(fn, "w")
 
-    for(let m of configs.daemon.modules){
+    for (let m of configs.daemon.modules) {
         f.writeSync(`[${m.module}]\n`)
         f.writeSync(`  path = ${utils.cvtPath2Rsync(m.path)}\n`)
         f.writeSync(`  read only = ${m.readonly}\n`)
@@ -130,7 +130,7 @@ export function genDaemonConf(){
 }
 
 export function genAuthString(id) {
-    id = id||1
+    id = id || 1
     let auth = findAuth(id)
     switch (auth.type) {
         case 'ssh':
@@ -170,16 +170,16 @@ export function genAuthSurfixes(id) {
 export async function genAuthPassfile(id) {
     var ret
     let auth = findAuth(id)
-    if(auth &&auth.type=='rsync'){
+    if (auth && auth.type == 'rsync') {
         let fn = utils.getDataPath(`passwd.${id}`)
-        if(sys.fs.statSync(fn)) {
+        if (sys.fs.statSync(fn)) {
             await sys.fs.unlink(fn)
         }
         let f = await sys.fs.open(fn, "w")
         await f.write(auth.passwd)
         await f.close()
         await sys.fs.chmod(fn, 600)
-        ret = "--password-file="+fn
+        ret = "--password-file=" + fn
     }
 
     return ret
@@ -197,7 +197,7 @@ export function findAuth(id) {
 
 export function newAuth() {
     let id = maxAuthID() + 1
-    let a = { id: id, type: "ssh", host: "", user: "", passwd:"" }
+    let a = { id: id, type: "ssh", host: "", user: "", passwd: "" }
     configs.auths.push(a)
     return a
 }
@@ -210,20 +210,20 @@ export function removeAuth(id) {
 }
 
 export function findTask(id) {
-    return configs.taskList.find(v=>v.id==id)
+    return configs.taskList.find(v => v.id == id)
 }
 
 export function newTaskId() {
-    configs.taskList.sort( (a, b) => a.id-b.id)
-    if (configs.taskList.length>0)
-        return configs.taskList[configs.taskList.length-1].id + 1
+    configs.taskList.sort((a, b) => a.id - b.id)
+    if (configs.taskList.length > 0)
+        return configs.taskList[configs.taskList.length - 1].id + 1
     else
         return 1
 }
 
 export function removeTask(id) {
-    let idx = configs.taskList.findIndex( v=>v.id==id)
-    if (idx!=-1) {
+    let idx = configs.taskList.findIndex(v => v.id == id)
+    if (idx != -1) {
         configs.taskList.splice(idx, 1)
     }
 }
