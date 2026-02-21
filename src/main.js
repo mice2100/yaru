@@ -25,13 +25,14 @@ function init() {
         fnNewLine(`Can't load config!`, 'error');
         return;
     }
-
-    if (!utils.checkRsync()) {
-        fnNewLine(`Can't find rsync!`, 'error');
-        return;
-    }
-
+    
     document.$("#tasktable").patch(<TaskTable #tasktable />);
+    let rsyncInfo = utils.checkRsync();
+    if (!rsyncInfo.found) {
+        fnNewLine(`Can't find rsync! Expected at: ${rsyncInfo.path || 'unknown path'}`, 'error');
+        document.$("#exec").disabled = true;
+        document.$("#startserv").disabled = true;
+    }
 }
 
 document.on("ready", () => {
@@ -144,7 +145,6 @@ document.on("click", "#startserv", async () => {
         Window.this.modal(<alert>No module in daemon. Please check section: "Daemon Config" in the configurations first.</alert>)
         return
     }
-    console.log(cmds);
 
     daemonRunning = true
     setDaemonBtn(true)
