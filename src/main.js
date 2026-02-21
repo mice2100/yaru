@@ -1,7 +1,6 @@
 import * as sys from '@sys'
 import * as uconfig from "./uconfig"
 import * as utils from "./utils"
-import { xt } from "./xterm.js"
 import { ConfigDialog } from "./ConfigDialog.js"
 import { TaskTable } from "./TaskTable.js"
 
@@ -10,19 +9,15 @@ var processDaemon
 var stopping = false
 
 function fnNewLine(cline, cls) {
-    let txt = ""
-    switch (cls) {
-        case 'msg':
-            txt = cline  // raw output — ANSI wrapping garbles non-ASCII (CJK) chars
-            break;
-        case 'info':
-            txt = xt.yellow(cline)
-            break;
-        case 'error':
-            txt = xt.red(cline)
-            break;
+    let el = document.$("plaintext#terminal");
+    if (el) {
+        if (el.plaintext.content) {
+            el.plaintext.appendLine(cline);
+            el.execCommand("navigate:end");
+        } else {
+            el.plaintext.content = cline;
+        }
     }
-    document.$("terminal").terminal.write(txt + "\r\n");
 }
 
 function init() {
