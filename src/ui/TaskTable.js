@@ -70,7 +70,7 @@ export class TaskTable extends Element {
         const taskList = uconfig.configs.taskList || [];
 
         return (
-            <table style="style-set: tasktable;">
+            <table styleset={__DIR__ + "styles.css#tasktable"}>
                 <thead>
                     <tr>
                         <th value="1">Enable</th>

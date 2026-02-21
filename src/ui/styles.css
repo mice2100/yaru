@@ -105,7 +105,7 @@ table>thead {
     behavior: column-resizer;
     font-weight: 600;
     font-size: 11dip;
-    height: 20dip;
+    line-height: 20dip;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.5dip;
@@ -115,7 +115,8 @@ table>thead {
 
 table>thead>th {
     border-bottom: 1dip solid var(--surface-border);
-    padding: var(--space-sm) var(--space-md);
+    vertical-align: middle;
+    padding: 0 var(--space-md);
     white-space: nowrap;
 }
 
@@ -213,60 +214,6 @@ td input[type="checkbox"] {
     td:last-child,
     th:last-child {
         width: max-content;
-        text-align: center;
-    }
-}
-
-/* Config Table (AuthTable in ConfigDialog) */
-@set customtable_config {
-
-    td>select,
-    td>input {
-        height: 26dip;
-        padding: 0 var(--space-sm);
-        background: var(--bg-primary);
-        border: 1dip solid var(--surface-border);
-        border-radius: var(--radius-sm);
-        color: var(--text-primary);
-    }
-
-    td:first-child {
-        text-align: left;
-    }
-
-    td:nth-child(1),
-    th:nth-child(1) {
-        width: 30dip;
-        text-align: center;
-    }
-
-    td:nth-child(2),
-    th:nth-child(2) {
-        width: 80dip;
-        text-align: center;
-    }
-
-    th:nth-child(3) {
-        width: *;
-    }
-
-    th:nth-child(4) {
-        width: *;
-    }
-
-    th:nth-child(5) {
-        width: 70dip;
-    }
-
-    th:nth-child(6) {
-        width: 90dip;
-    }
-
-    td:last-child {
-        text-align: left;
-    }
-
-    th:last-child {
         text-align: center;
     }
 }

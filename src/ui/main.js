@@ -149,6 +149,7 @@ document.on("click", "#startserv", async () => {
         Window.this.modal(<alert>No module in daemon. Please check section: "Daemon Config" in the configurations first.</alert>)
         return
     }
+    console.log(cmds);
 
     daemonRunning = true
     setDaemonBtn(true)
@@ -158,7 +159,7 @@ document.on("click", "#startserv", async () => {
     for (let m of uconfig.configs.daemon.modules) {
         mod.push(m.module)
     }
-    fnNewLine(`Rsync daemon is running at: ${ips.join(", ")}`, "info");
+    fnNewLine(`Rsync daemon is running at: ${ips.join(", ")} port: ${uconfig.configs.daemon.port}`, "info");
     fnNewLine(`Rsync daemon module: ${mod.join(", ")}`, "info")
     processDaemon = sys.spawn(cmds)
     await processDaemon.wait()
