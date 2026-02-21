@@ -18,7 +18,7 @@ export class ConfigDialog extends Element {
     }
 
     componentWillUnmount() {
-        uconfig.configs.daemon.modules = this.$("#daemonlist").modules;
+        uconfig.configs.daemon = this.$("#daemonlist").daemon;
         uconfig.saveCfg();
     }
 
@@ -34,7 +34,7 @@ export class ConfigDialog extends Element {
                 </div>
 
                 <div style="margin-top: 12dip;">
-                    <DaemonModuleList #daemonlist modules={uconfig.configs.daemon.modules} />
+                    <DaemonModuleList #daemonlist daemon={uconfig.configs.daemon} />
                 </div>
             </div>
         </div>;

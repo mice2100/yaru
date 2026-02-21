@@ -2,15 +2,20 @@ import * as uconfig from './uconfig.js';
 import * as env from '@env';
 
 export class DaemonModuleList extends Element {
-    modules = [];
+    daemon = null;
 
     this(props) {
-        this.modules = props.modules || [];
+        this.daemon = props.daemon || null;
+    }
+
+    ["on change at .field-daemon-port"](evt, el) {
+        this.daemon.port = Number(el.value) || 873;
+        return true;
     }
 
     ["on change at li.module-item"](evt, el) {
         const idx = Number(el.getAttribute("data"));
-        const m = this.modules[idx];
+        const m = this.daemon.modules[idx];
         m.module = el.$(".field-module").value;
         m.path = el.$(".field-path").value;
         m.readonly = el.$(".field-readonly").checked;
@@ -20,7 +25,7 @@ export class DaemonModuleList extends Element {
 
     ["on click at .btn-new-module"](evt, el) {
         let newModule = uconfig.newDaemonModule();
-        this.modules.push(newModule);
+        this.daemon.modules.push(newModule);
         this.componentUpdate();
         this.requestPaint();
 
@@ -28,7 +33,7 @@ export class DaemonModuleList extends Element {
 
     ["on click at .btn-remove-module"](evt, el) {
         const idx = Number(el.$p(".module-item").getAttribute("data"));
-        this.modules.splice(idx, 1);
+        this.daemon.modules.splice(idx, 1);
         this.componentUpdate();
         this.requestPaint();
     }
@@ -39,20 +44,22 @@ export class DaemonModuleList extends Element {
         const newFolder = Window.this.selectFolder({ path: elpath.value });
         if (newFolder) {
             elpath.value = URL.toPath(newFolder);
-            this.modules[idx].path = elpath.value;
+            this.daemon.modules[idx].path = elpath.value;
         }
     }
 
     render() {
-        const modules = this.modules || [];
+        const modules = this.daemon.modules || [];
 
         return (
             <div class="modulelist">
-                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 12dip;">
-                    <div style="flow: horizontal; vertical-align: middle; width: *;">
+                <div style="flow: horizontal; vertical-align: middle; margin-bottom: 12dip;">
+                    <div style="flow: horizontal; vertical-align: middle; width: *; line-height: 32dip;">
                         <b style="margin-right: 12dip;">Daemon Config:</b>
                     </div>
-                    <button class="btn linebtn btn-new-module" style="height: 32dip;"><i.i_add />New</button>
+                    <label style="margin-right: 4dip; line-height: 32dip;">Port:</label>
+                    <input type="text" class="field-daemon-port" value={this.daemon.port || 873} style="height: 32dip; width: 60dip; margin-right: 12dip; vertical-align: middle;" />
+                    <button class="btn linebtn btn-new-module" style="height: 32dip; vertical-align: middle;"><i.i_add />New</button>
                 </div>
                 <ul class="module-list" style="border-spacing: 8dip;">
                     {modules.map((m, idx) => (

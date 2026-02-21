@@ -108,6 +108,9 @@ export function genDaemonConf() {
     let fn = utils.getDataPath("rsyncd.conf", true)
     let f = sys.fs.sync.open(fn, "w")
 
+    let port = configs.daemon.port || 873;
+    f.writeSync(`port = ${port}\n\n`);
+
     for (let m of configs.daemon.modules) {
         f.writeSync(`[${m.module}]\n`)
         f.writeSync(`  path = ${utils.cvtPath2Rsync(m.path)}\n`)
@@ -145,6 +148,7 @@ export function genAuthPrefix(id) {
 
 export function genAuthSurfixes(id) {
     let auth = findAuth(id)
+    if (!auth) return []
     switch (auth.type) {
         case 'ssh':
             let port = auth.port || 22
@@ -152,8 +156,13 @@ export function genAuthSurfixes(id) {
         case 'local':
             return []
         case 'rsync':
+            let rport = auth.port || 873
+            if (rport != 873) {
+                return ['--port', `${rport}`]
+            }
             return []
     }
+    return []
 }
 
 export async function genAuthPassfile(id) {

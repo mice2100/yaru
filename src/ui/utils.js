@@ -60,16 +60,22 @@ export function makeRsycCmd(t, strOptions = null) {
         args.push(strOptions)
     if (t.exclude) {
         args.push("-C")
-        sys.setenv("CVSIGNORE", t.exclude)
+        env.variable("CVSIGNORE", t.exclude)
     }
-    // -e ssh flag must come BEFORE src/dst paths, and only once
-    // Use whichever side uses ssh (src takes priority)
-    const sshSuffix = uconfig.genAuthSurfixes(t.authsrc)
-    if (sshSuffix.length === 0) {
-        // src is not ssh, check dst
-        args.push(...uconfig.genAuthSurfixes(t.authdst))
-    } else {
-        args.push(...sshSuffix)
+    // Auth suffixes (handles both SSH '-e ssh' and Rsync '--port')
+    // Suffixes must come BEFORE src/dst paths
+    const srcSuffix = uconfig.genAuthSurfixes(t.authsrc) || []
+    const dstSuffix = uconfig.genAuthSurfixes(t.authdst) || []
+
+    if (srcSuffix.length > 0) args.push(...srcSuffix)
+    
+    for (let i = 0; i < dstSuffix.length; i++) {
+        // avoid adding '-e' twice if src already added it
+        if (dstSuffix[i] === '-e' && srcSuffix.includes('-e')) {
+            i++ // skip `-e` and its argument
+        } else {
+            args.push(dstSuffix[i])
+        }
     }
     args.push(uconfig.genAuthPrefix(t.authsrc) + cvtPath2Rsync(t.src))
     args.push(uconfig.genAuthPrefix(t.authdst) + cvtPath2Rsync(t.dst))
