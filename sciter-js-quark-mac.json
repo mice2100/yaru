@@ -1,28 +1,28 @@
 {
   "window": {
-    "left": 1127.1529541015625,
-    "top": 302.6823425292969,
-    "width": 1610.5411376953125,
-    "height": 1163.2940673828125
+    "left": 440,
+    "top": 184,
+    "width": 800,
+    "height": 628
   },
   "projects": [
     {
       "id": "13QWOJ1L2QPTC1OUDP5P1QWU1NQ",
       "name": "yaru",
       "exe": "yaru",
-      "logo": "/Users/taoliu/Documents/code/yaru/src/ui/rsync.svg",
-      "resources": "/Users/taoliu/Documents/code/yaru/src/ui",
+      "logo": "/Users/taoliu/Documents/codes/yaru/src/ui/rsync.svg",
+      "resources": "/Users/taoliu/Documents/codes/yaru/src/ui",
       "productName": "yaru",
-      "productVersion": "1.2",
+      "productVersion": "1.3",
       "productDescription": "Yet Another Rsync UI",
       "productCopyright": "",
       "productCompany": "",
+      "out": "/Users/taoliu/Documents/codes/yaru/bin",
+      "entry": "main.htm found",
+      "entryFileExists": true,
       "targets": [
         "mac"
-      ],
-      "out": "/Users/mpp/Documents/code/yaru/bin",
-      "entry": "main.htm found",
-      "entryFileExists": true
+      ]
     }
   ]
 }

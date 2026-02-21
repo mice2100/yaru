@@ -54,7 +54,7 @@ export function cvtPath2Rsync(strPath) {
 
 export function makeRsycCmd(t, strOptions = null) {
     if (!t.enabled) return null
-    let args = ["rsync"]
+    let args = [checkRsync()]
     args.push(...uswitch.cvtSwitches2Str(t.params, true))
     if (strOptions)
         args.push(strOptions)
@@ -82,7 +82,7 @@ export function makeDaemonCmd() {
 
     if (env.PLATFORM === "Windows")
         cfgfile = cfgfile.replace(/\//g, "\\")
-    let args = ["rsync"]
+    let args = [checkRsync()]
     args.push("--daemon")
     args.push(`--config=${cvtPath2Rsync(cfgfile)}`)
     args.push("--no-detach")
@@ -176,27 +176,21 @@ export function lang(str) {
 }
 
 export function checkRsync() {
-    let ret = true;
     if (env.PLATFORM == "Windows") {
-        let envpath = env.variable("path")
-        // let rsyncpath = URL.toPath(__DIR__+"cwrsync/bin")
         let rsyncpath = URL.toPath(env.home("cwrsync/bin"))
-        if (!sys.fs.statSync(rsyncpath + "/rsync.exe")) {
-            ret = false
+        let rsyncbin = rsyncpath + "/rsync.exe"
+        if (!sys.fs.statSync(rsyncbin)) {
+            return null;
         }
-        else if (envpath.indexOf(rsyncpath) == -1) {
-            env.variable("path", `${rsyncpath};${envpath};`)
-        }
+        return rsyncbin
     }
-    else if (env.PLATFORM == "MacOSX") {
-        let envpath = env.variable("path")
-        let rsyncpath = URL.toPath(env.home("/opt/homebrew/bin"))
-        if (!sys.fs.statSync(rsyncpath + "/rsync")) {
-            ret = false
+    else if (env.PLATFORM == "OSX") {
+        let rsyncpath = URL.toPath("/opt/homebrew/bin")
+        let rsyncbin = rsyncpath + "/rsync"
+        if (!sys.fs.statSync(rsyncbin)) {
+            return null;
         }
-        else if (envpath.indexOf(rsyncpath) == -1) {
-            env.variable("path", `${rsyncpath};${envpath};`)
-        }
+        return rsyncbin
     }
-    return ret
+    return null;
 }
