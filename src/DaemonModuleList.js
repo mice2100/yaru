@@ -55,7 +55,7 @@ export class DaemonModuleList extends Element {
             <div class="modulelist">
                 <div style="flow: horizontal; vertical-align: middle; margin-bottom: 12dip;">
                     <div style="flow: horizontal; vertical-align: middle; width: *; line-height: 32dip;">
-                        <b style="margin-right: 12dip;">Daemon Config:</b>
+                        <b style="margin-right: 12dip;);">Daemon Config:</b>
                     </div>
                     <label style="margin-right: 4dip; line-height: 32dip;">Port:</label>
                     <input type="text" class="field-daemon-port" value={this.daemon.port || 873} style="height: 32dip; width: 60dip; margin-right: 12dip; vertical-align: middle;" />
@@ -65,14 +65,14 @@ export class DaemonModuleList extends Element {
                     {modules.map((m, idx) => (
                         <li class="module-item" data={idx} style="flow: horizontal; vertical-align: middle; height: 36dip; border-spacing: 8dip;">
                             <input type="text" class="field-module" value={m.module} style="height: 32dip;" />
-                            <input class="urlipt field-path" value={m.path} style="height: 32dip;" />
+                            <input type="text" class="urlipt field-path" value={m.path} style="height: 32dip;" />
                             <button class="btn greybtn btn-browse-module" data={idx} style="height: 32dip; min-width: 70dip;">Select...</button>
                             <span style="flow: horizontal; vertical-align: middle; border-spacing: 4dip;">
-                                <input type="checkbox" class="field-readonly" checked={m.readonly || false} />
+                                <input #readonly type="checkbox" class="field-readonly" checked={m.readonly || false} />
                                 <label for="readonly" title="Read Only">RO</label>
                             </span>
                             <span style="flow: horizontal; vertical-align: middle; border-spacing: 4dip;">
-                                <input type="checkbox" class="field-writeonly" checked={m.writeonly || false} />
+                                <input #writeonly type="checkbox" class="field-writeonly" checked={m.writeonly || false} />
                                 <label for="writeonly" title="Write Only">WO</label>
                             </span>
                             <button class="ibtn btn-remove-module" data={idx} style="height: 32dip; width: 32dip;"><i class="i_del" /></button>

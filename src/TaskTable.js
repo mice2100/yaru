@@ -37,7 +37,7 @@ export class TaskTable extends Element {
         let id = Number(el.$p("tr").getAttribute("data"));
         let t = uconfig.findTask(id);
         if (t) {
-            t.enabled = el.checked;
+            t.enabled = el.value === "true";
             uconfig.saveCfg();
         }
     }
@@ -84,7 +84,7 @@ export class TaskTable extends Element {
                 <tbody>
                     {taskList.map(t =>
                         <tr data={t.id}>
-                            <td><input #sel type="checkbox" checked={t.enabled} /></td>
+                            <td><toggle id="sel" value={t.enabled}><option value="true"></option><option value="false"></option></toggle></td>
                             <td>{t.id}</td>
                             <td>{uconfig.genAuthString(t.authsrc)}|{t.src}</td>
                             <td>{uconfig.genAuthString(t.authdst)}|{t.dst}</td>
@@ -96,7 +96,7 @@ export class TaskTable extends Element {
                         </tr>
                     )}
                 </tbody>
-            </table>
+            </table >
         );
     }
 }

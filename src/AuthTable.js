@@ -117,7 +117,7 @@ export class AuthTable extends Element {
         return (
             <div style="flow: vertical;">
                 {/* SSH Key Folder Section */}
-                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 16dip;">
+                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 0dip;">
                     <div style="flow: horizontal; vertical-align: middle; width: *;">
                         <b style="margin-right: 8dip;">SSH Key folder:</b>
                         <span id="sshroot" style="color: var(--text-secondary);">{sshroot}</span>
@@ -126,7 +126,7 @@ export class AuthTable extends Element {
                 </div>
 
                 {/* Auths Header Section */}
-                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 16dip;">
+                <div style="flow: horizontal; vertical-align: middle; height: 40dip; margin-bottom: 6dip;">
                     <div style="flow: horizontal; vertical-align: middle; width: *;">
                         <b style="margin-right: 12dip;">Auths:</b>
                     </div>
@@ -147,7 +147,7 @@ export class AuthTable extends Element {
                     </thead>
                     <tbody>
                         {auths.map(a => {
-                            let actions = <div width="*" style="horizontal-align: center; vertical-align: middle;">
+                            let actions = <div style="horizontal-align: center; vertical-align: middle; width:90dip">
                                 <button title="Delete" class="ibtn" #delete> <i class="i_del"></i></button>
                                 {a.type === "ssh" && <button title="Install Key" class="ibtn" #install> <i class="i_istall"></i></button>}
                                 {a.type === "ssh" && <button title="Test" class="ibtn" #test><i class="i_test"></i></button>}
@@ -166,7 +166,7 @@ export class AuthTable extends Element {
                                             })}
                                         </select>
                                     </td>
-                                    <td style="width: *;">
+                                    <td style="width: max-content;">
                                         {a.type !== "local" && <input type="text" class="field-host" style="width: 215dip;" value={a.host}> </input>}
                                     </td>
                                     <td>
@@ -175,7 +175,7 @@ export class AuthTable extends Element {
                                     <td>
                                         {a.type !== "local" && <input type="text" class="field-port" style="width: 90dip;" value={a.port}> </input>}
                                     </td >
-                                    <td>
+                                    <td style="width: max-content;">
                                         {actions}
                                     </td >
                                 </tr >

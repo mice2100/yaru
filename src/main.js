@@ -25,7 +25,7 @@ function init() {
         fnNewLine(`Can't load config!`, 'error');
         return;
     }
-    
+
     document.$("#tasktable").patch(<TaskTable #tasktable />);
     let rsyncInfo = utils.checkRsync();
     if (!rsyncInfo.found) {
@@ -33,6 +33,7 @@ function init() {
         document.$("#exec").disabled = true;
         document.$("#startserv").disabled = true;
     }
+    document.attributes["theme"] = "light";
 }
 
 document.on("ready", () => {

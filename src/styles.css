@@ -62,6 +62,10 @@ body {
     line-height: 1.4;
 }
 
+b {
+    color: var(--text-primary);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    LAYOUT
    ═══════════════════════════════════════════════════════════════ */
@@ -612,4 +616,3 @@ scrollbar>thumb:hover {
 plaintext#terminal {
     background-color: var(--bg-primary);
 }
-    
