@@ -55,7 +55,7 @@ def build():
     if is_mac:
         out_target_dir = os.path.join(out_base, 'macos')
     else:
-        out_target_dir = os.path.join(out_base, 'winx64') if args.arch == 'x64' else os.path.join(out_base, 'winx32')
+        out_target_dir = os.path.join(out_base, 'windows/x64') if args.arch == 'x64' else os.path.join(out_base, 'windows/x32')
 
     # 3. Call quark to assemble
     if is_mac:
@@ -64,13 +64,13 @@ def build():
             quark_cmd = os.path.expanduser('~/Downloads/macos/quark.app/Content/MacOS/quark')
     else:
         if args.arch == 'x32':
-            quark_cmd = os.path.expanduser('~/Downloads/windows/x32/quark.exe')
+            quark_cmd = os.path.expanduser('~/Downloads/quark/windows/x32/quark.exe')
             if not os.path.exists(quark_cmd):
-                quark_cmd = 'C:/Users/george/Downloads/windows/x32/quark.exe'
+                quark_cmd = 'C:/Users/george/Downloads/quark/windows/x32/quark.exe'
         else:
-            quark_cmd = os.path.expanduser('~/Downloads/windows/quark.exe')
+            quark_cmd = os.path.expanduser('~/Downloads/quark/windows/x64/quark.exe')
             if not os.path.exists(quark_cmd):
-                quark_cmd = 'C:/Users/george/Downloads/windows/quark.exe'
+                quark_cmd = 'C:/Users/george/Downloads/quark/windows/x64/quark.exe'
 
     print(f"Running command: {quark_cmd} {project_json_path} assemble=0")
     if os.path.exists(out_target_dir):
