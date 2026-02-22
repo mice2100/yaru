@@ -1,3 +1,4 @@
 bin
 vendors
 .DS_Store
+*.zip
