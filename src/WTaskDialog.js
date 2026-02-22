@@ -13,6 +13,7 @@ export class WTaskDialog extends Element {
         this.tsk = props.tsk ? Object.assign({}, props.tsk) : null;
         this.auths = uconfig.configs.auths || [];
         this.onOk = props.onOk || null;
+        this.onCancel = props.onCancel || null;
         uswitch.initSwitches();
     }
 
@@ -80,6 +81,16 @@ export class WTaskDialog extends Element {
         this.$("#authdst").value = this.tsk.authdst;
     }
 
+    ["on change at #authsrc"](evt, el) {
+        this.tsk.authsrc = Number(el.value);
+        this.componentUpdate();
+    }
+
+    ["on change at #authdst"](evt, el) {
+        this.tsk.authdst = Number(el.value);
+        this.componentUpdate();
+    }
+
     ["on click at #swch"](evt, el) {
         let arrSwch = uswitch.cvtStr2Switches(this.$('#params').value);
 
@@ -95,7 +106,7 @@ export class WTaskDialog extends Element {
     ["on click at #ok"](evt, el) {
         // collect current input values into tsk
         const tsk = this.tsk;
-        tsk.enabled = this.$('#enabled').value;
+        tsk.enabled = this.$('#enabled').value === "true" || this.$('#enabled').value === true;
         tsk.src = this.$('#src').value;
         tsk.dst = this.$('#dst').value;
         tsk.authsrc = this.$('#authsrc').value;
@@ -110,11 +121,11 @@ export class WTaskDialog extends Element {
         });
 
         if (this.onOk) this.onOk(Object.assign({}, tsk));
-        this.$p("*").state.popup = false; // close popup
+        if (this.onCancel) this.onCancel();
     }
 
     ["on click at #cancel"](evt, el) {
-        this.$p("*").state.popup = false; // close popup
+        if (this.onCancel) this.onCancel();
     }
 
     // ── render ──────────────────────────────────────────────────
@@ -139,34 +150,34 @@ export class WTaskDialog extends Element {
 
                     {/* Enabled */}
                     <div style="flow: horizontal; vertical-align: middle; margin-bottom: 8dip; height: 32dip;">
-                        <span style="width: 70dip;">Enabled:</span>
-                        <input #enabled type="checkbox" checked={tsk ? tsk.enabled : false} />
+                        <span style="width: 70dip; line-height: 32dip;">Enabled:</span>
+                        <toggle #enabled value={tsk ? tsk.enabled : false} style="height: 32dip;"><option value="false"></option><option value="true"></option></toggle>
                     </div>
 
                     {/* ID */}
                     <div style="flow: horizontal; vertical-align: middle; margin-bottom: 8dip; height: 32dip;">
-                        <span style="width: 70dip;">ID:</span>
-                        <label #id style="color: var(--text-secondary);">{tsk ? String(tsk.id) : ""}</label>
+                        <span style="width: 70dip; line-height: 32dip;">ID:</span>
+                        <label #id style="color: var(--text-secondary); line-height: 32dip;">{tsk ? String(tsk.id) : ""}</label>
                     </div>
 
                     {/* Src */}
                     <div style="flow: horizontal; vertical-align: middle; margin-bottom: 8dip; height: 32dip;">
-                        <span style="width: 70dip;">Src:</span>
+                        <span style="width: 70dip; line-height: 32dip;">Src:</span>
                         <select #authsrc style="width: 160dip; margin-right: 6dip;">
                             {authOptions}
                         </select>
                         <input class="ipt" #src type="text" value={tsk ? tsk.src : ""} style="width: *; margin-right: 6dip;" />
-                        <button class="btn greybtn" #browsesrc>Select...</button>
+                        {(!tsk || tsk.authsrc == 1) ? <button class="btn greybtn" #browsesrc>Select...</button> : ""}
                     </div>
 
                     {/* Dest */}
                     <div style="flow: horizontal; vertical-align: middle; margin-bottom: 8dip; height: 32dip;">
-                        <span style="width: 70dip;">Dest:</span>
+                        <span style="width: 70dip; line-height: 32dip;">Dest:</span>
                         <select #authdst style="width: 160dip; margin-right: 6dip;">
                             {authOptions}
                         </select>
                         <input class="ipt" #dst type="text" value={tsk ? tsk.dst : ""} style="width: *; margin-right: 6dip;" />
-                        <button class="btn greybtn" #browsedst>Select...</button>
+                        {(!tsk || tsk.authdst == 1) ? <button class="btn greybtn" #browsedst>Select...</button> : ""}
                     </div>
 
                     {/* Exclude */}
@@ -204,6 +215,14 @@ export class WTaskDialog extends Element {
 
     componentDidMount() {
         // set select values after mount (value must be set after options are rendered)
+        if (this.tsk) {
+            this.$('#authsrc').value = this.tsk.authsrc;
+            this.$('#authdst').value = this.tsk.authdst;
+        }
+    }
+
+    componentDidUpdate() {
+        // ensure select values stay in sync across renders
         if (this.tsk) {
             this.$('#authsrc').value = this.tsk.authsrc;
             this.$('#authdst').value = this.tsk.authdst;

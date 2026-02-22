@@ -21,14 +21,36 @@ export class TaskTable extends Element {
             t.src = URL.toPath(env.path("documents"));
         }
 
-        document.popup(
-            <WTaskDialog tsk={t} onOk={(saved) => {
-                uconfig.configs.taskList.push(saved);
-                uconfig.saveCfg();
-                this.componentUpdate();
-            }} />,
-            { anchorAt: 5, animationType: "blend" }
-        );
+        this.showTaskLayer(t, (saved) => {
+            uconfig.configs.taskList.push(saved);
+            uconfig.saveCfg();
+            this.componentUpdate();
+        });
+    }
+
+    showTaskLayer(taskData, onSave) {
+        let layer = document.$("div#task-layer");
+        if (!layer) {
+            document.body.append(
+                <div id="task-layer" style="position: absolute; left: 50vw; top: 50vh; margin-left: -350dip; margin-top: -240dip; z-index: 100; box-shadow: 0 0 20dip rgba(0,0,0,0.5); border-radius: var(--radius-md);">
+                    <WTaskDialog tsk={taskData} onOk={(saved) => {
+                        onSave(saved);
+                        document.$("div#task-layer").remove();
+                    }} onCancel={() => {
+                        document.$("div#task-layer").remove();
+                    }} style="display: block;" />
+                </div>
+            );
+            layer = document.$("div#task-layer");
+            
+            // Handle clicking outside to cancel/close
+            document.on("mousedown.tasklayer", (evt) => {
+                if (layer && !evt.target.closest("#task-layer") && !evt.target.closest("#newtask") && !evt.target.closest(".ibtn")) {
+                    layer.remove();
+                    document.off("mousedown.tasklayer");
+                }
+            });
+        }
     }
 
     // ── internal event handlers ────────────────────────────────
@@ -46,15 +68,12 @@ export class TaskTable extends Element {
         let id = Number(el.getAttribute("tid"));
         let t = uconfig.findTask(id);
 
-        document.popup(
-            <WTaskDialog tsk={t} onOk={(saved) => {
-                let t0 = uconfig.findTask(id);
-                Object.assign(t0, saved);
-                uconfig.saveCfg();
-                this.componentUpdate();
-            }} />,
-            { anchorAt: 5, animationType: "blend" }
-        );
+        this.showTaskLayer(t, (saved) => {
+            let t0 = uconfig.findTask(id);
+            Object.assign(t0, saved);
+            uconfig.saveCfg();
+            this.componentUpdate();
+        });
     }
 
     ["on click at #rmtask"](evt, el) {

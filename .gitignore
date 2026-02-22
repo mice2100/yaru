@@ -1,4 +1,3 @@
-build*
 bin
 vendors
 .DS_Store

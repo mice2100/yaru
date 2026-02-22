@@ -113,10 +113,27 @@ document.on("click", "#config", function (evt) {
 })
 
 function showConfigPopup() {
-    document.popup(<ConfigDialog />, {
-        anchorAt: 5,
-        animationType: "blend"
-    })
+    let layer = document.$("div#config-layer");
+    if (!layer) {
+        document.body.append(
+            <div id="config-layer" style="position: absolute; left: 50vw; top: 50vh; margin-left: -400dip; margin-top: -240dip; z-index: 100; box-shadow: 0 0 20dip rgba(0,0,0,0.5); border-radius: var(--radius-md);">
+                <ConfigDialog style="display: block;" />
+            </div>
+        );
+        layer = document.$("div#config-layer");
+        document.on("mousedown", (evt) => {
+            if (layer.style.display !== "none" && !evt.target.closest("#config-layer") && !evt.target.closest("#config")) {
+                layer.style.display = "none";
+                let dlg = layer.$("config-dialog");
+                if (dlg && dlg.$("#daemonlist")) {
+                    uconfig.configs.daemon = dlg.$("#daemonlist").daemon;
+                    uconfig.saveCfg();
+                }
+            }
+        });
+    } else {
+        layer.style.display = "block";
+    }
 }
 
 var daemonRunning = false
