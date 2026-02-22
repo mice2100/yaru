@@ -17,6 +17,9 @@ function fnNewLine(cline, cls) {
         } else {
             el.plaintext.content = cline;
         }
+        if (el.plaintext.lines > 200) {
+            el.plaintext.removeLine(0, 10);
+        }
     }
 }
 

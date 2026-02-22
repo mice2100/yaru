@@ -84,7 +84,7 @@ export class TaskTable extends Element {
                 <tbody>
                     {taskList.map(t =>
                         <tr data={t.id}>
-                            <td><toggle id="sel" value={t.enabled}><option value="true"></option><option value="false"></option></toggle></td>
+                            <td><toggle id="sel" value={t.enabled}><option value="false"></option><option value="true"></option></toggle></td>
                             <td>{t.id}</td>
                             <td>{uconfig.genAuthString(t.authsrc)}|{t.src}</td>
                             <td>{uconfig.genAuthString(t.authdst)}|{t.dst}</td>

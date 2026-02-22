@@ -1,9 +1,9 @@
 {
   "window": {
-    "left": 560,
-    "top": 199,
-    "width": 800,
-    "height": 628
+    "left": 872.6666870117188,
+    "top": 381.3333435058594,
+    "width": 814.6666870117188,
+    "height": 637.3333740234375
   },
   "projects": [
     {
@@ -20,7 +20,9 @@
       "out": "/Users/taoliu/Documents/codes/yaru/bin",
       "entry": "main.htm found",
       "entryFileExists": true,
-      "targets": ["mac"]
+      "targets": [
+        "mac"
+      ]
     },
     {
       "id": "13QWOJ1L2QPTC1OUDP5P1QWU1NT",
@@ -36,7 +38,9 @@
       "out": "C:/Users/george/code/yaru/bin",
       "entry": "main.htm found",
       "entryFileExists": true,
-      "targets": ["winX64"]
+      "targets": [
+        "winX64"
+      ]
     }
   ]
 }

@@ -68,7 +68,7 @@ export function makeRsycCmd(t, strOptions = null) {
     const dstSuffix = uconfig.genAuthSurfixes(t.authdst) || []
 
     if (srcSuffix.length > 0) args.push(...srcSuffix)
-    
+
     for (let i = 0; i < dstSuffix.length; i++) {
         // avoid adding '-e' twice if src already added it
         if (dstSuffix[i] === '-e' && srcSuffix.includes('-e')) {
@@ -188,6 +188,13 @@ export function checkRsync() {
         if (!sys.fs.statSync(rsyncbin)) {
             return { path: rsyncbin, found: false };
         }
+        // 确保 rsyncpath 在 PATH 最前面，避免找不到依赖 dll
+        let pathSep = ";";
+        let currentPath = env.variable("PATH") || "";
+        let pathDirs = currentPath.split(pathSep);
+        if (!pathDirs.some(d => d.toLowerCase() === rsyncpath.toLowerCase())) {
+            env.variable("PATH", rsyncpath + pathSep + currentPath);
+        }
         return { path: rsyncbin, found: true };
     }
     else if (env.PLATFORM == "OSX") {
@@ -195,6 +202,13 @@ export function checkRsync() {
         let rsyncbin = rsyncpath + "/rsync"
         if (!sys.fs.statSync(rsyncbin)) {
             return { path: rsyncbin, found: false };
+        }
+        // 确保 rsyncpath 在 PATH 最前面
+        let pathSep = ":";
+        let currentPath = env.variable("PATH") || "";
+        let pathDirs = currentPath.split(pathSep);
+        if (!pathDirs.some(d => d === rsyncpath)) {
+            env.variable("PATH", rsyncpath + pathSep + currentPath);
         }
         return { path: rsyncbin, found: true };
     }
