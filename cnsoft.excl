@@ -1,2 +1,91 @@
-WeChat*
-Tecent*
+# Tencent (腾讯)
+TencentFiles
+Tencent
+WeChat Files
+WeChat
+QQ
+QQBrowser
+QQMusic
+Foxmail
+Tim
+Tencent*[Cc]ache*
+Tencent*[Ll]og*
+Tencent*[Tt]emp*
+
+# Baidu (百度)
+BaiduNetdisk
+BaiduNetdiskDownload
+Baidu
+BaiduYun
+BaiduYunDownload
+baiduyundownload
+Baidu*[Cc]ache*
+BaiduBrowser
+
+# 360 (奇虎360)
+360se6
+360Downloads
+360Safe
+360chrome
+360
+360*[Cc]ache*
+360*[Ll]og*
+
+# Alibaba (阿里巴巴)
+DingTalk
+AliWangWang
+Alibaba
+Alipay
+Taobao
+
+# ByteDance (字节跳动)
+Feishu
+LarkFolder
+LarkCache
+TikTok
+Douyin
+JianyingPro
+
+# NetEase (网易)
+Netease
+CloudMusic
+Youdao
+MuMu
+
+# Xunlei (迅雷)
+Thunder Network
+Thunder
+Xunlei
+Xunlei*[Dd]ownload*
+
+# Kingsoft / WPS (金山)
+WPS Cloud Files
+Kingsoft
+WPS
+WPS*[Cc]ache*
+
+# Sougou (搜狗)
+SogouExplorer
+SogouInput
+Sogou
+
+# Iqiyi / Youku / Bilibili (Videos)
+IQIYI
+Qiyi
+Youku
+Bilibili
+
+# Others Common CN Softwares
+KuGou
+Kuwo
+KugouMusic
+2345
+2345Explorer
+Hao123
+LuDaShi
+Sina
+
+# General Chinese App Temp/Log/Cache folders (heuristic)
+*Cache*/Tencent*
+*Cache*/Baidu*
+*Cache*/360*

@@ -37,12 +37,9 @@ export class WTaskDialog extends Element {
 
     ["on click at #import"](evt, el) {
         this.tsk.exclude = this.$('#exclude').value;
-        let startPath = utils.getDataPath();
-        if (env.PLATFORM === "Windows") startPath += "/*.excl";
         let profile = Window.this.selectFile({
             mode: "open",
             caption: "Select profile",
-            path: startPath,
             filter: "exclude file(*.excl)|*.excl"
         });
         if (profile) {
@@ -51,7 +48,7 @@ export class WTaskDialog extends Element {
             let excludes = new Set(this.tsk.exclude.split(' '));
             for (let e of excl) excludes.add(e);
             this.tsk.exclude = Array.from(excludes).join(' ').trim();
-            this.componentUpdate();
+            this.$('#exclude').value = this.tsk.exclude;
         }
     }
 
@@ -121,7 +118,6 @@ export class WTaskDialog extends Element {
         });
 
         if (this.onOk) this.onOk(Object.assign({}, tsk));
-        if (this.onCancel) this.onCancel();
     }
 
     ["on click at #cancel"](evt, el) {
@@ -133,7 +129,7 @@ export class WTaskDialog extends Element {
     render() {
         const tsk = this.tsk;
         const auths = this.auths;
-
+        console.log("render tsk", tsk);
         const authOptions = auths.map(a =>
             <option value={a.id}>{uconfig.genAuthString(a.id)}</option>
         );
@@ -188,7 +184,7 @@ export class WTaskDialog extends Element {
                             <button class="btn linebtn" #import style="margin-right: 6dip;"><i class="i_import" />Import</button>
                             <button class="btn linebtn" #export><i class="i_save" />Save As</button>
                         </div>
-                        <textarea #exclude type="text" style="width: *; height: 80dip; margin-top: 4dip;">{tsk ? tsk.exclude : ""}</textarea>
+                        <textarea #exclude type="text" style="width: *; height: 80dip; margin-top: 4dip;">{tsk?.exclude}</textarea>
                     </div>
 
                     {/* Params */}

@@ -1,3 +1,47 @@
-*.db
+# General Temporary & Log Files
 tmp
+temp
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+*.log
+*.db
 *.lnk
+
+# Broad Dotfile Exclusion
+.*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon\r\r
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.cab
+*.msi
+*.msm
+*.msp
+$RECYCLE.BIN/
+Desktop.ini
+
+# Linux
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*

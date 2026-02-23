@@ -10,18 +10,18 @@
       "id": "13QWOJ1L2QPTC1OUDP5P1QWU1NQ",
       "name": "yaru",
       "exe": "yaru",
-      "logo": "C:/Users/george/code/yaru/src/rsync.svg",
-      "resources": "C:/Users/george/code/yaru/src",
+      "logo": "/Users/taoliu/Documents/codes/yaru/src/rsync.svg",
+      "resources": "/Users/taoliu/Documents/codes/yaru/src",
       "productName": "yaru",
-      "productVersion": "1.4",
+      "productVersion": "1.5",
       "productDescription": "Yet Another Rsync UI",
       "productCopyright": "",
       "productCompany": "",
-      "out": "C:/Users/george/code/yaru/bin",
+      "out": "/Users/taoliu/Documents/codes/yaru/bin",
       "entry": "main.htm found",
       "entryFileExists": true,
       "targets": [
-        "winX64"
+        "mac"
       ]
     }
   ]

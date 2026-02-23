@@ -8,18 +8,46 @@ var processRsync
 var processDaemon
 var stopping = false
 
-function fnNewLine(cline, cls) {
+// --- Log throttling: batch DOM updates to keep UI responsive ---
+var logBuffer = [];
+var logFlushScheduled = false;
+var LOG_FLUSH_INTERVAL = 100; // ms — max ~10 UI updates per second
+var lastFlushTime = 0;
+
+function flushLogBuffer() {
+    logFlushScheduled = false;
     let el = document.$("plaintext#terminal");
-    if (el) {
+    if (!el || logBuffer.length === 0) return;
+
+    let lines = logBuffer.splice(0); // grab all pending lines
+
+    for (let line of lines) {
         if (el.plaintext.content) {
-            el.plaintext.appendLine(cline);
-            el.execCommand("navigate:end");
+            el.plaintext.appendLine(line);
         } else {
-            el.plaintext.content = cline;
+            el.plaintext.content = line;
         }
-        if (el.plaintext.lines > 200) {
-            el.plaintext.removeLine(0, 10);
-        }
+    }
+
+    // trim excess lines in one pass
+    let excess = el.plaintext.lines - 200;
+    if (excess > 0) {
+        el.plaintext.removeLine(0, excess);
+    }
+
+    el.execCommand("navigate:end");
+    lastFlushTime = Date.now();
+}
+
+function fnNewLine(cline, cls) {
+    logBuffer.push(cline);
+    if (!logFlushScheduled) {
+        logFlushScheduled = true;
+        let elapsed = Date.now() - lastFlushTime;
+        let delay = Math.max(0, LOG_FLUSH_INTERVAL - elapsed);
+        setTimeout(() => {
+            requestAnimationFrame(flushLogBuffer);
+        }, delay);
     }
 }
 

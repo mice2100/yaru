@@ -29,10 +29,11 @@ class UExclude {
         let ret = []
         lns.forEach((v) => {
             let vv = v.trim()
+            if (vv.startsWith("#")) return
             if (vv.includes(' ')) {
                 ret.push(`"${vv}"`)
             } else {
-                if(vv) ret.push(vv)
+                if (vv) ret.push(vv)
             }
         })
         return ret
@@ -51,7 +52,7 @@ class UExclude {
     }
 
     defaultExcludes() {
-        let excl = "tmp venv *.db node_modules *.lnk .git .svn bin build*"
+        let excl = "tmp .venv *.db node_modules *.lnk .git .svn bin build*"
         return excl.split(" ")
     }
 }
